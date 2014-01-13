@@ -1,4 +1,4 @@
-\section{Coffee(Xe)(La)TeX}\label{coffeexelatex}
+\section{C(offee)X(e)L(a)T(e)X}\label{coffeexelatex}
 
 \subsection{What is it? And Why?}\label{what-is-it-and-why}
 
@@ -218,7 +218,16 @@ hit \texttt{Ctrl-C} and restart the process, keeping fingers crossed.
 \subsection{Related Work}\label{related-work}
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\item
+  \href{http://www.pytex.org/}{PyTeX} (also dubbed QATeX) is a laudable
+  effort that has, sadly, been stalling for around 11 years as of this
+  writing (January 2014), so about everything of it is outdated. Their
+  approach is apparently the opposite of what we do in CXLTX: they run
+  TeX in daemon mode from Python; we have NodeJS start a server that
+  listens to our TeX. Just for giggles, a quote from the above page:
+  ``XML is hard work to key by hand. \emph{It lacks the mark-up
+  minimization that SGML has}'' (my emphasis). Well, eleven years is a
+  long time.
 \item
   \href{https://github.com/gpoore/pythontex}{PythonTeX} is an
   interesting approach to bringing LaTeX and Python together.
@@ -241,7 +250,7 @@ http://get-software.net/macros/latex/contrib/pythontex):
 
 \begin{itemize}
 \item
-  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex/}{Sage\TeX}
+  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex}{SageTeX}
   allows code for the Sage mathematics software to be executed from
   within a \LaTeX~document.
 \item
@@ -265,6 +274,52 @@ language with LaTeX. Unfortunately, that language is Lua, a language
 that (like Go btw) believes that Unicode strings should be stored as
 UTF-8 bytes. Equally unfortunately, LuaTeX uses pdfTeX, which can't
 compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
+
+\subsection{Sample Command Lines}\label{sample-command-lines}
+
+To make it so you can put a simple
+\texttt{\textbackslash{}usepackage\{cxltx\}} inside your \texttt{tex}
+files, do (on OSX)
+
+\begin{verbatim}
+cd ~/Library/texmf/tex/latex
+ln -s route/to/cxltx cxltx
+\end{verbatim}
+
+This link `publishes' CXLTX to \texttt{kpathsea}, TeX's file search
+tool.
+
+Here is what i do to build \texttt{cxltx/cxltx-manual.pdf}:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\item
+  use pandoc to convert README.me to README.tex:
+
+  pandoc -o cxltx/doc/README.tex cxltx/README.md
+\item
+  copy the \texttt{aux} file from the prvious to preserve its data for
+  CXLTX to see:
+
+  cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
+\item
+  compile cxltx-manual.tex to cxltx-manual.pdf
+
+  \section{--enable-write18 allows to access external programs form
+  within
+  TeX}\label{enable-write18-allows-to-access-external-programs-form-within-tex}
+
+  \section{--halt-on-error is a convenience so i don't have to type x on
+  each TeX
+  error}\label{halt-on-error-is-a-convenience-so-i-dont-have-to-type-x-on-each-tex-error}
+
+  xelatex --output-directory cxltx/doc --halt-on-error --enable-write18
+  cxltx/doc/cxltx-manual.tex
+\item
+  move the pdf file to its target location:
+
+  mv cxltx/doc/cxltx-manual.pdf cxltx
+\end{enumerate}
 
 \subsection{Useful Links}\label{useful-links}
 

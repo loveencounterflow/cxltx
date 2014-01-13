@@ -154,6 +154,12 @@ last line of output. I then routinely hit `Ctrl-C` and restart the process, keep
 
 ## Related Work
 
+* [PyTeX](http://www.pytex.org/) (also dubbed QATeX) is a laudable effort that has, sadly, been stalling for around 11 years as
+  of this writing (January 2014), so about everything of it is outdated. Their approach is apparently the
+  opposite of what we do in CXLTX: they run TeX in daemon mode from Python; we have NodeJS start a server
+  that listens to our TeX. Just for giggles, a quote from the above page: "XML is hard work to key by hand.
+  *It lacks the mark-up minimization that SGML has*" (my emphasis). Well, eleven years is a long time.
+
 * [PythonTeX](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python
   together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
   capabilities (which are ... not really that great) and how to print out integrals using SymPy, and fail
@@ -166,7 +172,7 @@ last line of output. I then routinely hit `Ctrl-C` and restart the process, keep
 
 (the below taken from http://get-software.net/macros/latex/contrib/pythontex):
 
-* \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex/}{Sage\TeX} allows code for the Sage
+* [SageTeX](http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex) allows code for the Sage
   mathematics software to be executed from within a \LaTeX\ document.
 
 * Martin R. Ehmsen's [`python.sty`](http://www.ctan.org/pkg/python) provides a very basic method of
@@ -183,15 +189,6 @@ last line of output. I then routinely hit `Ctrl-C` and restart the process, keep
   that (like Go btw) believes that Unicode strings should be stored as UTF-8 bytes. Equally unfortunately,
   LuaTeX uses pdfTeX, which can't compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
 
-## Useful Links
-
-http://www.ctan.org/tex-archive/macros/latex/contrib/perltex
-
-http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
-
-http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
-
-https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
 
 ## Sample Command Lines
 
@@ -208,17 +205,33 @@ Here is what i do to build `cxltx/cxltx-manual.pdf`:
 
     pandoc -o cxltx/doc/README.tex cxltx/README.md
 
-(2) compile cxltx-manual.tex to cxltx-manual.pdf
+(2) copy the `aux` file from the prvious to preserve its data for CXLTX to see:
+
+    cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
+
+(3) compile cxltx-manual.tex to cxltx-manual.pdf
 
     # --enable-write18  allows to access external programs form within TeX#
     # --halt-on-error   is a convenience so i don't have to type x on each TeX error
+    # --recorder        needed by the `currfile` package to get absolute routes
 
-    xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 cxltx/doc/cxltx-manual.tex
+    xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder \
+      cxltx/doc/cxltx-manual.tex
 
-(3) move the pdf file to its target location:
+(4) move the pdf file to its target location:
 
     mv cxltx/doc/cxltx-manual.pdf cxltx
 
+
+## Useful Links
+
+http://www.ctan.org/tex-archive/macros/latex/contrib/perltex
+
+http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
+
+http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
+
+https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
 
 
 
