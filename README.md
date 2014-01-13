@@ -1,4 +1,7 @@
 
+**Att.** this part of the docs is only partially up to date; see `doc/examples.tex` and `xltx-manual.pdf`
+for working code.
+
 
 # C(offee)X(e)L(a)T(e)X
 
@@ -140,16 +143,6 @@ If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the followin
   `<if condition='...'>...</if>` tags and circumlocutorily reified calls to JS. This is the state of affairs
   of PerlTeX / CoffeeXeLaTeX, and it is definitely a programming model begging to be improved.
 
-
-
-## Good to Know
-
-The [PerlTeX Manual](http://mirror.unl.edu/ctan/macros/latex/contrib/perltex/perltex.pdf) warns users that
-"`perltex.pl` may hang if LaTeX exits right before the final pipe communication", but unfortunately says
-nothing about the circumstances leading to such a condition nor how to avoid them. For the time being,
-users of PerlTeX and, by extension, CoffeeXeLaTeX have to live with the fact that every so often, a
-running LaTeX job will just stop doing anything, typically displaying something like `(./example.pipe)` as
-last line of output. I then routinely hit `Ctrl-C` and restart the process, keeping fingers crossed.
 
 
 ## Related Work
