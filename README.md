@@ -202,22 +202,20 @@ To make it so you can put a simple `\usepackage{cxltx}` inside your `tex` files,
 
 This link 'publishes' CXLTX to `kpathsea`, TeX's file search tool.
 
-Here is what i do to build `cxltx/cxltx-manual.pdf`
+Here is what i do to build `cxltx/cxltx-manual.pdf`:
 
-    #.......................................................................................................
-    # use pandoc to convert README.me to README.tex:
+(1) use pandoc to convert README.me to README.tex:
 
     pandoc -o cxltx/doc/README.tex cxltx/README.md
 
-    #.......................................................................................................
-    # compile cxltx-manual.tex to cxltx-manual.pdf
+(2) compile cxltx-manual.tex to cxltx-manual.pdf
+
     # --enable-write18  allows to access external programs form within TeX#
     # --halt-on-error   is a convenience so i don't have to type x on each TeX error
 
     xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 cxltx/doc/cxltx-manual.tex
 
-    #.......................................................................................................
-    # move the pdf file to its target location:
+(3) move the pdf file to its target location:
 
     mv cxltx/doc/cxltx-manual.pdf cxltx
 
