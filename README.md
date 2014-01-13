@@ -2,8 +2,6 @@
 
 # C(offee)X(e)L(a)T(e)X
 
-# C<sub'>offee</sub>X(e)L(a)T(e)X
-
 ## What is it? And Why?
 
 Everyone who has worked with LaTeX knows how hard it can often be to get seemingly simple things done in
@@ -194,4 +192,20 @@ http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
 http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
 
 https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
+
+## Sample Command Lines
+
+    ln -s ~/cnd/node_modules/cxltx cxltx
+
+    pandoc -o cxltx/doc/README.tex cxltx/README.md
+
+    xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 cxltx/doc/cxltx-manual.tex
+
+    mv cxltx/doc/cxltx-manual.pdf cxltx
+
+
+
+
+
+
 
