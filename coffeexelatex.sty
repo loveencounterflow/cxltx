@@ -171,6 +171,16 @@
   \urlescapeALPHA{#5}%
   \exec{curl --silent --show-error #1 #2/#3/#4/\urlescapecurrent}}
 
+\newcommand{\curlEscapeBETA}[5][]{%
+  \begingroup%
+  \urlescapeALPHA{#3}%
+  \let\three=\urlescapecurrent%
+  \urlescapeALPHA{#5}%
+  \let\five=\urlescapecurrent%
+  *\three*\five*
+  % \exec{curl --silent --show-error #1 #2/\three/#4/\five}%
+  \endgroup}
+
 % ----------------------------------------------------------------------------------------------------------
 %
 % Arguments:
@@ -179,8 +189,8 @@
 %
 \newcommand{\curl}[2]{%
   \curlEscape{\CXLTXhost}{\currfilepath}{#1}{#2}}
-% \newcommand{\curl}[3][]{%
-%   \curlEscape[#3]{\CXLTXhost}{\currfilepath}{/#1}/{#2}}
+\newcommand{\curlBETA}[2]{%
+  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{#1}{#2}}
 
 
 % ----------------------------------------------------------------------------------------------------------

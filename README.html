@@ -1,0 +1,204 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style></style><title>README</title></head><body><h1 id="coffeexelatex">C(offee)X(e)L(a)T(e)X</h1>
+<h2 id="what-is-it-and-why">What is it? And Why?</h2>
+<p>Everyone who has worked with LaTeX knows how hard it can often be to get seemingly simple things done in
+this Turing-complete markup language. Let's face it, (La)TeX has many problems; the <a href="http://www.infoq.com/presentations/Simple-Made-Easy">complectedness</a>
+of its inner workings and the extremely uneven syntax of its commands put a heavy burden on the average
+user. The funny thing is that while TeX is all about computational text processing, doing math and
+string processing are <em>really hard</em> to get right—or even get done at all—in this environment (not to
+mention that TeX has no notion of higher-order data types, such as, say, lists).</p>
+<p>Often one wishes one could just do a simple calculation or build a typesetting object from available data
+<em>outside</em> of all that makes LaTeX so difficult to get right. Turns out you can already do that, and you
+don't have to recompile TeX.</p>
+<p>Most of the time, running TeX means to author a source file and have the TeX executable convert that into
+a PDF. Of course, this implies reading and writing of files and executing binaries. Interestingly for us, both
+capabilities—file access and command execution—are made available to user-facing side of TeX: writing to
+a file happens via the <code>\write</code> command, while input from a file is done with <code>\input</code>; command execution
+repurposes <code>\write</code>, which may be called with the special stream number <code>18</code> (internally, TeX does almost
+everything with registers that are sometimes given symbolic names; it also enumerates 'channels' for file
+operations, and reserves #18 for writing to the command line and executing stuff). This is how the <code>\exec</code>
+command is defined in CoffeeXeLaTeX:</p>
+<pre><code>\newcommand{\coffeexelatextemproute}{/tmp/coffeexelatex.tex}
+
+\newcommand{\exec}[1]{%
+  \immediate\write18{#1 &gt; \coffeexelatextemproute}
+  \input{\coffeexelatextemproute}
+  }
+</code></pre>
+<p>This command says, in essence: given a single argument <code>#1</code>, have the OS execute it as a command, and do
+that immediately (i.e. not at some arbitrary point in the future); redirect its output into the temporary file
+<code>/tmp/coffeexelatex.tex</code>; then, read back the contents of that file, and insert that text into the
+current TeX source.</p>
+<p>With some TeXs, its possible to avoid the temporary file by using <code>\@@input|"dir"</code>, but XeTeX as
+provided by TeXLive 2013 does not allow that. As much as i'd like to eliminate the somewhat unelegant
+temporary file (that brings one more possible point of failure to the equation; remember to
+<code>\renewcommand{\coffeexelatextemproute}{some/temp/location.tex}</code> where deemed necessary), it also has one
+advantage: in case TeX should halt execution becuase of an error, and that error is due to a script
+with faulty output, you can conveniently review the problematic source by opening the temporary file in
+your text editor.</p>
+<h2 id="security-considerations">Security Considerations</h2>
+<p>Be aware that executing arbitrary code with a command line like
+<code>xelatex --enable-write18 --shell-escape somefile.tex</code>
+is inherently unsafe: a TeX file downloaded from somewhere could erase your disk, access your email, or
+install a program on your computer. This is what the <code>--enable-write18</code> switch is for: it is by default fully
+or partially disabled so an arbitrary TeX source gets limited access to your computer.</p>
+<p>If you're scared now, please hang on a second. I just want to tell you <em>you should be really, really scared</em>.
+Why? Because if you ever downloaded some TeX source to compile it on your machine <strong>even without the
+<code>--enable-write18</code> switch</strong> you've already <strong>executed potentially harmful code</strong>. Few people are aware of
+it, but many TeX installations are quite 'liberal' in respect to what TeX sources—TeX programs, really—are
+allowed to do <em>even in absence of command line switches</em>, and, as a result, even people who are hosting
+public TeX installations for a living are susceptible to malicious code.*</p>
+<p><strong>It is a misconception that TeX source is 'safe' because 'TeX is text-based format'</strong> (how stupid is that,
+anyway?); <strong>the truth is that by doing <code>latex xy.tex</code> you're executing code which may do malicious things</strong>.
+Period. That said, the papers linked below make it quite clear that <code>--enable-write18</code> just 'opens the barn
+door', as it were, but in fact, there are quite a few other and less well known avenues for TeX-based
+malware to do things on your computer.</p>
+<p>And please don't think you're safe just because you're not executing
+anything but your own TeX source—that, in case you're using LaTeX, is highly improbable: any given real-world
+LaTeX document will start with a fair number of <code>\usepackage{}</code> statements, and each one of those refers to
+a source that is publicly accessible on the internet and has been so for maybe five or ten or more years.
+Someone might even have managed to place a mildly
+useful package on CTAN, one that has some obfuscated parts designed to take over world leadership on
+Friday, 13th—who knows? <strong>The fact that TeX is a programming language that works by repeatedly re-writing
+itself does not exactly help in doing static code analysis</strong>; in fact, such code is called
+'<a href="http://en.wikipedia.org/wiki/Metamorphic_code">metamorphic code</a>' and is a well-known technique employed
+by computer viruses.</p>
+<p>I do not write this section of the present README to scare you away, just to inform whoever is concerned
+of a little known fact of life. The gist of this is: don't have <code>--enable-write18</code> turned on except you
+know what you're doing, but be aware that running TeX has always been unsafe anyway.</p>
+<blockquote>
+<p>*) see e.g. http://cseweb.ucsd.edu/~hovav/dist/tex-login.pdf, http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf</p>
+</blockquote>
+<h2 id="installation">Installation</h2>
+<ul>
+<li>put a symlink to your CoffeeXeLaTeX directory into a directory that is on LaTeX's search path; on OSX with
+  LiveTeX, that could be <code>~/Library/texmf/tex/latex</code>.*</li>
+</ul>
+<blockquote>
+<p>*: obviously, you could put your CoffeeXeLaTeX installation directly there, but that strikes me as
+'wrong'.</p>
+</blockquote>
+<h2 id="usage">Usage</h2>
+<p>For a quick test, do</p>
+<pre><code>cd examples/example-1
+perltex --nosafe --latex=xelatex example-1.tex
+</code></pre>
+<p>from the command line; this should produce <code>examples/example-1/example-1.pdf</code> (along with some other files).</p>
+<p>You may want to have a look at <code>examples/example-1/example-1.lgpl</code> to get an idea what exactly
+happened behind the scenes (see <a href="https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf">PerlTeX: Defining LaTeX macros using Perl</a>
+for an overview of the process).</p>
+<h2 id="future-development">Future Development</h2>
+<p>If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the following routes for development:</p>
+<ul>
+<li>
+<p>Using a Perl shell-escape command to start <code>node</code> all over for each single JS/CS macro is doubly
+  wasteful—first, a <code>perl</code> process is started which in turn starts a <code>node</code> subprocess. Depending on
+  specific use, this can mean that two processes (none of them exactly lightweight) are initiated hundreds
+  or thousands of times for a single document. This may be fixed in a number of ways:</p>
+</li>
+<li>
+<p>Firstly, we could try and remove the Perl dependency, and call <code>node</code> in exactly the way that <code>perl</code>
+    is called now. Not sure how to do that at this point in time.</p>
+</li>
+<li>
+<p>Secondly, we could opt for a client / server model and make it so that instead of starting a (heavy)
+    process for each JS/CS macro call, a (HTTP?) connection to a long-running NodeJS server is established.
+    This is also attractive as it would simplify state keeping—as it stands, each call to a given macro
+    starts with a clean slate (though one could imagine storing results from past calls in a file or a
+    database).</p>
+</li>
+</ul>
+<p>Both of the above options are only worth implementing when it has been shown that substantial benefits
+  in terms of performance, easy of use, and capabilities can be gained—something that is only meaningful
+  after experience with real-world use cases has been gained.</p>
+<ul>
+<li>The one big incentive for using a 3rd-party language in tandem with LaTeX is to make things easy (or
+  at least achievable) that are difficult (or impossible) using only LaTeX.</li>
+</ul>
+<p>Regrettably, our efforts are still limited to what can be communicated 'over the wire' between the LaTeX
+  process and the macro process; we do not have direct access to (La)TeX internals as such, but must package
+  every pertinent facet of the ongoing typesetting process as a textual argument for a macro.</p>
+<p>Imagine you had to interact with your HTML page in this way—imagine JavaScript in the browser was
+  stateless and blissfully unaware of the DOM and CSS, imagine HTML was Turing-complete-but-hard-to-use
+  as is the case with TeX. Your capabilities-improved web application page would be littered with ugly
+  <code>&lt;if condition='...'&gt;...&lt;/if&gt;</code> tags and circumlocutorily reified calls to JS. This is the state of affairs
+  of PerlTeX / CoffeeXeLaTeX, and it is definitely a programming model begging to be improved.</p>
+<h2 id="good-to-know">Good to Know</h2>
+<p>The <a href="http://mirror.unl.edu/ctan/macros/latex/contrib/perltex/perltex.pdf">PerlTeX Manual</a> warns users that
+"<code>perltex.pl</code> may hang if LaTeX exits right before the final pipe communication", but unfortunately says
+nothing about the circumstances leading to such a condition nor how to avoid them. For the time being,
+users of PerlTeX and, by extension, CoffeeXeLaTeX have to live with the fact that every so often, a
+running LaTeX job will just stop doing anything, typically displaying something like <code>(./example.pipe)</code> as
+last line of output. I then routinely hit <code>Ctrl-C</code> and restart the process, keeping fingers crossed.</p>
+<h2 id="related-work">Related Work</h2>
+<ul>
+<li>
+<p><a href="http://www.pytex.org/">PyTeX</a> (also dubbed QATeX) is a laudable effort that has, sadly, been stalling for around 11 years as
+  of this writing (January 2014), so about everything of it is outdated. Their approach is apparently the
+  opposite of what we do in CXLTX: they run TeX in daemon mode from Python; we have NodeJS start a server
+  that listens to our TeX. Just for giggles, a quote from the above page: "XML is hard work to key by hand.
+  <em>It lacks the mark-up minimization that SGML has</em>" (my emphasis). Well, eleven years is a long time.</p>
+</li>
+<li>
+<p><a href="https://github.com/gpoore/pythontex">PythonTeX</a> is an interesting approach to bringing LaTeX and Python
+  together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
+  capabilities (which are ... not really that great) and how to print out integrals using SymPy, and fail
+  to provide sample code of interest to a wider audience. Their copious 128-page manual only dwells for one and a half page on the topic
+  of 'how do i use this stuff', and that only to show off more SymPy capabilities. None of their sample
+  code <em>needs</em> PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
+  process; as such, all their formulas and plots may be produced offline, independently from LaTeX.
+  Given that the installation instructions are too scary and longwinded for my taste, and that PythonTeX is
+  not part of LiveTeX, i've given up on the matter.</p>
+</li>
+</ul>
+<p>(the below taken from http://get-software.net/macros/latex/contrib/pythontex):</p>
+<ul>
+<li>
+<p><a href="http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex">SageTeX</a> allows code for the Sage
+  mathematics software to be executed from within a \LaTeX\ document.</p>
+</li>
+<li>
+<p>Martin R. Ehmsen's <a href="http://www.ctan.org/pkg/python"><code>python.sty</code></a> provides a very basic method of
+  executing Python code from within a LaTeX document.</p>
+</li>
+<li>
+<p><a href="http://elec.otago.ac.nz/w/index.php/SympyTeX">SympyTeX</a> allows more sophisticated Python execution, and
+  is largely based on a subset of SageTeX.</p>
+</li>
+<li>
+<p><a href="http://www.luatex.org/">LuaTeX</a> extends the pdfTeX engine to provide Lua as an embedded scripting
+  language, and as a result yields tight, low-level Lua integration.</p>
+</li>
+</ul>
+<p>LuaTeX is one of the most interesting projects in this field as it represents an attempt to provide a
+  close coupling of a real programming language with LaTeX. Unfortunately, that language is Lua, a language
+  that (like Go btw) believes that Unicode strings should be stored as UTF-8 bytes. Equally unfortunately,
+  LuaTeX uses pdfTeX, which can't compare to XeLaTeX when it comes to using custom TTF/OTF fonts.</p>
+<h2 id="sample-command-lines">Sample Command Lines</h2>
+<p>To make it so you can put a simple <code>\usepackage{cxltx}</code> inside your <code>tex</code> files, do (on OSX)</p>
+<pre><code>cd ~/Library/texmf/tex/latex
+ln -s route/to/cxltx cxltx
+</code></pre>
+<p>This link 'publishes' CXLTX to <code>kpathsea</code>, TeX's file search tool.</p>
+<p>Here is what i do to build <code>cxltx/cxltx-manual.pdf</code>:</p>
+<p><strong>(1)</strong> use <a href="http://http://johnmacfarlane.net/pandoc">Pandoc</a> to convert <code>README.md</code> to <code>README.tex</code>:</p>
+<pre><code>pandoc -o cxltx/doc/README.tex cxltx/README.md
+</code></pre>
+<p><strong>(2)</strong> copy the <code>aux</code> file from the prvious to preserve its data for CXLTX to see:</p>
+<pre><code>cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
+</code></pre>
+<p><strong>(3)</strong> compile <code>cxltx-manual.tex</code> to <code>cxltx-manual.pdf</code>:</p>
+<pre><code># --enable-write18  allows to access external programs form within TeX#
+# --halt-on-error   is a convenience so i don't have to type x on each TeX error
+# --recorder        needed by the `currfile` package to get absolute routes
+
+xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder \
+  cxltx/doc/cxltx-manual.tex
+</code></pre>
+<p><strong>(4)</strong> move the pdf file to its target location:</p>
+<pre><code>mv cxltx/doc/cxltx-manual.pdf cxltx
+</code></pre>
+<h2 id="useful-links">Useful Links</h2>
+<p>http://www.ctan.org/tex-archive/macros/latex/contrib/perltex</p>
+<p>http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf</p>
+<p>http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf</p>
+<p>https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf</p></body></html>

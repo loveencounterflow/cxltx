@@ -205,7 +205,7 @@ Here is what i do to build `cxltx/cxltx-manual.pdf`:
 
     pandoc -o cxltx/doc/README.tex cxltx/README.md
 
-**(2)** copy the `aux` file from the prvious to preserve its data for CXLTX to see:
+**(2)** copy the `aux` file from the previous TeX compilation step to preserve its data for CXLTX to see:
 
     cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
 

@@ -291,35 +291,37 @@ tool.
 
 Here is what i do to build \texttt{cxltx/cxltx-manual.pdf}:
 
-\begin{enumerate}
-\def\labelenumi{(\arabic{enumi})}
-\item
-  use pandoc to convert README.me to README.tex:
+\textbf{(1)} use \href{http://http://johnmacfarlane.net/pandoc}{Pandoc}
+to convert \texttt{README.md} to \texttt{README.tex}:
 
-  pandoc -o cxltx/doc/README.tex cxltx/README.md
-\item
-  copy the \texttt{aux} file from the prvious to preserve its data for
-  CXLTX to see:
+\begin{verbatim}
+pandoc -o cxltx/doc/README.tex cxltx/README.md
+\end{verbatim}
 
-  cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
-\item
-  compile cxltx-manual.tex to cxltx-manual.pdf
+\textbf{(2)} copy the \texttt{aux} file from the previous TeX
+compilation step to preserve its data for CXLTX to see:
 
-  \section{--enable-write18 allows to access external programs form
-  within
-  TeX}\label{enable-write18-allows-to-access-external-programs-form-within-tex}
+\begin{verbatim}
+cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
+\end{verbatim}
 
-  \section{--halt-on-error is a convenience so i don't have to type x on
-  each TeX
-  error}\label{halt-on-error-is-a-convenience-so-i-dont-have-to-type-x-on-each-tex-error}
+\textbf{(3)} compile \texttt{cxltx-manual.tex} to
+\texttt{cxltx-manual.pdf}:
 
-  xelatex --output-directory cxltx/doc --halt-on-error --enable-write18
+\begin{verbatim}
+# --enable-write18  allows to access external programs form within TeX#
+# --halt-on-error   is a convenience so i don't have to type x on each TeX error
+# --recorder        needed by the `currfile` package to get absolute routes
+
+xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder \
   cxltx/doc/cxltx-manual.tex
-\item
-  move the pdf file to its target location:
+\end{verbatim}
 
-  mv cxltx/doc/cxltx-manual.pdf cxltx
-\end{enumerate}
+\textbf{(4)} move the pdf file to its target location:
+
+\begin{verbatim}
+mv cxltx/doc/cxltx-manual.pdf cxltx
+\end{verbatim}
 
 \subsection{Useful Links}\label{useful-links}
 
