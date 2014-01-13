@@ -171,15 +171,17 @@
   \urlescapeALPHA{#5}%
   \exec{curl --silent --show-error #1 #2/#3/#4/\urlescapecurrent}}
 
+
 \newcommand{\curlEscapeBETA}[5][]{%
   \begingroup%
-  \urlescapeALPHA{#3}%
-  \let\three=\urlescapecurrent%
   \urlescapeALPHA{#5}%
   \let\five=\urlescapecurrent%
-  *\three*\five*
-  % \exec{curl --silent --show-error #1 #2/\three/#4/\five}%
+  % kludge:
+  \StrSubstitute{\currfileabsdir}{/}{\%2F}[\three]
+  \exec{curl --silent --show-error #1 #2/\three/#4/\five}%
   \endgroup}
+
+\edef\cfad{\currfileabsdir}
 
 % ----------------------------------------------------------------------------------------------------------
 %

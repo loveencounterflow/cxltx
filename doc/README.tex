@@ -1,3 +1,6 @@
+\textbf{Att.} this part of the docs is only partially up to date; see
+\texttt{doc/examples.tex} and \texttt{xltx-manual.pdf} for working code.
+
 \section{C(offee)X(e)L(a)T(e)X}\label{coffeexelatex}
 
 \subsection{What is it? And Why?}\label{what-is-it-and-why}
@@ -201,19 +204,6 @@ littered with ugly
 tags and circumlocutorily reified calls to JS. This is the state of
 affairs of PerlTeX / CoffeeXeLaTeX, and it is definitely a programming
 model begging to be improved.
-
-\subsection{Good to Know}\label{good-to-know}
-
-The
-\href{http://mirror.unl.edu/ctan/macros/latex/contrib/perltex/perltex.pdf}{PerlTeX
-Manual} warns users that ``\texttt{perltex.pl} may hang if LaTeX exits
-right before the final pipe communication'', but unfortunately says
-nothing about the circumstances leading to such a condition nor how to
-avoid them. For the time being, users of PerlTeX and, by extension,
-CoffeeXeLaTeX have to live with the fact that every so often, a running
-LaTeX job will just stop doing anything, typically displaying something
-like \texttt{(./example.pipe)} as last line of output. I then routinely
-hit \texttt{Ctrl-C} and restart the process, keeping fingers crossed.
 
 \subsection{Related Work}\label{related-work}
 
