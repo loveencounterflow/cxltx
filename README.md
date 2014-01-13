@@ -201,15 +201,15 @@ This link 'publishes' CXLTX to `kpathsea`, TeX's file search tool.
 
 Here is what i do to build `cxltx/cxltx-manual.pdf`:
 
-(1) use pandoc to convert README.me to README.tex:
+**(1)** use [Pandoc](http://http://johnmacfarlane.net/pandoc) to convert `README.md` to `README.tex`:
 
     pandoc -o cxltx/doc/README.tex cxltx/README.md
 
-(2) copy the `aux` file from the prvious to preserve its data for CXLTX to see:
+**(2)** copy the `aux` file from the prvious to preserve its data for CXLTX to see:
 
     cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
 
-(3) compile cxltx-manual.tex to cxltx-manual.pdf
+**(3)** compile `cxltx-manual.tex` to `cxltx-manual.pdf`:
 
     # --enable-write18  allows to access external programs form within TeX#
     # --halt-on-error   is a convenience so i don't have to type x on each TeX error
@@ -218,7 +218,7 @@ Here is what i do to build `cxltx/cxltx-manual.pdf`:
     xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder \
       cxltx/doc/cxltx-manual.tex
 
-(4) move the pdf file to its target location:
+**(4)** move the pdf file to its target location:
 
     mv cxltx/doc/cxltx-manual.pdf cxltx
 
