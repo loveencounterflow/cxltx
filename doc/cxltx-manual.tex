@@ -1,0 +1,54 @@
+
+% ##########################################################################################################
+\documentclass[a4paper]{article}
+\usepackage{lipsum}
+\usepackage[columnwise]{lineno}
+\usepackage{coffeexelatex}
+\usepackage[top=15mm]{geometry}
+% \usepackage[headheight=10mm]{geometry}
+\usepackage{leading}
+\usepackage{parskip}
+% \usepackage{etoolbox}
+% \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
+\usepackage{xeCJK}
+\setCJKmainfont{Sun-ExtA}
+
+\newenvironment{jzrplain}{%
+% ..........................................................................................................
+% begin
+  % thx to http://www.tug.org/TUGboat/tb28-1/tb88bazargan.pdf for the next two settings:
+  \lineskiplimit=-10pt%
+  \lineskip=0pt%
+  \topskip=0pt%
+  \setlength{\parskip}{4mm}%
+  \setlength{\parindent}{0mm}%
+  % \fontsize{\nominalfontsize}{\gridstrutlength}%
+  \leading{4mm}
+  % \makeatletter
+  % \preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
+  % \makeatother
+  }%
+% end
+  {\par}
+
+
+\renewcommand{\CXLTXmainroute}{../../lib/main}
+\renewcommand{\CXLTXtempoutroute}{/tmp/CXLTXtempout.tex}
+\renewcommand{\CXLTXtemperrroute}{/tmp/CXLTXtemperr.tex}
+\renewcommand{\CXLTXhost}{localhost:8910}
+% \newcommand{\noderun}[2]{\noderunscript{\CXLTXmainroute}{#1}{#2}}
+
+% ##########################################################################################################
+\begin{document}
+\begin{jzrplain}
+
+\CXLTX
+
+\input{README.tex}
+
+\input{examples.tex}
+
+
+% ##########################################################################################################
+\end{jzrplain}
+\end{document}

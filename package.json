@@ -1,0 +1,32 @@
+{
+  "name": "cxltx",
+  "version": "0.0.1",
+  "description": "CXLTX (CoffeeXeLaTeX) brings CoffeeScript to (Xe)(La)TeX documents. Fully general approach; use your own favorite language.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/cxltx.git"
+  },
+  "dependencies": {
+    "coffee-script": "~1.6.3",
+    "line-by-line": "~0.1.1",
+    "express": "~3.4.7",
+    "coffeenode-types": "~0.1.0",
+    "coffeenode-trm": "~0.1.13"
+  },
+  "keywords": [
+    "tex",
+    "latex",
+    "coffeescript",
+    "xetex",
+    "xelatex"
+  ],
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/cxltx/issues"
+  }
+}

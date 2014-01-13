@@ -1,0 +1,216 @@
+% \linenumbers
+
+
+\clearpage%\mbox{}\clearpage
+
+\section{Introduction}\label{intro}
+% \lipsum[1]
+
+(1) The original technique to execute an arbitrary command:
+\begin{verbatim}
+\immediate\write18{node
+  "\CXLTXmainroute"
+  "\currfilepath"
+  "helo"
+  "readers (one)"
+  > /tmp/temp.dat}\input{/tmp/temp.dat}
+\end{verbatim}
+
+(2) With ugly details largely hidden, the \verb#\exec{}# command is still fully general:
+\begin{verbatim}
+\exec{node
+  "\CXLTXmainroute"
+  "\currfilepath"
+  "helo"
+  "readers (two)"}
+\end{verbatim}
+
+(3) \verb#\noderunscript{}# will execute NodeJS code that adheres to the call convention established by
+\CXLTX:
+\begin{verbatim}
+\noderunscript
+  {\CXLTXmainroute}
+  {\currfilepath}
+  {helo}
+  {readers (three)}
+\end{verbatim}
+
+(4) Like the previous example, but with standard values assumed as shown above. This is the form that you
+will want to use most of the time:
+\begin{verbatim}
+\noderun{helo}{readers (four)}
+\end{verbatim}
+
+
+{\textbf{Outputs:}}
+
+\immediate\write18{node "\CXLTXmainroute" "\currfilepath" "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
+
+\exec{node "\CXLTXmainroute" "\currfilepath" "helo" "readers (two)"}
+
+\noderunscript{\CXLTXmainroute}{\currfilepath}{helo}{readers (three)}
+
+\noderun{helo}{readers (four)}
+
+% ==========================================================================================================
+\clearpage\section{Configuration}\label{config}
+
+To use \CXLTX, put
+\begin{verbatim}
+\usepackage{coffeexelatex}
+\end{verbatim}
+into the header section of your \LaTeX\ file.
+
+You may also want to include these lines in your \LaTeX\ document; these define, respectively, the route
+to the \CXLTX\ executable (\verb#coffeexelatex/lib/main.js#) and the temporary file that is used to communicate
+between \TeX\ and your scripts (relative routes are resolved with respect to the current working directory,
+so if you set a relative route, you must always run \TeX\ from within the same directory):
+\begin{verbatim}
+\renewcommand{\CXLTXmainroute}{../../lib/main}
+\renewcommand{\CXLTXtempoutroute}{/tmp/coffeexelatex.tex}
+\end{verbatim}
+
+
+% % ==========================================================================================================
+% \clearpage\section{Geometry}\label{geo}
+
+% % Write arbitrary text into the aux file:
+% \auxc{this line goes to the aux file}
+
+% % Write geometry data into the aux file:
+% \auxgeo
+
+% Use geometry data from aux file to render a table of layout dimensions into the document;
+% note the we could have used the \verb#\auxgeo# command anywhere in the document and that
+% this currently only works for documents with a single, constant layout.
+
+% Also note we're using a dash instead of an underscore here—in \TeX, underscores are special, so
+% we conveniently allow dashes to make things easier. The \CXLTX\ command \verb#show-geometry# does
+% not take arguments, which is why the second pair of braces has been left empty:
+
+% {\textbf{Command:}}
+% \begin{verbatim}
+% \noderun{show-geometry}{}
+% \end{verbatim}
+
+% {\textbf{Output:}}
+
+% \noderun{show-geometry}{}
+
+% ==========================================================================================================
+\clearpage\section{Character Escaping}\label{esc}
+
+The \CXLTX\ command \verb#show-special-chrs# demonstrates that it is easy to include \TeX\ special characters
+in the return value. The simple rule is that whenever the output of a command is meant to be understood
+literally, it should be \verb#@escape#d:
+
+{\textbf{Command:}}
+
+\begin{verbatim}
+\noderun{show-special-chrs}{}
+\end{verbatim}
+
+{\textbf{Output:}}
+
+\noderun{show-special-chrs}{}
+
+
+% ==========================================================================================================
+\clearpage\section{The \texttt{aux} Object}\label{aux}
+
+
+
+% ----------------------------------------------------------------------------------------------------------
+\subsection{Labels}\label{labels}
+
+\CXLTX\ will try and collect all labels from the \verb#*.aux# file associated with the current job; from
+inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
+
+{\textbf{Command:}}
+
+\begin{verbatim}
+\noderun{show-aux}{}
+\end{verbatim}
+
+{\textbf{Output:}}
+
+{\fontsize{3mm}{3mm}\noderun{show-aux}{}}
+
+
+% ----------------------------------------------------------------------------------------------------------
+\subsection{Evaluating Expressions}\label{evalcs}
+
+The commands \verb#\evalcs{}# and \verb#\evaljs{}# allow you to evaluate an arbitrary self-contained
+expression, written either in CoffeeScript or in JavaScript:
+
+{\textbf{Command:}}
+
+\begin{verbatim}
+$23 + 65 * 123 = \evalcs{23 + 65 * 123}$
+\end{verbatim}
+
+{\textbf{Output:}}
+
+$23 + 65 * 123 = \evalcs{23 + 65 * 123}$
+
+
+% ==========================================================================================================
+\clearpage\section{Curl}\label{curl}
+\begin{verbatim}
+\curlRaw{127.0.0.1:8910/foobar.tex/helo/friends}
+\end{verbatim}
+\curlRaw{127.0.0.1:8910/foobar.tex/helo/friends}
+
+
+
+% ----------------------------------------------------------------------------------------------------------
+\subsection{Unicode}\label{unicode}
+
+\begin{verbatim}
+\curl{helo}{黎永強}
+\end{verbatim}
+
+\curl{helo}{黎永強}
+
+\begin{verbatim}
+\curl{helo}{äöüÄÖÜß}
+\end{verbatim}
+
+\curl{helo}{äöüÄÖÜß}
+
+% ----------------------------------------------------------------------------------------------------------
+\subsection{The URL environment}\label{urlenv}
+
+Typing URLs in \LaTeX\ can be quite a chore, given the number of active and otherwise `special' characters
+to take care of: not only does \TeX\ itself define some special characters, not only do the RFCs that govern
+URL syntax consider 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 special—when we communicate with our \CXLTX\ server,
+we do so by executing a \verb#curl ...# command via the OS shell (normally \verb#sh#), which again has its own
+rich set of specials. In order to alleviate the burden on the casual user, we define a new environment,
+`URL`, that somewhat simplifies writing (parts of) URLs:
+\begin{verbatim}
+\begin{URL}
+\curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+\end{URL}
+\end{verbatim}
+\begin{URL}
+\curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+\end{URL}
+
+
+
+
+% \begin{verbatim}
+% \begin{URL}
+% \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% \end{URL}
+% \end{verbatim}
+% \begin{URL}
+% \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% \end{URL}
+
+% \usepackage{textcomp} \textquotesingle \textasciigrave
+
+
+% \CXLTXtemperrroute\ is \CXLTXiffileempty{\CXLTXtemperrroute}{indeed}{not} empty.
+% \CXLTXtempoutroute\ is \CXLTXiffileempty{\CXLTXtempoutroute}{indeed}{not} empty.
+

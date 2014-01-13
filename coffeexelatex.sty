@@ -1,0 +1,402 @@
+
+\ProvidesPackage{coffeexelatex}
+
+% ==========================================================================================================
+% USEFUL PACKAGES
+% ----------------------------------------------------------------------------------------------------------
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\usepackage{fixltx2e}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{currfile}
+\usepackage{xltxtra}
+\usepackage{xstring}
+% \usepackage{catchfile}
+\usepackage{verbatim}
+\usepackage{actcodes} % for `\MakeOther`
+% \input binhex
+% turn a character into its Unicode hexadecimal CID:
+% \newcounter{x}
+% \setcounter{x}{`\ろ}\nhex{2}{\thex}
+% \usepackage{geometry}
+% \usepackage{fp}
+% \usepackage{fltpoint}
+
+% ##########################################################################################################
+\makeatletter
+
+% ==========================================================================================================
+% LOGO
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\CXLTX}{\textit{Coffee}\XeLaTeX}
+
+
+% ==========================================================================================================
+% ACCESS POINTS
+% ----------------------------------------------------------------------------------------------------------
+% These commands define (1) the routes to the `coffeexelatex/src/main.js` JavaScript module, (2) the routes
+% to the temporary files that capture `stdout` and `stderr` of command line invocations, and (3) the host
+% name and port where the CoffeeXeLaTeX server is listening.
+%
+% The route setup here works in case you want to compile one of the examples from the CoffeeXeLaTeX distro
+% from within their respective directories. In the general case, you will have to adjust the path so NodeJS
+% knows where to find the script; use something along the lines of
+%
+%     \renewcommand{\CXLTXmainroute}{route/to/main}
+%
+% in your `.tex` document to do that.
+%
+\newcommand{\CXLTXmainroute}{../../lib/main}
+\newcommand{\CXLTXtempoutroute}{/tmp/CXLTXtempout.tex}
+\newcommand{\CXLTXtemperrroute}{/tmp/CXLTXtemperr.tex}
+\newcommand{\CXLTXhost}{localhost:8910}
+
+% \catcode27=11
+% ==========================================================================================================
+% HELPERS
+% ----------------------------------------------------------------------------------------------------------
+% Prints out errors
+\newcommand{\CXLTXshowoutputanderrors}{%
+  \CXLTXiffileempty{\CXLTXtempoutroute}%
+    {}%
+    {\input{\CXLTXtempoutroute}}
+  \CXLTXiffileempty{\CXLTXtemperrroute}%
+    {}%
+    {{\color{red}Errors have occurred:%
+      \verbatiminput{\CXLTXtemperrroute}}}}
+
+% ----------------------------------------------------------------------------------------------------------
+% Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
+%
+% \makeatletter
+\newcommand*\CXLTXiffileempty[3]{%
+    \openin\@inputcheck#1 %
+    \ifeof\@inputcheck
+        #2\relax
+    \else
+        \read\@inputcheck to \reserved@a
+        \ifeof\@inputcheck
+            % \typeout{#1 empty}%
+            #2\relax
+        \else
+            #3\relax
+        \fi
+    \fi
+    \closein\@inputcheck
+}
+% \makeatother
+% test for empty arguments:
+% \newcommand{\testempty}[2][]{%
+% \if\relax\detokenize{#2}\relax%
+%      no optional argument given%
+%    \else%
+%      optional argument was: #2%
+%    \fi%
+% }
+
+
+
+% ==========================================================================================================
+% CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\exec}[1]{%
+  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
+  \immediate\write18{\CXLTXlastcommand}\input{\CXLTXtempoutroute}}
+
+% % ----------------------------------------------------------------------------------------------------------
+% \newcommand{\execdebug}[1]{%
+%   \immediate\write18{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}\CXLTXshowoutputanderrors}
+
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\execdebug}[1]{%
+  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
+  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
+  \immediate\write18{\CXLTXlastcommand}\CXLTXshowoutputanderrors}
+
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\evaljs}[1]{\exec{node -p "#1"}}
+\newcommand{\evalcs}[1]{\exec{coffee -e "console.log #1"}}
+
+% ----------------------------------------------------------------------------------------------------------
+% A full CoffeeXeLaTeX invocation with `\noderunscript` takes four parameters:
+%
+% * the route to the dispatcher script;
+% * the route to the current TeX script, relative to the CWD, as produced by `currfile/currfilepath`;
+% * the name of the method to execute;
+% * a list of comma-separated arguments.
+%
+% The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
+% LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
+%
+\newcommand{\noderunscript}[4]{\exec{node "#1" "#2" "#3" "#4"}}
+
+% ----------------------------------------------------------------------------------------------------------
+% A simplified CoffeeXeLaTeX invocation with `\noderun` takes two parameters:
+%
+% * the name of the method to execute;
+% * a list of comma-separated arguments.
+%
+% The route to the dispatcher will be taken from the `\CXLTXmainroute` macro.
+%
+\newcommand{\noderun}[2]{\noderunscript{\CXLTXmainroute}{\currfilepath}{#1}{#2}}
+
+
+% ==========================================================================================================
+% CORE COMMANDS (HTTP MODEL)
+% ----------------------------------------------------------------------------------------------------------
+% `curlRaw` takes up to two arguments: the first optional one specifies options to cURL; the second,
+% mandatory one should be a URL to retrieve. The command uses `exec` to run
+% `curl --silent --show-error #1 #2`; the implicit options facilitate error handling.
+%
+% Arguments:
+%   #1: cURL options (optional)
+%   #2: full HTTP route of request; the `http://` part may be omitted
+%
+\newcommand{\curlRaw}[2][]{%
+  \execdebug{curl --silent --show-error #1 #2}}
+
+% ----------------------------------------------------------------------------------------------------------
+%
+% Arguments:
+%   #1: cURL options (optional)
+%   #2: host with port (e.g. `127.0.0.1:8910`)
+%   #3: route to `tex` file (used to retrieve `aux` file)
+%   #4: command
+%   #5: arguments
+%
+\newcommand{\curlEscape}[5][]{%
+  \urlescapeALPHA{#5}%
+  \exec{curl --silent --show-error #1 #2/#3/#4/\urlescapecurrent}}
+
+% ----------------------------------------------------------------------------------------------------------
+%
+% Arguments:
+%   #1: command
+%   #2: arguments
+%
+\newcommand{\curl}[2]{%
+  \curlEscape{\CXLTXhost}{\currfilepath}{#1}{#2}}
+% \newcommand{\curl}[3][]{%
+%   \curlEscape[#3]{\CXLTXhost}{\currfilepath}{/#1}/{#2}}
+
+
+% ----------------------------------------------------------------------------------------------------------
+% To make writing out URLs in TeX a bit easier, we define the `\begin{URL} ... \end{URL}` environment:
+% To avoid a name clash with the `hyperref` package, we use `URL` instead of `url`.
+\newenvironment{URL}%
+  % ........................................................................................................
+  {\begingroup%
+  % \endlinechar=-1
+  \MakeOther\~
+  \MakeOther\&
+  \MakeOther\#
+  \catcode`\%=12
+  \catcode`\$=12
+  \catcode`\^=12
+  \catcode`\~=12
+  }{\endgroup}
+
+  % These are not going to work:
+  % \catcode`\&=12
+  % \catcode`\#=12
+  % \catcode`\{=12
+  % \catcode`\}=12
+  % \catcode`\`=12
+  % ... more critical characters ...
+
+% \newcommand{UUU}{%
+%   \begingroup%
+%   % \catcode`\|=\active
+%   \scantokens\expandafter{#1\empty}\endgroup}
+
+\def\UUU#1{%
+  \begingroup
+%   % \endlinechar=-1
+  \catcode`\%=12
+  \catcode`\$=12
+  \catcode`\^=12
+  \catcode`\~=12
+%   % These are not going to work:
+%   % \catcode`\&=12
+%   % \catcode`\#=12
+%   % \catcode`\{=12
+%   % \catcode`\}=12
+%   % \catcode`\`=12
+  % \catcode`\|=\active
+  \scantokens\expandafter{#1\empty}%
+  \endgroup}
+% ==========================================================================================================
+% WRITING TO THE `.AUX` FILE
+% ----------------------------------------------------------------------------------------------------------
+% The `\aux*{}` commands write a line to the `*.aux` file to enable messaging between LaTeX and
+% NodeJS outside of command execution. Lines produced by `\auxc{}` start with a `% ` (percent, blank) so
+% they will be ignored by LaTeX. Lines produced by `\auxcs{}` start with a `% coffee ` (percent, blank,
+% literal 'coffee', blank) and will be parsed as CoffeeScript.
+%
+% Observe that if the argument to one of the `\aux*{}` commands should include newlines, then TeX will
+% 'fold' those lines back into a single line, so your CoffeeScript code should be written as though on a
+% single line. To clarify, always end list elements and object name / value pairs with a comma. This will
+% cause a syntax error:
+%
+%     \auxcs{
+%       "we are on page": \thepage
+%       "just a value": 43 }
+%
+% but this is OK:
+%
+%     \auxcs{
+%       "we are on page": \thepage,
+%       "just a value": 43 }
+%
+% The CoffeeXeLaTeX macro has a variable `@aux` that contains all the values transported via the `*.aux`
+% file. When you put an unnamed POD literal inside an `\auxcs{}` command, its name / value pairs will be
+% used to populate the `@aux` variable.
+%
+% The `\auxpod{}` command takes two arguments, a name and a CoffeeScript object / 'plain old dictionary'
+% (POD) literal. It simplifies the creation of namespaces in `@aux`, so instead of
+%
+%     \auxcs{ foo: \{ bar: 'baz' \} }
+%
+% you can simply write
+%
+%     \auxpod{foo}{ bar: 'baz' }
+%
+% to effectively do `@aux[ 'foo' ] = { bar: 'baz' }`. Note that we currently simply overwrite existing
+% entries in `@aux` instead of updating them; this may change in the future. The `\auxgeo{}` command
+% is a real-world example for `\auxpod{}` usage.
+%
+% thx to http://tex.stackexchange.com/a/115933/28067 for the `\write\@auxout` part.
+% \makeatletter
+\catcode`\%=11
+\newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
+\newcommand{\auxc}[1]{\immediate\write\@auxout{^^25 #1}}
+\newcommand{\auxcs}[1]{\immediate\write\@auxout{^^25 coffee #1}}
+\newcommand{\auxpod}[2]{\immediate\write\@auxout{^^25 coffee #1: \{ #2 \}}}
+\catcode`\%=14
+% \makeatother
+
+% ----------------------------------------------------------------------------------------------------------
+% The `\auxgeo` command may be called after `\begin{document}`; it writes a number of raw layout dimensions
+% into the `*.aux` file that are then converted to convenient millimeters. Note there is currently no
+% way to handle intermittent document format changes; as it stands, `auxgeo{}` will only work as intended
+% when the layout stays the same for all pages where its data is requested.
+%
+% Not that in order to use this command, you must have `\usepackage{geometry}` in your preamble. We can't do
+% that for you since you likely will want to set your own page layout options.
+%
+\newcommand*\getlength[1]{\number#1}
+\newcommand{\auxgeo}{\auxpod{geometry}{
+  % top:            \the\top,
+  % left:           \the\left,
+  % inner:          \the\inner,
+  % right:          \the\right,
+  % outer:          \the\outer,
+  % bottom:         \the\bottom,
+  % width:          \the\width,
+  % height:         \the\height,
+  paperwidth:     \getlength{\paperwidth},
+  paperheight:    \getlength{\paperheight},
+  textwidth:      \getlength{\textwidth},
+  textheight:     \getlength{\textheight},
+  headheight:     \getlength{\headheight},
+  headsep:        \getlength{\headsep},
+  footskip:       \getlength{\footskip},
+  marginparsep:   \getlength{\marginparsep},
+  marginparwidth: \getlength{\marginparwidth},
+  voffset:        \getlength{\voffset},
+  topmargin:      \getlength{\topmargin},
+  }}
+
+
+% ==========================================================================================================
+% WRITING TO THE `.AUX` FILE
+% ----------------------------------------------------------------------------------------------------------
+% The `\urlescape` command escapes a string so it can be safely used as an argument e.g. to the command line
+% `curl` command. The characters deemed as 'unsafe' here have been gleaned from
+% http://perishablepress.com/stop-using-unsafe-characters-in-urls/; in practice the list could probably be
+% shortened somewhat.
+%
+% NB: the first version of `\urlescape` did not coöperate all too well with `\write18` (because `\write`);
+% it has been replaced by the version further down.
+%
+% thx to http://tex.stackexchange.com/a/153217/28067 for this beautiful solution
+% % \makeatletter
+% \newcommand{\@urlescapestep}[2]{%
+%   \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
+%   }
+% \newcommand{\urlescape}[1]{{%
+%   \noexpandarg % suppress expansions made by xstring
+%   \StrSubstitute{#1}{\%}{\%25}[\x]% first step
+%   \@urlescapestep{/}{\%2F}%
+%   \@urlescapestep{\&}{\%26}%
+%   \@urlescapestep{ }{\%20}%
+%   \@urlescapestep{\$}{\%24}%
+%   \@urlescapestep{+}{\%2b}%
+%   \@urlescapestep{,}{\%2c}%
+%   \@urlescapestep{:}{\%3a}%
+%   \@urlescapestep{;}{\%3b}%
+%   \@urlescapestep{?}{\%3f}%
+%   \@urlescapestep{@}{\%40}%
+%   \@urlescapestep{"}{\%22}%
+%   \@urlescapestep{<}{\%3c}%
+%   \@urlescapestep{>}{\%3e}%
+%   \@urlescapestep{\#}{\%23}%
+%   \@urlescapestep{\{}{\%7b}%
+%   \@urlescapestep{\}}{\%7d}%
+%   \@urlescapestep{|}{\%7c}%
+%   \@urlescapestep{\^}{\%5e}%
+%   \@urlescapestep{\~}{\%7e}%
+%   \@urlescapestep{[}{\%5b}%
+%   \@urlescapestep{]}{\%5d}%
+%   \@urlescapestep{\`}{\%60}%
+%   \x}}
+% % \makeatother
+% ..........................................................................................................
+% alternative implementation of `\urlescape` as per
+% http://tex.stackexchange.com/a/153539/28067
+%
+% In the following group endlines do not produce spaces
+% and `%' becomes a printable character
+\newcommand{\urlescapestep}[2]{%
+  \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
+  }
+\begingroup
+\endlinechar=-1
+\catcode`\%=12
+\MakeOther\`
+\gdef\urlescapeALPHA#1{{
+  \noexpandarg
+  \StrSubstitute{#1}{%}{%25}[\x]
+  \urlescapestep{/}{%2F}
+  \urlescapestep{\&}{%26}
+  \urlescapestep{ }{%20}
+  \urlescapestep{\$}{%24}
+  \urlescapestep{+}{%2b}
+  \urlescapestep{,}{%2c}
+  \urlescapestep{:}{%3a}
+  \urlescapestep{;}{%3b}
+  \urlescapestep{?}{%3f}
+  \urlescapestep{@}{%40}
+  \urlescapestep{"}{%22}
+  \urlescapestep{<}{%3c}
+  \urlescapestep{>}{%3e}
+  \urlescapestep{\#}{%23}
+  \urlescapestep{\{}{%7b}
+  \urlescapestep{\}}{%7d}
+  \urlescapestep{|}{%7c}
+  \urlescapestep{\^}{%5e}
+  \urlescapestep{\~}{%7e}
+  \urlescapestep{[}{%5b}
+  \urlescapestep{]}{%5d}
+  \urlescapestep{`}{%60}
+  \urlescapestep{'}{%27}
+  \global\let\urlescapecurrent=\x}}
+\endgroup
+
+% ##########################################################################################################
+\makeatother
+
+
