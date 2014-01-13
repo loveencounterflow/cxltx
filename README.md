@@ -2,7 +2,7 @@
 
 # C(offee)X(e)L(a)T(e)X
 
-# C<span style='font-color:grey;'>offee</span>X(e)L(a)T(e)X
+# C<sub'>offee</sub>X(e)L(a)T(e)X
 
 ## What is it? And Why?
 
