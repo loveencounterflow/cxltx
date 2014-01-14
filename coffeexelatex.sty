@@ -28,9 +28,36 @@
 \makeatletter
 
 % ==========================================================================================================
-% LOGO
+% LOGOS
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\CXLTX}{\textit{Coffee}\XeLaTeX}
+% works with EB Garamond 12 Regular:
+\newcommand{\CXLTXlong}{\textit{C\kern-0.05emoff\kern-0.05eme\kern-0.05eme\kern-0.05em}\XeLaTeX}
+
+% \makeatletter
+\usepackage{relsize}%
+
+% fix the annoyingly narrow limit to largest allowed font size:
+\renewcommand\RSlargest{9999pt}%
+
+% works with LaTeX standard font (CM):
+\DeclareRobustCommand{\CXLTXstandard}{%
+{\raisebox{-0.1em}{\relsize{2}C}\kern-.75em\raisebox{0.2em}{{\relsize{-2}X}}}%
+\hspace{0.1em}L{\kern-.36em\raisebox{0.25em}{\relsize{-0.5}{T}}}\kern-.28emX}
+
+% works with EB Garamond 12 Regular and `relsize{8}`:
+\DeclareRobustCommand{\CXLTXebgaramondBig}{%
+{\raisebox{-0.1em}{\relsize{1.5}C}\kern-.58em\raisebox{0.12em}{{\relsize{-2}X}}}%
+\hspace{0.05em}L{\kern-.36em\raisebox{0.16em}{\relsize{-0.5}{T}}}\kern-.17emX}
+
+% works with EB Garamond 12 Regular in standard text size:
+\DeclareRobustCommand{\CXLTXebgaramondSmall}{%
+{\raisebox{-0.1em}{\relsize{1.5}C}\kern-.58em\raisebox{0.12em}{{\relsize{-1.5}X}}}%
+\hspace{0.05em}L{\kern-.36em\raisebox{0.25em}{\relsize{-0.5}{T}}}\kern-.1emX}
+
+% declare default logo to be used:
+% \def\CXLTX{\CXLTXstandard}
+\def\CXLTX{\CXLTXebgaramondSmall}
+% \makeatother
 
 
 % ==========================================================================================================
@@ -178,6 +205,7 @@
   \let\five=\urlescapecurrent%
   % kludge:
   \StrSubstitute{\currfileabsdir}{/}{\%2F}[\three]
+  \StrSubstitute{\three}{ }{\%20}[\three]
   \exec{curl --silent --show-error #1 #2/\three/#4/\five}%
   \endgroup}
 
@@ -219,27 +247,6 @@
   % \catcode`\`=12
   % ... more critical characters ...
 
-% \newcommand{UUU}{%
-%   \begingroup%
-%   % \catcode`\|=\active
-%   \scantokens\expandafter{#1\empty}\endgroup}
-
-\def\UUU#1{%
-  \begingroup
-%   % \endlinechar=-1
-  \catcode`\%=12
-  \catcode`\$=12
-  \catcode`\^=12
-  \catcode`\~=12
-%   % These are not going to work:
-%   % \catcode`\&=12
-%   % \catcode`\#=12
-%   % \catcode`\{=12
-%   % \catcode`\}=12
-%   % \catcode`\`=12
-  % \catcode`\|=\active
-  \scantokens\expandafter{#1\empty}%
-  \endgroup}
 % ==========================================================================================================
 % WRITING TO THE `.AUX` FILE
 % ----------------------------------------------------------------------------------------------------------
@@ -410,5 +417,6 @@
 
 % ##########################################################################################################
 \makeatother
+
 
 

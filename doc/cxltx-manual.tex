@@ -1,16 +1,30 @@
 
 % ##########################################################################################################
-\documentclass[a4paper]{article}
+\documentclass[a4paper,12pt]{article}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
 \usepackage{coffeexelatex}
-\usepackage[top=15mm]{geometry}
+\usepackage[
+left=40mm,
+right=30mm,
+top=15mm]{geometry}
 % \usepackage[headheight=10mm]{geometry}
 \usepackage{leading}
 \usepackage{parskip}
 % \usepackage{etoolbox}
 % \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
 \usepackage{xeCJK}
+\usepackage{fancyhdr}
+
+\newfontfamily\CXLTXboldfont[Scale=0.8]{Liberation Sans Narrow Bold}
+\setmainfont[
+Mapping=tex-text,
+BoldFont={Liberation Sans Narrow Bold}
+% BoldFont=\CXLTXboldfont
+% ItalicFont={Minion Pro Italic},
+% BoldItalicFont={Minion Pro Bold Italic}
+]{EB Garamond 12 Regular}
+
 \setCJKmainfont{Sun-ExtA}
 
 \newenvironment{jzrplain}{%
@@ -23,7 +37,7 @@
   \setlength{\parskip}{4mm}%
   \setlength{\parindent}{0mm}%
   % \fontsize{\nominalfontsize}{\gridstrutlength}%
-  \leading{4mm}
+  \leading{5mm}
   % \makeatletter
   % \preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
   % \makeatother
@@ -42,36 +56,36 @@
 \begin{document}
 \begin{jzrplain}
 
-\CXLTX
+\input{intro.tex}
 
 \input{README.tex}
 
 \input{examples.tex}
 
-% ----------------------------------------------------------------------------------------------------------
-\subsection{(testing)}
+% % ----------------------------------------------------------------------------------------------------------
+% \subsection{(testing)}
 
-\verb#\currfiledir#:  \currfiledir
+% \verb#\currfiledir#:  \currfiledir
 
-\verb#\currfilebase#: \currfilebase
+% \verb#\currfilebase#: \currfilebase
 
-\verb#\currfileext#:  \currfileext
+% \verb#\currfileext#:  \currfileext
 
-\verb#\currfilename#: \currfilename
+% \verb#\currfilename#: \currfilename
 
-\verb#\currfilepath#: \currfilepath
+% \verb#\currfilepath#: \currfilepath
 
-\verb#\currfileabsdir#:   \currfileabsdir
+% \verb#\currfileabsdir#:   \currfileabsdir
 
-\verb#\currfileabspath#:  \currfileabspath
+% \verb#\currfileabspath#:  \currfileabspath
 
-% \begin{URL}
-\curlBETA{helo}{foo/bar}
-% \end{URL}
+% % \begin{URL}
+% \curlBETA{helo}{foo/bar}
+% % \end{URL}
 
-\urlescapeALPHA{route/to/file}%
-\let\two=\urlescapecurrent%
-\two
+% \urlescapeALPHA{route/to/file}%
+% \let\two=\urlescapecurrent%
+% \two
 
 
 % ##########################################################################################################

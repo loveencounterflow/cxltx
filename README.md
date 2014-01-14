@@ -42,8 +42,11 @@ current TeX source.
 With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
 provided by TeXLive 2013 does not allow that. As much as i'd like to eliminate the somewhat unelegant
 temporary file (that brings one more possible point of failure to the equation; remember to
-`\renewcommand{\coffeexelatextemproute}{some/temp/location.tex}` where deemed necessary), it also has one
-advantage: in case TeX should halt execution becuase of an error, and that error is due to a script
+
+    \renewcommand{\coffeexelatextemproute}{some/temp/location.tex}
+
+where deemed necessary), it also has one
+advantage: in case TeX should halt execution because of an error, and that error is due to a script
 with faulty output, you can conveniently review the problematic source by opening the temporary file in
 your text editor.
 
@@ -148,14 +151,14 @@ If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the followin
 ## Related Work
 
 * [PyTeX](http://www.pytex.org/) (also dubbed QATeX) is a laudable effort that has, sadly, been stalling for around 11 years as
-  of this writing (January 2014), so about everything of it is outdated. Their approach is apparently the
-  opposite of what we do in CXLTX: they run TeX in daemon mode from Python; we have NodeJS start a server
-  that listens to our TeX. Just for giggles, a quote from the above page: "XML is hard work to key by hand.
+  of this writing (January 2014), so it is likely pretty much outdated. PyTeX's approach is apparently the
+  opposite of what we do in CXLTX: they run TeX in daemon mode from Python, where we have NodeJS start a server
+  that listens to our independently running TeX.—Just for giggles, a quote from the above page: "XML is hard work to key by hand.
   *It lacks the mark-up minimization that SGML has*" (my emphasis). Well, eleven years is a long time.
 
 * [PythonTeX](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python
   together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
-  capabilities (which are ... not really that great) and how to print out integrals using SymPy, and fail
+  capabilities (which are ... not really that great) and how to print out integrals using SymPy; sadly, they fail
   to provide sample code of interest to a wider audience. Their copious 128-page manual only dwells for one and a half page on the topic
   of 'how do i use this stuff', and that only to show off more SymPy capabilities. None of their sample
   code *needs* PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
