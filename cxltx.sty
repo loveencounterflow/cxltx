@@ -65,19 +65,19 @@
 % ----------------------------------------------------------------------------------------------------------
 % These commands define (1) the routes to the `coffeexelatex/src/main.js` JavaScript module, (2) the routes
 % to the temporary files that capture `stdout` and `stderr` of command line invocations, and (3) the host
-% name and port where the CoffeeXeLaTeX server is listening.
+% name and port where the CXLTX server is listening.
 %
-% The route setup here works in case you want to compile one of the examples from the CoffeeXeLaTeX distro
+% The route setup here works in case you want to compile one of the examples from the CXLTX distro
 % from within their respective directories. In the general case, you will have to adjust the path so NodeJS
 % knows where to find the script; use something along the lines of
 %
-%     \renewcommand{\CXLTXmainroute}{route/to/main}
+%     \renewcommand{\CXLTXmainRoute}{route/to/main}
 %
 % in your `.tex` document to do that.
 %
-\newcommand{\CXLTXmainroute}{../../lib/main}
-\newcommand{\CXLTXtempoutroute}{/tmp/CXLTXtempout.tex}
-\newcommand{\CXLTXtemperrroute}{/tmp/CXLTXtemperr.tex}
+\newcommand{\CXLTXmainRoute}{../../lib/main}
+\newcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
+\newcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \newcommand{\CXLTXhost}{localhost:8910}
 
 % \catcode27=11
@@ -85,20 +85,20 @@
 % HELPERS
 % ----------------------------------------------------------------------------------------------------------
 % Prints out errors
-\newcommand{\CXLTXshowoutputanderrors}{%
-  \CXLTXiffileempty{\CXLTXtempoutroute}%
+\newcommand{\CXLTXshowOutputAndErrors}{%
+  \CXLTXifFileEmpty{\CXLTXtempOutRoute}%
     {}%
-    {\input{\CXLTXtempoutroute}}
-  \CXLTXiffileempty{\CXLTXtemperrroute}%
+    {\input{\CXLTXtempOutRoute}}
+  \CXLTXifFileEmpty{\CXLTXtempErrRoute}%
     {}%
     {{\color{red}Errors have occurred:%
-      \verbatiminput{\CXLTXtemperrroute}}}}
+      \verbatiminput{\CXLTXtempErrRoute}}}}
 
 % ----------------------------------------------------------------------------------------------------------
 % Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
 %
 % \makeatletter
-\newcommand*\CXLTXiffileempty[3]{%
+\newcommand*\CXLTXifFileEmpty[3]{%
     \openin\@inputcheck#1 %
     \ifeof\@inputcheck
         #2\relax
@@ -129,46 +129,49 @@
 % CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
-  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
-  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
-  \immediate\write18{\CXLTXlastcommand}\input{\CXLTXtempoutroute}}
+  % \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
+  \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute"}%
+  \auxc{* CXLTX command: \CXLTXlastCommand}%
+  \immediate\write18{\CXLTXlastCommand}\input{\CXLTXtempOutRoute}}
 
 % % ----------------------------------------------------------------------------------------------------------
 % \newcommand{\execdebug}[1]{%
-%   \immediate\write18{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}\CXLTXshowoutputanderrors}
+%   \immediate\write18{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}\CXLTXshowOutputAndErrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\execdebug}[1]{%
-  \def\CXLTXlastcommand{#1 > "\CXLTXtempoutroute" 2> "\CXLTXtemperrroute"}%
-  \auxc{* CoffeeXeLaTeX command: \CXLTXlastcommand}%
-  \immediate\write18{\CXLTXlastcommand}\CXLTXshowoutputanderrors}
+  \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
+  \auxc{* CXLTX command: \CXLTXlastCommand}%
+  \immediate\write18{\CXLTXlastCommand}\CXLTXshowOutputAndErrors}
 
 % ----------------------------------------------------------------------------------------------------------
-\newcommand{\evaljs}[1]{\exec{node -p "#1"}}
-\newcommand{\evalcs}[1]{\exec{coffee -e "console.log #1"}}
+\newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
+\newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
 
 % ----------------------------------------------------------------------------------------------------------
-% A full CoffeeXeLaTeX invocation with `\noderunscript` takes four parameters:
+% A full CXLTX invocation with `\nodeRunScript` takes five parameters:
 %
 % * the route to the dispatcher script;
 % * the route to the current TeX script, relative to the CWD, as produced by `currfile/currfilepath`;
+% * the current `\jobname`;
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
 % The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
 % LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
 %
-\newcommand{\noderunscript}[4]{\exec{node "#1" "#2" "#3" "#4"}}
+\newcommand{\nodeRunScript}[5]{\exec{node "#1" "#2" "#3" "#4" "#5"}}
 
 % ----------------------------------------------------------------------------------------------------------
-% A simplified CoffeeXeLaTeX invocation with `\noderun` takes two parameters:
+% A simplified CXLTX invocation with `\nodeRun` takes two parameters:
 %
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
-% The route to the dispatcher will be taken from the `\CXLTXmainroute` macro.
+% The route to the dispatcher will be taken from the `\CXLTXmainRoute` macro.
 %
-\newcommand{\noderun}[2]{\noderunscript{\CXLTXmainroute}{\currfilepath}{#1}{#2}}
+% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXmainRoute}{\currfilepath}{#1}{#2}}
+\newcommand{\nodeRun}[2]{\exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2"}}
 
 
 % ==========================================================================================================
@@ -194,22 +197,21 @@
 %   #4: command
 %   #5: arguments
 %
-\newcommand{\curlEscape}[5][]{%
-  \urlescapeALPHA{#5}%
-  \exec{curl --silent --show-error #1 #2/#3/#4/\urlescapecurrent}}
+\newcommand{\curlEscape}[6][]{%
+  \urlescapeALPHA{#6}%
+  \exec{curl --silent --show-error #1 #2/#3/#4/#5/\urlescapecurrent}}
 
 
-\newcommand{\curlEscapeBETA}[5][]{%
+\newcommand{\curlEscapeBETA}[6][]{%
   \begingroup%
-  \urlescapeALPHA{#5}%
-  \let\five=\urlescapecurrent%
+  \urlescapeALPHA{#6}%
+  \let\six=\urlescapecurrent%
   % kludge:
   \StrSubstitute{\currfileabsdir}{/}{\%2F}[\three]
   \StrSubstitute{\three}{ }{\%20}[\three]
-  \exec{curl --silent --show-error #1 #2/\three/#4/\five}%
+  \exec{curl --silent --show-error #1 #2/\three/\jobname/#5/\six}%
   \endgroup}
 
-\edef\cfad{\currfileabsdir}
 
 % ----------------------------------------------------------------------------------------------------------
 %
@@ -217,10 +219,10 @@
 %   #1: command
 %   #2: arguments
 %
+% \newcommand{\curl}[2]{%
+%   \curlEscape{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
 \newcommand{\curl}[2]{%
-  \curlEscape{\CXLTXhost}{\currfilepath}{#1}{#2}}
-\newcommand{\curlBETA}[2]{%
-  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{#1}{#2}}
+  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
 
 
 % ----------------------------------------------------------------------------------------------------------
@@ -270,7 +272,7 @@
 %       "we are on page": \thepage,
 %       "just a value": 43 }
 %
-% The CoffeeXeLaTeX macro has a variable `@aux` that contains all the values transported via the `*.aux`
+% The CXLTX macro has a variable `@aux` that contains all the values transported via the `*.aux`
 % file. When you put an unnamed POD literal inside an `\auxcs{}` command, its name / value pairs will be
 % used to populate the `@aux` variable.
 %
@@ -331,7 +333,7 @@
 
 
 % ==========================================================================================================
-% WRITING TO THE `.AUX` FILE
+% Escaping URLs
 % ----------------------------------------------------------------------------------------------------------
 % The `\urlescape` command escapes a string so it can be safely used as an argument e.g. to the command line
 % `curl` command. The characters deemed as 'unsafe' here have been gleaned from

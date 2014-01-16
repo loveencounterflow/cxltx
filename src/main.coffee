@@ -33,31 +33,28 @@ Line_by_line              = require 'line-by-line'
 @main = ->
   info "©45 argv: #{rpr process.argv}"
   texroute    = process.argv[ 2 ]
-  command     = process.argv[ 3 ]
+  jobname     = process.argv[ 3 ]
+  command     = process.argv[ 4 ]
   method_name = command.replace /-/g, '_'
-  parameter   = process.argv[ 4 ]
+  parameter   = process.argv[ 5 ]
   ### TAINT we naïvely split on comma, which is not robust in case e.g. string or list literals contain
   that character. Instead, we should be doing parsing (eg. using JSON? CoffeeScript expressions /
   signatures?) ###
   P           = if ( parameter? and parameter.length > 0 ) then parameter.split ',' else []
   #.........................................................................................................
-  @dispatch texroute, method_name, P..., ( error, result ) =>
+  @dispatch texroute, jobname, method_name, P..., ( error, result ) =>
     #.......................................................................................................
-    if error?
-      # warn    error
-      debug   error
-    #.......................................................................................................
-    if result?
-      # whisper result
-      echo    result
+    echo debug error if error?
+    echo result if result?
   #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@dispatch = ( texroute, method_name, P..., handler ) ->
-  return handler "Unknown command: #{rpr command}" unless @[ method_name ]?
+@dispatch = ( texroute, jobname, method_name, P..., handler ) ->
+  return handler "Unknown command: #{rpr method_name}" unless @[ method_name ]?
   @aux[ 'is-complete'   ] = no
   @aux[ 'texroute'      ] = texroute
+  @aux[ 'jobname'       ] = jobname
   @aux[ 'method-name'   ] = method_name
   @aux[ 'parameters'    ] = P
   info '©56t', P
@@ -195,6 +192,7 @@ Line_by_line              = require 'line-by-line'
 #-----------------------------------------------------------------------------------------------------------
 @debug = ( message ) ->
   return echo() unless message?
+  warn message
   return @_pen_debug message
 
 #-----------------------------------------------------------------------------------------------------------
@@ -208,7 +206,7 @@ Line_by_line              = require 'line-by-line'
 
 #-----------------------------------------------------------------------------------------------------------
 debug = @debug.bind @
-echo  = @echo.bind @
+echo  =  @echo.bind @
 
 
 #===========================================================================================================

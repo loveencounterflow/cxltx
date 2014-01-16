@@ -1,0 +1,19 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}CoffeeXeLaTeX (CXLTX)}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}What is it? And Why?}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}TeX and NodeJS}{4}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Method One: Spawning a \texttt {node} process}{4}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning \texttt {curl}}{5}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{6}{subsubsection.1.2.3}
+\contentsline {subsection}{\numberline {1.3}Related Work}{7}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Sample Command Lines}{8}{subsection.1.4}
+\contentsline {subsection}{\numberline {1.5}Useful Links}{8}{subsection.1.5}
+\contentsline {section}{\numberline {2}Examples}{9}{section.2}
+\contentsline {subsection}{\numberline {2.1}Spawning NodeJS}{9}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Evaluating Expressions}{10}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Spawning cURL}{10}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Character Escaping}{10}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Unicode}{11}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}The \texttt {aux} Object}{11}{subsection.2.6}
+\contentsline {subsubsection}{\numberline {2.6.1}Labels}{11}{subsubsection.2.6.1}
+\contentsline {subsubsection}{\numberline {2.6.2}Geometry}{11}{subsubsection.2.6.2}

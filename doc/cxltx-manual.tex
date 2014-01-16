@@ -3,7 +3,7 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage{lipsum}
 \usepackage[columnwise]{lineno}
-\usepackage{coffeexelatex}
+\usepackage{cxltx}
 \usepackage[
 left=40mm,
 right=30mm,
@@ -14,18 +14,36 @@ top=15mm]{geometry}
 % \usepackage{etoolbox}
 % \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
 \usepackage{xeCJK}
+\usepackage{zhspacing}
+% ..........................................................................................................
+% a trick from http://tex.stackexchange.com/questions/16084/high-and-low-cjk-codepoints-in-a-single-xelatex-document
+% to automatically select font based on glyph codepoint; note that in order for `zhspacing` to load at all,
+% you must install both the SimSun and the SimHei font, even if those fonts are not listed in your font
+% choices.
+%
+%   http://www.fontpalace.com/font-download/SimHei/
+%   http://www.fontpalace.com/font-download/SimSun/
+\zhspacing
+\newfontfamily\zhfont{Sun-ExtA}
+\newfontfamily\zhcjkextbfont{sunflower-u-cjk-xb}
+% \setCJKmainfont{Sun-ExtA}
+% \newCJKfontfamily\cjkxbIdeographFont[Scale=1.05,AutoFakeBold=1]{sunflower-u-cjk-xb}
+% ..........................................................................................................
+
 \usepackage{fancyhdr}
 
-\newfontfamily\CXLTXboldfont[Scale=0.8]{Liberation Sans Narrow Bold}
 \setmainfont[
 Mapping=tex-text,
-BoldFont={Liberation Sans Narrow Bold}
-% BoldFont=\CXLTXboldfont
-% ItalicFont={Minion Pro Italic},
-% BoldItalicFont={Minion Pro Bold Italic}
+BoldFont={Liberation Sans Bold},
+BoldFeatures={Scale=0.8},
+ItalicFont={EB Garamond 12 Italic},
+% Ligatures={Historic,Rare,TeX},
+Ligatures={TeX},
+% Style={Swash,Historic},
+CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from small caps `i`
 ]{EB Garamond 12 Regular}
 
-\setCJKmainfont{Sun-ExtA}
+
 
 \newenvironment{jzrplain}{%
 % ..........................................................................................................
@@ -37,7 +55,7 @@ BoldFont={Liberation Sans Narrow Bold}
   \setlength{\parskip}{4mm}%
   \setlength{\parindent}{0mm}%
   % \fontsize{\nominalfontsize}{\gridstrutlength}%
-  \leading{5mm}
+  \leading{5.5mm}
   % \makeatletter
   % \preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
   % \makeatother
@@ -46,20 +64,30 @@ BoldFont={Liberation Sans Narrow Bold}
   {\par}
 
 
-\renewcommand{\CXLTXmainroute}{cxltx/lib/main}
-\renewcommand{\CXLTXtempoutroute}{/tmp/CXLTXtempout.tex}
-\renewcommand{\CXLTXtemperrroute}{/tmp/CXLTXtemperr.tex}
+\renewcommand{\CXLTXmainRoute}{cxltx/lib/main}
+\renewcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
+\renewcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \renewcommand{\CXLTXhost}{localhost:8910}
-% \newcommand{\noderun}[2]{\noderunscript{\CXLTXmainroute}{#1}{#2}}
+% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXmainRoute}{#1}{#2}}
+
+% \makeatletter
+% \def\verbatim{\tiny\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+% \makeatother
 
 % ##########################################################################################################
 \begin{document}
 \begin{jzrplain}
 
+
 \input{intro.tex}
 
+\clearpage
+\tableofcontents
+
+\clearpage
 \input{README.tex}
 
+\clearpage
 \input{examples.tex}
 
 % % ----------------------------------------------------------------------------------------------------------

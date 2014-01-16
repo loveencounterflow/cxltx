@@ -1,7 +1,4 @@
-\textbf{Att.} this part of the docs is only partially up to date; see
-\texttt{doc/examples.tex} and \texttt{xltx-manual.pdf} for working code.
-
-\section{C(offee)X(e)L(a)T(e)X}\label{coffeexelatex}
+\section{CoffeeXeLaTeX (CXLTX)}\label{coffeexelatex-cxltx}
 
 \subsection{What is it? And Why?}\label{what-is-it-and-why}
 
@@ -10,11 +7,12 @@ seemingly simple things done in this Turing-complete markup language.
 Let's face it, (La)TeX has many problems; the
 \href{http://www.infoq.com/presentations/Simple-Made-Easy}{complectedness}
 of its inner workings and the extremely uneven syntax of its commands
-put a heavy burden on the average user. The funny thing is that while
-TeX is all about computational text processing, doing math and string
-processing are \emph{really hard} to get right---or even get done at
-all---in this environment (not to mention that TeX has no notion of
-higher-order data types, such as, say, lists).
+put a heavy burden on the average user.
+
+The funny thing is that \textbf{while TeX is all about computational
+text processing, doing math and string processing are often really hard
+to get right} (not to mention that TeX has no notion of higher-order
+data types, such as, say, lists).
 
 Often one wishes one could just do a simple calculation or build a
 typesetting object from available data \emph{outside} of all that makes
@@ -33,47 +31,171 @@ stream number \texttt{18} (internally, TeX does almost everything with
 registers that are sometimes given symbolic names; it also enumerates
 `channels' for file operations, and reserves \#18 for writing to the
 command line and executing stuff). This is how the
-\texttt{\textbackslash{}exec} command is defined in CoffeeXeLaTeX:
+\texttt{\textbackslash{}exec} command is (in essence) defined in
+\texttt{coffeexelatex.sty}:
 
 \begin{verbatim}
-\newcommand{\coffeexelatextemproute}{/tmp/coffeexelatex.tex}
+\newcommand{\CXLTXtempOutRoute}{/tmp/coffeexelatex.tex}
 
 \newcommand{\exec}[1]{%
-  \immediate\write18{#1 > \coffeexelatextemproute}
-  \input{\coffeexelatextemproute}
+  \immediate\write18{#1 > \CXLTXtempOutRoute}
+  \input{\CXLTXtempOutRoute}
   }
 \end{verbatim}
 
-This command says, in essence: given a single argument \texttt{\#1},
-have the OS execute it as a command, and do that immediately (i.e.~not
-at some arbitrary point in the future); redirect its output into the
-temporary file \texttt{/tmp/coffeexelatex.tex}; then, read back the
-contents of that file, and insert that text into the current TeX source.
-
 With some TeXs, its possible to avoid the temporary file by using
 \texttt{\textbackslash{}@@input\textbar{}"dir"}, but XeTeX as provided
-by TeXLive 2013 does not allow that. As much as i'd like to eliminate
-the somewhat unelegant temporary file (that brings one more possible
-point of failure to the equation; remember to
+by TeXLive 2013 does not allow that. The temporary file does have an
+advantage: in case TeX should halt execution because of an error, and
+that error is due to a script with faulty output, you can conveniently
+review the problematic source by opening the temporary file in your text
+editor.
+
+Besides \texttt{\textbackslash{}exec}, there is also
+\texttt{\textbackslash{}execdebug} which captures the \texttt{stderr}
+output of a command and renders it in red to the document in case any
+output occurred there.
+
+\subsection{TeX and NodeJS}\label{tex-and-nodejs}
+
+\subsubsection{Method One: Spawning a \texttt{node}
+process}\label{method-one-spawning-a-node-process}
+
+The whole idea of CXLTX is to have some external program receive data
+from inside a running TeX invocation, process that data, and pass the
+result back to TeX.
+
+The command given to \texttt{\textbackslash{}exec} could be anything;
+for our purposes, we will concentrate on running
+\href{http://nodejs.org}{NodeJS} programs. The simplest thing is to have
+NodeJS evaluate a JavaScript expression and print out the result; the
+\texttt{\textbackslash{}evaljs} command has been defined to do just
+that:
 
 \begin{verbatim}
-\renewcommand{\coffeexelatextemproute}{some/temp/location.tex}
+\newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
+
+% will insert `16 * 3 = 48` in TeX math mode (triggered by `$`):
+$ 16 * 3 = \evaljs{16 * 3} $
 \end{verbatim}
 
-where deemed necessary), it also has one advantage: in case TeX should
-halt execution because of an error, and that error is due to a script
-with faulty output, you can conveniently review the problematic source
-by opening the temporary file in your text editor.
+This technique is easily adapted to work with
+{[}CoffeeScript{]}\{http://coffeescript.org\} (or any other language
+that compiles to JS):
 
-\subsection{Security Considerations}\label{security-considerations}
+\begin{verbatim}
+\newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
+
+% will insert `[1,4,9]`
+\evalcs{ ( n * n for n in [ 1, 2, 3 ] ) }
+\end{verbatim}
+
+Of course, evaluating one-liners will give you only so much power, so
+why not execute more sizeable programs? That's what
+\texttt{\textbackslash{}nodeRun} is for:
+
+\begin{verbatim}
+\usepackage[abspath]{currfile}
+\newcommand{\CXLTXmainRoute}{../../lib/main}
+\newcommand{\nodeRun}[2]{
+  \exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2"}}
+
+% will insert `Hello, world!`
+\nodeRun{helo}{world}
+\end{verbatim}
+
+\texttt{\textbackslash{}NodeRun} will run NodeJS with the following
+arguments: \textbf{(1)} the route to our custom-made executable;
+\textbf{(2)} the route to the parent directory where the currently
+processed TeX source files are; \textbf{(3)} the current job name;
+\textbf{(4)} a command name (first argument to
+\texttt{\textbackslash{}nodeRun}); and, lastly, \textbf{(5)} optional
+command arguments (second argument to \texttt{\textbackslash{}nodeRun}).
+
+Observe that you may want to define your own routes in case the default
+values do not match your needs; these can be easily done using
+\texttt{\textbackslash{}renewcommand}:
+
+\begin{verbatim}
+\renewcommand{\CXLTXmainRoute}{../../lib/main}
+\renewcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
+\renewcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
+\end{verbatim}
+
+\subsubsection{Method Two: Spawning
+\texttt{curl}}\label{method-two-spawning-curl}
+
+Spawning a subprocess to `outsource' a computing task is certainly not
+the cheapest or fastest way---creating and taking down a process is
+relatively costly. More specifically, spawning \texttt{node} is both
+comparatively expensive (in terms of memory) and slow. Also, the
+subprocess must run on the same machine as the main process, and unless
+it persisted some data (in a DB or in a file), the subprocess will run
+in a stateless fashion. What's more obvious than to make TeX communicate
+with a long-running HTTP server?
+
+Now i've not heard of any way to make TeX issue an HTTP request on its
+own behalf. But we already know we can issue arbitrary command lines, so
+we certainly can spawn \texttt{curl localhost} to communicate with a
+local or remote server. We still have to spawn a subprocess, but maybe
+\texttt{curl} is both lighter and faster than \texttt{node}? It
+certainly is.
+
+Here are some timings i obtained for running our simple echoing example,
+once spawning \texttt{node}, and once spawning \texttt{curl}. The server
+is a very simple \href{http://expressjs.com/}{Express} application;
+except for the command line argument and HTTP parameter handling, the
+same code is ultimately executed:
+
+\begin{verbatim}
+time node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "helo" "friends" \
+  > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+
+real  0m0.140s
+real  0m0.082s
+real  0m0.083s
+
+time curl --silent --show-error 127.0.0.1:8910/foobar.tex/cxltx-manual/helo/friends \
+  > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+
+real  0m0.010s
+real  0m0.011s
+real  0m0.010s
+\end{verbatim}
+
+In so far these rather naïve benchmarks can be trusted, they would
+indicate that fetching the same insignificant amount of data via
+\texttt{curl} from a local server is around ten times as performant as
+doing the same thing by spawning \texttt{node}. The reason for this is
+partly attributable to the considerable size of the NodeJS binary
+(respectively whatever actions are taken by NodeJS to ready itself).
+
+Even doing \texttt{time node -p "1"} results in execution times of over
+0.07s. Add to this the \texttt{curl} timings of around 0.01s, and you
+roughly get the 0.08s needed to spawn \texttt{node} and get results---in
+other words, \texttt{curl} itself seems to be quite fast.
+
+The upshot of this is that using our first method we can call external
+code at a frequency around 10 per second, but using the \texttt{curl}
+method, we can get closer to almost 100 per second (depending on the
+machine etc). The difference might matter if you plan to put out a
+\emph{lot} of external calls, and since the typical way of getting TeX
+source code right is running and re-running TeX a lot of times, doing it
+faster may help greatly.
+
+\subsubsection{Security Considerations}\label{security-considerations}
 
 Be aware that executing arbitrary code with a command line like
-\texttt{xelatex -{}-enable-write18 -{}-shell-escape somefile.tex} is
-inherently unsafe: a TeX file downloaded from somewhere could erase your
-disk, access your email, or install a program on your computer. This is
-what the \texttt{-{}-enable-write18} switch is for: it is by default
-fully or partially disabled so an arbitrary TeX source gets limited
-access to your computer.
+
+\begin{verbatim}
+xelatex --enable-write18 --shell-escape somefile.tex
+\end{verbatim}
+
+is inherently unsafe: a TeX file downloaded from somewhere could erase
+your disk, access your email, or install a program on your computer.
+This is what the \texttt{-{}-enable-write18} switch is for: it is by
+default fully or partially disabled so an arbitrary TeX source gets
+limited access to your computer.
 
 If you're scared now, please hang on a second. I just want to tell you
 \emph{you should be really, really scared}. Why? Because if you ever
@@ -120,110 +242,21 @@ e.g.~http://cseweb.ucsd.edu/\textasciitilde{}hovav/dist/tex-login.pdf,
 http://cseweb.ucsd.edu/\textasciitilde{}hovav/dist/texhack.pdf
 \end{quote}
 
-\subsection{Installation}\label{installation}
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  put a symlink to your CoffeeXeLaTeX directory into a directory that is
-  on LaTeX's search path; on OSX with LiveTeX, that could be
-  \texttt{\textasciitilde{}/Library/texmf/tex/latex}.*
-\end{itemize}
-
-\begin{quote}
-*: obviously, you could put your CoffeeXeLaTeX installation directly
-there, but that strikes me as `wrong'.
-\end{quote}
-
-\subsection{Usage}\label{usage}
-
-For a quick test, do
-
-\begin{verbatim}
-cd examples/example-1
-perltex --nosafe --latex=xelatex example-1.tex
-\end{verbatim}
-
-from the command line; this should produce
-\texttt{examples/example-1/example-1.pdf} (along with some other files).
-
-You may want to have a look at
-\texttt{examples/example-1/example-1.lgpl} to get an idea what exactly
-happened behind the scenes (see
-\href{https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf}{PerlTeX:
-Defining LaTeX macros using Perl} for an overview of the process).
-
-\subsection{Future Development}\label{future-development}
-
-If CoffeeXeLaTeX turns out to be a useful tool, i can presently see the
-following routes for development:
-
-\begin{itemize}
-\item
-  Using a Perl shell-escape command to start \texttt{node} all over for
-  each single JS/CS macro is doubly wasteful---first, a \texttt{perl}
-  process is started which in turn starts a \texttt{node} subprocess.
-  Depending on specific use, this can mean that two processes (none of
-  them exactly lightweight) are initiated hundreds or thousands of times
-  for a single document. This may be fixed in a number of ways:
-\item
-  Firstly, we could try and remove the Perl dependency, and call
-  \texttt{node} in exactly the way that \texttt{perl} is called now. Not
-  sure how to do that at this point in time.
-\item
-  Secondly, we could opt for a client / server model and make it so that
-  instead of starting a (heavy) process for each JS/CS macro call, a
-  (HTTP?) connection to a long-running NodeJS server is established.
-  This is also attractive as it would simplify state keeping---as it
-  stands, each call to a given macro starts with a clean slate (though
-  one could imagine storing results from past calls in a file or a
-  database).
-\end{itemize}
-
-Both of the above options are only worth implementing when it has been
-shown that substantial benefits in terms of performance, easy of use,
-and capabilities can be gained---something that is only meaningful after
-experience with real-world use cases has been gained.
-
-\begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
-\item
-  The one big incentive for using a 3rd-party language in tandem with
-  LaTeX is to make things easy (or at least achievable) that are
-  difficult (or impossible) using only LaTeX.
-\end{itemize}
-
-Regrettably, our efforts are still limited to what can be communicated
-`over the wire' between the LaTeX process and the macro process; we do
-not have direct access to (La)TeX internals as such, but must package
-every pertinent facet of the ongoing typesetting process as a textual
-argument for a macro.
-
-Imagine you had to interact with your HTML page in this way---imagine
-JavaScript in the browser was stateless and blissfully unaware of the
-DOM and CSS, imagine HTML was Turing-complete-but-hard-to-use as is the
-case with TeX. Your capabilities-improved web application page would be
-littered with ugly
-\texttt{\textless{}if condition='...'\textgreater{}...\textless{}/if\textgreater{}}
-tags and circumlocutorily reified calls to JS. This is the state of
-affairs of PerlTeX / CoffeeXeLaTeX, and it is definitely a programming
-model begging to be improved.
-
 \subsection{Related Work}\label{related-work}
 
 \begin{itemize}
 \item
-  \href{http://www.pytex.org/}{PyTeX} (also dubbed QATeX) is a laudable
-  effort that has, sadly, been stalling for around 11 years as of this
-  writing (January 2014), so it is likely pretty much outdated. PyTeX's
-  approach is apparently the opposite of what we do in CXLTX: they run
-  TeX in daemon mode from Python, where we have NodeJS start a server
-  that listens to our independently running TeX.---Just for giggles, a
-  quote from the above page: ``XML is hard work to key by hand. \emph{It
-  lacks the mark-up minimization that SGML has}'' (my emphasis). Well,
-  eleven years is a long time.
+  \href{http://www.pytex.org/}{\textbf{PyTeX}} (also dubbed QATeX) is a
+  laudable effort that has, sadly, been stalling for around 11 years as
+  of this writing (January 2014), so it is likely pretty much outdated.
+  PyTeX's approach is apparently the opposite of what we do in CXLTX:
+  they run TeX in daemon mode from Python, where we have NodeJS start a
+  server that listens to our independently running TeX.---Just for
+  giggles, a quote from the above page: ``XML is hard work to key by
+  hand. \emph{It lacks the mark-up minimization that SGML has}'' (my
+  emphasis). Well, eleven years is a long time.
 \item
-  \href{https://github.com/gpoore/pythontex}{PythonTeX} is an
+  \href{https://github.com/gpoore/pythontex}{\textbf{PythonTeX}} is an
   interesting approach to bringing LaTeX and Python together.
   Unfortunately, the authors are preconcerned with showing off Pygment's
   syntax hiliting capabilities (which are \ldots{} not really that
@@ -245,44 +278,43 @@ http://get-software.net/macros/latex/contrib/pythontex):
 
 \begin{itemize}
 \item
-  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex}{SageTeX}
+  \href{http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex}{\textbf{SageTeX}}
   allows code for the Sage mathematics software to be executed from
   within a \LaTeX~document.
 \item
   Martin R. Ehmsen's
-  \href{http://www.ctan.org/pkg/python}{\texttt{python.sty}} provides a
-  very basic method of executing Python code from within a LaTeX
-  document.
+  \href{http://www.ctan.org/pkg/python}{\textbf{\texttt{python.sty}}}
+  provides a very basic method of executing Python code from within a
+  LaTeX document.
 \item
-  \href{http://elec.otago.ac.nz/w/index.php/SympyTeX}{SympyTeX} allows
-  more sophisticated Python execution, and is largely based on a subset
-  of SageTeX.
+  \href{http://elec.otago.ac.nz/w/index.php/SympyTeX}{\textbf{SympyTeX}}
+  allows more sophisticated Python execution, and is largely based on a
+  subset of SageTeX.
 \item
-  \href{http://www.luatex.org/}{LuaTeX} extends the pdfTeX engine to
-  provide Lua as an embedded scripting language, and as a result yields
-  tight, low-level Lua integration.
+  \href{http://www.luatex.org/}{\textbf{LuaTeX}} extends the pdfTeX
+  engine to provide Lua as an embedded scripting language, and as a
+  result yields tight, low-level Lua integration.
 \end{itemize}
 
 LuaTeX is one of the most interesting projects in this field as it
 represents an attempt to provide a close coupling of a real programming
-language with LaTeX. Unfortunately, that language is Lua, a language
-that (like Go btw) believes that Unicode strings should be stored as
-UTF-8 bytes. Equally unfortunately, LuaTeX uses pdfTeX, which can't
-compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
+language with LaTeX. Unfortunately, that language is Lua, whose
+designers believe that Unicode strings should be stored as UTF-8 bytes
+(Go does the same, btw). Equally unfortunately, LuaTeX uses pdfTeX,
+which can't compare to XeLaTeX when it comes to using custom TTF/OTF
+fonts.
 
 \subsection{Sample Command Lines}\label{sample-command-lines}
 
-To make it so you can put a simple
-\texttt{\textbackslash{}usepackage\{cxltx\}} inside your \texttt{tex}
-files, do (on OSX)
+To make it easier for TeX to resolve
+\texttt{\textbackslash{}usepackage\{cxltx\}}, put a symlink to your
+CXLTX directory into a directory that is on LaTeX's search path. On OSX
+with LiveTeX, that can be achieved by doing
 
 \begin{verbatim}
 cd ~/Library/texmf/tex/latex
 ln -s route/to/cxltx cxltx
 \end{verbatim}
-
-This link `publishes' CXLTX to \texttt{kpathsea}, TeX's file search
-tool.
 
 Here is what i do to build \texttt{cxltx/cxltx-manual.pdf}:
 
@@ -301,14 +333,18 @@ cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
 \end{verbatim}
 
 \textbf{(3)} compile \texttt{cxltx-manual.tex} to
-\texttt{cxltx-manual.pdf}:
+\texttt{cxltx-manual.pdf} (\texttt{-{}-enable-write18}: allows to access
+external programs form within TeX; \texttt{-{}-halt-on-error}: is a
+convenience so i don't have to type \texttt{x} on each TeX error;
+\texttt{-{}-recorder}: needed by the \texttt{currfile} package to get
+absolute routes):
 
 \begin{verbatim}
-# --enable-write18  allows to access external programs form within TeX#
-# --halt-on-error   is a convenience so i don't have to type x on each TeX error
-# --recorder        needed by the `currfile` package to get absolute routes
-
-xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder \
+xelatex \
+  --output-directory cxltx/doc \
+  --halt-on-error \
+  --enable-write18 \
+  --recorder \
   cxltx/doc/cxltx-manual.tex
 \end{verbatim}
 

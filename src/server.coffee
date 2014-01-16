@@ -7,7 +7,7 @@
 njs_url                   = require 'url'
 #...........................................................................................................
 # BAP                       = require 'coffeenode-bitsnpieces'
-# TYPES                     = require 'coffeenode-types'
+TYPES                     = require 'coffeenode-types'
 TRM                       = require 'coffeenode-trm'
 rpr                       = TRM.rpr.bind TRM
 badge                     = 'CXLTX/server'
@@ -61,11 +61,13 @@ server_options =
     #.......................................................................................................
     debug '©45f request.params:        ', request.params
     { texroute
+      jobname
       command
       parameters }  = request.params
     #.......................................................................................................
     debug '©45f url:        ', request[ 'url' ]
     debug '©45f texroute:   ', texroute
+    debug '©45f jobname:    ', jobname
     debug '©45f command:    ', command
     debug '©45f parameters: ', parameters
     #.......................................................................................................
@@ -83,7 +85,7 @@ server_options =
     P = if parameters? and parameters.length > 0 then ( @decode_unicode parameters ).split ',' else []
     debug '©45f P:          ', P
     #.......................................................................................................
-    CXLTX.dispatch texroute, method_name, P..., handler
+    CXLTX.dispatch texroute, jobname, method_name, P..., handler
     #.......................................................................................................
     return null
   #---------------------------------------------------------------------------------------------------------
@@ -121,8 +123,8 @@ app.use express.logger 'format': 'dev'
 # ENDPOINTS
 #-----------------------------------------------------------------------------------------------------------
 main = @main()
-app.get '/:texroute/:command/:parameters',  main
-app.get '/:texroute/:command',              main
+app.get '/:texroute/:jobname/:command/:parameters',  main
+app.get '/:texroute/:jobname/:command',              main
 # app.use view 'not_found'
 
 
