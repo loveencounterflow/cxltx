@@ -120,7 +120,7 @@ Chinese characters from the Unicode BMP (`16 bit'):
 
 \curl{helo}{黎永強}
 
-Chinese characters from the Unicode SIP (`32 bit'---these needed a little trick to make \XeLaTeX choose
+Chinese characters from the Unicode SIP (`32 bit'---these needed a little trick to make \XeLaTeX\ choose
 the right font; see \verb#coffeexelatex.sty#):
 
 \begin{verbatim}
@@ -176,27 +176,55 @@ the right font; see \verb#coffeexelatex.sty#):
 % ==========================================================================================================
 \subsection{The \texttt{aux} Object}\label{aux}
 
+To facilitate data exchange between the \TeX\ process and the server, \CXLTX\ provides facilities
+to read and write data from and to the \verb#aux# file assoated with the current job:
+
+\begin{itemize}
+\item
+  the \TeX\ commands \verb#\aux#, \verb#\auxc#, \verb#\auxcs#, and \verb#\auxpod#, which write to the
+  \verb#aux# file;
+\item
+  the method \verb#CXLTX.main.read_aux = ( handler ) ->#, which reads (and parses) data written with one of
+  the above commands.
+\end{itemize}
+
+% ----------------------------------------------------------------------------------------------------------
+\subsubsection{The \texttt{\textbackslash{}aux*} Commands}\label{aux}
+
+Because they're quite straightforward, let's have a look at the actual definitions of the
+\verb#aux*# commands:
+
+\begin{verbatim}
+\makeatletter
+\catcode`\%=11
+\newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
+\newcommand{\auxc}[1]{\immediate\write\@auxout{% #1}}
+\newcommand{\auxcs}[1]{\immediate\write\@auxout{% coffee #1}}
+\newcommand{\auxpod}[2]{\immediate\write\@auxout{% coffee #1: \{ #2 \}}}
+\catcode`\%=14
+\makeatother
+\end{verbatim}
+
+We see our old friend \verb#\immediate\write# here, this time accessing channel \verb#\@auxout#. All commands
+will write a single line to the \verb#aux# file.
+
+\begin{itemize}
+\item
+  \verb#\aux# is the most basic command and will write text as-is to the \verb#aux# file;
+\item
+  \verb#\auxc# puts whatever is written behind a \verb#%# (percent sign), so it appears as a comment when
+  \TeX\ re-reads the \verb#aux# file;
+\item
+  \verb#\auxcs# writes text behind a \verb#% coffee# marker, facilitating recognition on the server side;
+\item
+  \verb#\auxpod# takes a name and a CoffeeScript Plain Old Dictionary literal ({\em without} the braces)
+  to the \verb#aux# file; to the server, this will become available as \verb#@aux[ name ]#;
+\end{itemize}
+
+The \verb#\auxgeo# / \verb#@\curl{show-geometry}{}# command pair is a good example how to use \verb#\auxpod#.
 
 
 % ----------------------------------------------------------------------------------------------------------
-\subsubsection{Labels}\label{labels}
-
-\CXLTX\ will try and collect all labels from the \verb#*.aux# file associated with the current job; from
-inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
-
-{\textbf{Command:}}
-
-\begin{verbatim}
-\nodeRun{show-aux}{}
-\end{verbatim}
-
-{\textbf{Output:}}
-
-{\fontsize{3mm}{3mm}\nodeRun{show-aux}{}}
-
-
-
-% ==========================================================================================================
 \subsubsection{Geometry}\label{geo}
 
 % Write arbitrary text into the aux file:
@@ -215,15 +243,47 @@ not take arguments, which is why the second pair of braces has been left empty:
 
 {\textbf{Command:}}
 \begin{verbatim}
-\nodeRun{show-geometry}{}
+\curl{show-geometry}{}
 \end{verbatim}
 
 {\textbf{Output:}}
 
-\nodeRun{show-geometry}{}
+\curl{show-geometry}{}
+
+After \verb#show-geometry# has been performed, the \verb#@aux# object has been populated with data from the
+\verb#aux# file; it then looks like this for the current document:
 
 
+{\textbf{Command:}}
 
-% % \CXLTXtempErrRoute\ is \CXLTXifFileEmpty{\CXLTXtempErrRoute}{indeed}{not} empty.
-% % \CXLTXtempOutRoute\ is \CXLTXifFileEmpty{\CXLTXtempOutRoute}{indeed}{not} empty.
+\begin{verbatim}
+\curl{show-aux}{}
+\end{verbatim}
 
+{\textbf{Output:}}
+
+\curl{show-aux}{}
+
+
+% ----------------------------------------------------------------------------------------------------------
+\subsubsection{Labels}\label{labels}
+
+As it stands, \CXLTX\ will try and collect all pertinent data from the \verb#@aux# file when
+\verb#@read_aux# is called; this currently includes
+
+labels from the \verb#*.aux# file associated with the current job; from
+inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
+
+{\textbf{Command:}}
+
+\begin{verbatim}
+\curl{clear-aux}{}
+\curl{show-aux}{}
+\end{verbatim}
+
+{\textbf{Output:}}
+
+% {\fontsize{3mm}{3mm}\nodeRun{show-aux}{}}
+% \nodeRun{show-aux}{}
+\curl{clear-aux}{}
+\curl{show-aux}{}

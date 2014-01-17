@@ -72,8 +72,10 @@ Line_by_line              = require 'line-by-line'
   return null if @aux[ 'is-complete' ]
   #.........................................................................................................
   texroute  = @aux[ 'texroute' ]
-  last_idx  = texroute.length - 1 - ( njs_path.extname texroute ).length
-  auxroute  = texroute[ 0 .. last_idx ].concat '.auxcopy'
+  jobname   = @aux[ 'jobname' ]
+  # last_idx  = texroute.length - 1 - ( njs_path.extname texroute ).length
+  # auxroute  = texroute[ 0 .. last_idx ].concat '.auxcopy'
+  auxroute  = ( njs_path.join texroute, jobname ).concat '.auxcopy'
   #.........................................................................................................
   unless njs_fs.existsSync auxroute
     warn "unable to locate #{auxroute}; ignoring"
@@ -87,6 +89,7 @@ Line_by_line              = require 'line-by-line'
     return handler error if error?
     if line is null
       postprocess()
+      @aux[ 'is-complete' ] = yes
       return handler null
     #.......................................................................................................
     ### De-escaping characters: ###
@@ -224,25 +227,26 @@ echo  =  @echo.bind @
     This paragraph appears on page #{page_nr}, column ..., line #{line_nr}."""
 
 #-----------------------------------------------------------------------------------------------------------
-@show_geometry = ->
-  unless ( g = @aux[ 'geometry' ] )?
-    message = """unable to retrieve geometry info from #{@aux[ 'auxroute' ]};"""
-    debug message
-      # you may want to consider using `\\auxgeo` in your TeX source."""
-    return message
-  #.........................................................................................................
-  R     = []
-  names = ( name for name of g ).sort()
-  #.........................................................................................................
-  for name in names
-    value = g[ name ]
-    value = if value? then ( ( value.toFixed 2 ).concat ' mm' ) else './.'
-    value = value.replace /-/g, '–'
-    R.push "#{name} & #{value}"
-  #.........................................................................................................
-  R = R.join '\\\\\n'
-  R = "\\begin{tabular}{ | l | r | }\n\\hline\n#{R}\\\\\n\\hline\\end{tabular}"
-  return R
+@show_geometry = ( handler ) ->
+  @read_aux ( error ) =>
+    return handler error if error?
+    unless ( g = @aux[ 'geometry' ] )?
+      # debug message
+        # you may want to consider using `\\auxgeo` in your TeX source."""
+      handler """unable to retrieve geometry info from #{@aux[ 'auxroute' ]};"""
+    #.........................................................................................................
+    R     = []
+    names = ( name for name of g ).sort()
+    #.........................................................................................................
+    for name in names
+      value = g[ name ]
+      value = if value? then ( ( value.toFixed 2 ).concat ' mm' ) else './.'
+      value = value.replace /-/g, '–'
+      R.push "#{name} & #{value}"
+    #.........................................................................................................
+    R = R.join '\\\\\n'
+    R = "\\begin{tabular}{ | l | r | }\n\\hline\n#{R}\\\\\n\\hline\\end{tabular}"
+    handler null, R
 
 #-----------------------------------------------------------------------------------------------------------
 @show_special_chrs = ( handler ) ->
@@ -265,11 +269,16 @@ echo  =  @echo.bind @
   handler null, R
 
 #-----------------------------------------------------------------------------------------------------------
+@clear_aux = ( handler ) ->
+  delete @aux[ name ] for name of @aux
+  handler null, ''
+
+#-----------------------------------------------------------------------------------------------------------
 @show_aux = ( handler ) ->
   #.........................................................................................................
-  @read_aux ( error ) =>
-    return handler error if error?
-    handler null, "\\begin{verbatim}#{rpr @aux}\\end{verbatim}"
+  # @read_aux ( error ) =>
+  # return handler error if error?
+  handler null, "\\begin{verbatim}\n#{rpr @aux}\n\\end{verbatim}"
 
 
 #===========================================================================================================

@@ -110,14 +110,16 @@ Here are some timings i obtained for running our simple echoing example, once sp
 spawning `curl`. The server is a very simple [Express](http://expressjs.com/) application; except for the
 command line argument and HTTP parameter handling, the same code is ultimately executed:
 
-    time node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "helo" "friends" \
+    time node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" \
+      "helo" "friends" \
       > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 
     real  0m0.140s
     real  0m0.082s
     real  0m0.083s
 
-    time curl --silent --show-error 127.0.0.1:8910/foobar.tex/cxltx-manual/helo/friends \
+    time curl --silent --show-error \
+      127.0.0.1:8910/foobar.tex/cxltx-manual/helo/friends \
       > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 
     real  0m0.010s
@@ -177,7 +179,7 @@ I do not write this section of the present README to scare you away, just to inf
 of a little known fact of life. The gist of this is: don't have `--enable-write18` turned on except you
 know what you're doing, but be aware that running TeX has always been unsafe anyway.
 
-> *) see e.g. http://cseweb.ucsd.edu/~hovav/dist/tex-login.pdf, http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf
+> *) see e.g. `http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf`
 
 
 

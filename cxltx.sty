@@ -14,7 +14,6 @@
 \usepackage{xltxtra}
 \usepackage{xstring}
 % \usepackage{catchfile}
-\usepackage{verbatim}
 \usepackage{actcodes} % for `\MakeOther`
 % \input binhex
 % turn a character into its Unicode hexadecimal CID:
@@ -293,9 +292,9 @@
 % \makeatletter
 \catcode`\%=11
 \newcommand{\aux}[1]{\immediate\write\@auxout{#1}}
-\newcommand{\auxc}[1]{\immediate\write\@auxout{^^25 #1}}
-\newcommand{\auxcs}[1]{\immediate\write\@auxout{^^25 coffee #1}}
-\newcommand{\auxpod}[2]{\immediate\write\@auxout{^^25 coffee #1: \{ #2 \}}}
+\newcommand{\auxc}[1]{\immediate\write\@auxout{% #1}}
+\newcommand{\auxcs}[1]{\immediate\write\@auxout{% coffee #1}}
+\newcommand{\auxpod}[2]{\immediate\write\@auxout{% coffee #1: \{ #2 \}}}
 \catcode`\%=14
 % \makeatother
 

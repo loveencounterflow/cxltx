@@ -5,8 +5,8 @@
 \usepackage[columnwise]{lineno}
 \usepackage{cxltx}
 \usepackage[
-left=40mm,
-right=30mm,
+left=30mm,
+right=25mm,
 top=15mm]{geometry}
 % \usepackage[headheight=10mm]{geometry}
 \usepackage{leading}
@@ -14,7 +14,6 @@ top=15mm]{geometry}
 % \usepackage{etoolbox}
 % \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
 \usepackage{xeCJK}
-\usepackage{zhspacing}
 % ..........................................................................................................
 % a trick from http://tex.stackexchange.com/questions/16084/high-and-low-cjk-codepoints-in-a-single-xelatex-document
 % to automatically select font based on glyph codepoint; note that in order for `zhspacing` to load at all,
@@ -23,14 +22,35 @@ top=15mm]{geometry}
 %
 %   http://www.fontpalace.com/font-download/SimHei/
 %   http://www.fontpalace.com/font-download/SimSun/
+\usepackage{zhspacing}
 \zhspacing
 \newfontfamily\zhfont{Sun-ExtA}
+\newfontfamily\verbatimfont[Scale=0.8]{Flow DejaVu Sans Mono}
 \newfontfamily\zhcjkextbfont{sunflower-u-cjk-xb}
 % \setCJKmainfont{Sun-ExtA}
 % \newCJKfontfamily\cjkxbIdeographFont[Scale=1.05,AutoFakeBold=1]{sunflower-u-cjk-xb}
 % ..........................................................................................................
 
 \usepackage{fancyhdr}
+% \usepackage{verbatim}
+% \usepackage{fancyvrb}
+% \renewcommand{\FancyVerbFormatLine}[1]{%
+%   % \makebox[0cm][l]{$\Rightarrow$}#1%
+%   % \fontsize{3mm}{3mm}%
+%   \color{red}#1%
+%   }
+% \let\verbatim=\Verbatim
+% \renewcommand\verbatim{\Verbatim}
+\makeatletter
+\renewcommand\verbatim@font{\color{DarkRed}\verbatimfont\leading{4mm}}%\fontsize{3mm}{3mm}}
+\makeatletter
+% necessary to capture Pandoc's LaTeX output which uses `\texttt` insted of `\verb`:
+\renewcommand{\texttt}[1]{{\color{DarkRed}\verbatimfont\leading{4mm}#1}}
+
+\usepackage{etoolbox}
+\patchcmd{\quote}{\rightmargin}{\leftmargin 1em\rightmargin}{}{}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*,label=¶}
 
 \setmainfont[
 Mapping=tex-text,
@@ -89,6 +109,12 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
 
 \clearpage
 \input{examples.tex}
+
+% \begin{Verbatim}%
+% [formatcom=\color{red}]
+% First verbatim line.
+% Second verbatim line.
+% \end{Verbatim}
 
 % % ----------------------------------------------------------------------------------------------------------
 % \subsection{(testing)}
