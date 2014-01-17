@@ -11,7 +11,6 @@ top=15mm]{geometry}
 % \usepackage[headheight=10mm]{geometry}
 \usepackage{leading}
 \usepackage{parskip}
-% \usepackage{etoolbox}
 % \usepackage{/Volumes/Storage/cnd/node_modules/jizura-xelatex/tex-inputs/background-grid}
 \usepackage{xeCJK}
 % ..........................................................................................................
@@ -94,21 +93,29 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
 % \def\verbatim{\tiny\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
 % \makeatother
 
+
+
 % ##########################################################################################################
 \begin{document}
 \begin{jzrplain}
 
 
+
 \input{intro.tex}
 
 \clearpage
+\begingroup
+\thispagestyle{empty}
 \tableofcontents
+\input{conventions.tex}
+\endgroup
 
 \clearpage
 \input{README.tex}
 
 \clearpage
 \input{examples.tex}
+
 
 % \begin{Verbatim}%
 % [formatcom=\color{red}]

@@ -90,6 +90,9 @@ that compiles to JS):
 \evalcs{ ( n * n for n in [ 1, 2, 3 ] ) }
 \end{verbatim}
 
+\paragraph{The Command Line Remote Command Interface
+(CL/RCI)}\label{the-command-line-remote-command-interface-clrci}
+
 Of course, evaluating one-liners will give you only so much power, so
 why not execute more sizeable programs? That's what
 \texttt{\textbackslash{}nodeRun} is for:
@@ -126,19 +129,23 @@ values do not match your needs; these can be easily done using
 \texttt{curl}}\label{method-two-spawning-curl}
 
 Spawning a subprocess to `outsource' a computing task is certainly not
-the cheapest or fastest way---creating and taking down a process is
-relatively costly. More specifically, spawning \texttt{node} is both
-comparatively expensive (in terms of memory) and slow. Also, the
-subprocess must run on the same machine as the main process, and unless
-it persisted some data (in a DB or in a file), the subprocess will run
-in a stateless fashion. What's more obvious than to make TeX communicate
-with a long-running HTTP server?
+the cheapest or fastest way to do stuff, as creating and taking down a
+process is relatively costly.
+
+More specifically, spawning \texttt{node} is both comparatively
+expensive (in terms of memory) and slow. Also, the subprocess must run
+on the same machine as the main process, and unless that subprocess
+persisted some data (in a DB or in a file), the subprocess will run in a
+stateless fashion.
+
+Then again, since we're using NodeJS anyway: What's more obvious than to
+make TeX communicate with a long-running HTTP server?
 
 Now i've not heard of any way to make TeX issue an HTTP request on its
 own behalf. But we already know we can issue arbitrary command lines, so
 we certainly can spawn \texttt{curl localhost} to communicate with a
-local or remote server. We still have to spawn a subprocess, but maybe
-\texttt{curl} is both lighter and faster than \texttt{node}? It
+server. We still have to spawn a subprocess that way---but maybe
+\texttt{curl} is both lighter and faster than \texttt{node}!? It
 certainly is.
 
 Here are some timings i obtained for running our simple echoing example,
@@ -185,9 +192,19 @@ machine etc). The difference might matter if you plan to put out a
 source code right is running and re-running TeX a lot of times, doing it
 faster may help greatly.
 
+\paragraph{The HTTP Remote Command Interface
+(H/RCI)}\label{the-http-remote-command-interface-hrci}
+
+\begin{verbatim}
+\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+
+\curl{helo}{friends}
+\end{verbatim}
+
 \subsubsection{Security Considerations}\label{security-considerations}
 
-Be aware that executing arbitrary code with a command line like
+Be aware that executing arbitrary code by way of mediation of a command
+line like
 
 \begin{verbatim}
 xelatex --enable-write18 --shell-escape somefile.tex
@@ -226,9 +243,11 @@ each one of those refers to a source that is publicly accessible on the
 internet and has been so for maybe five or ten or more years. Someone
 might even have managed to place a mildly useful package on CTAN, one
 that has some obfuscated parts designed to take over world leadership on
-Friday, 13th---who knows? \textbf{The fact that TeX is a programming
-language that works by repeatedly re-writing itself does not exactly
-help in doing static code analysis}; in fact, such code is called
+Friday, 13th---who knows?
+
+\textbf{The fact that TeX is a programming language that works by
+repeatedly re-writing itself does not exactly help in doing static code
+analysis}; in fact, such code is called
 `\href{http://en.wikipedia.org/wiki/Metamorphic_code}{metamorphic code}'
 and is a well-known technique employed by computer viruses.
 
@@ -242,6 +261,66 @@ been unsafe anyway.
 *) see e.g.
 \texttt{http://cseweb.ucsd.edu/\textasciitilde{}hovav/dist/texhack.pdf}
 \end{quote}
+
+\subsection{Sample Command Lines}\label{sample-command-lines}
+
+To make it easier for TeX to resolve
+\texttt{\textbackslash{}usepackage\{cxltx\}}, put a symlink to your
+CXLTX directory into a directory that is on LaTeX's search path. On OSX
+with LiveTeX, that can be achieved by doing
+
+\begin{verbatim}
+cd ~/Library/texmf/tex/latex
+ln -s route/to/cxltx cxltx
+\end{verbatim}
+
+Here is what i do to build \texttt{cxltx/cxltx-manual.pdf}:
+
+\textbf{(1)} use \href{http://http://johnmacfarlane.net/pandoc}{Pandoc}
+to convert \texttt{README.md} to \texttt{README.tex}:
+
+\begin{verbatim}
+pandoc -o cxltx/doc/README.tex cxltx/README.md
+\end{verbatim}
+
+\textbf{(2)} copy the \texttt{aux} file from the previous TeX
+compilation step to preserve its data for CXLTX to see:
+
+\begin{verbatim}
+cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
+\end{verbatim}
+
+\textbf{(3)} compile \texttt{cxltx-manual.tex} to
+\texttt{cxltx-manual.pdf} (\texttt{-{}-enable-write18}: allows to access
+external programs form within TeX; \texttt{-{}-halt-on-error}: is a
+convenience so i don't have to type \texttt{x} on each TeX error;
+\texttt{-{}-recorder}: needed by the \texttt{currfile} package to get
+absolute routes):
+
+\begin{verbatim}
+xelatex \
+  --output-directory cxltx/doc \
+  --halt-on-error \
+  --enable-write18 \
+  --recorder \
+  cxltx/doc/cxltx-manual.tex
+\end{verbatim}
+
+\textbf{(4)} move the pdf file to its target location:
+
+\begin{verbatim}
+mv cxltx/doc/cxltx-manual.pdf cxltx
+\end{verbatim}
+
+\subsection{Useful Links}\label{useful-links}
+
+http://www.ctan.org/tex-archive/macros/latex/contrib/perltex
+
+http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
+
+http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
+
+https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
 
 \subsection{Related Work}\label{related-work}
 
@@ -304,63 +383,3 @@ designers believe that Unicode strings should be stored as UTF-8 bytes
 (Go does the same, btw). Equally unfortunately, LuaTeX uses pdfTeX,
 which can't compare to XeLaTeX when it comes to using custom TTF/OTF
 fonts.
-
-\subsection{Sample Command Lines}\label{sample-command-lines}
-
-To make it easier for TeX to resolve
-\texttt{\textbackslash{}usepackage\{cxltx\}}, put a symlink to your
-CXLTX directory into a directory that is on LaTeX's search path. On OSX
-with LiveTeX, that can be achieved by doing
-
-\begin{verbatim}
-cd ~/Library/texmf/tex/latex
-ln -s route/to/cxltx cxltx
-\end{verbatim}
-
-Here is what i do to build \texttt{cxltx/cxltx-manual.pdf}:
-
-\textbf{(1)} use \href{http://http://johnmacfarlane.net/pandoc}{Pandoc}
-to convert \texttt{README.md} to \texttt{README.tex}:
-
-\begin{verbatim}
-pandoc -o cxltx/doc/README.tex cxltx/README.md
-\end{verbatim}
-
-\textbf{(2)} copy the \texttt{aux} file from the previous TeX
-compilation step to preserve its data for CXLTX to see:
-
-\begin{verbatim}
-cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
-\end{verbatim}
-
-\textbf{(3)} compile \texttt{cxltx-manual.tex} to
-\texttt{cxltx-manual.pdf} (\texttt{-{}-enable-write18}: allows to access
-external programs form within TeX; \texttt{-{}-halt-on-error}: is a
-convenience so i don't have to type \texttt{x} on each TeX error;
-\texttt{-{}-recorder}: needed by the \texttt{currfile} package to get
-absolute routes):
-
-\begin{verbatim}
-xelatex \
-  --output-directory cxltx/doc \
-  --halt-on-error \
-  --enable-write18 \
-  --recorder \
-  cxltx/doc/cxltx-manual.tex
-\end{verbatim}
-
-\textbf{(4)} move the pdf file to its target location:
-
-\begin{verbatim}
-mv cxltx/doc/cxltx-manual.pdf cxltx
-\end{verbatim}
-
-\subsection{Useful Links}\label{useful-links}
-
-http://www.ctan.org/tex-archive/macros/latex/contrib/perltex
-
-http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
-
-http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
-
-https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf

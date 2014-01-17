@@ -216,7 +216,8 @@ echo  =  @echo.bind @
 # SAMPLE COMMANDS
 #-----------------------------------------------------------------------------------------------------------
 @helo = ( name, handler ) ->
-  handler null, "{Hello, \\textcolor{blue}{#{@escape name}}!}"
+  # handler null, "{Hello, \\textcolor{blue}{#{@escape name}}!}"
+  handler null, "{Hello, #{@escape name}!}"
 
 #-----------------------------------------------------------------------------------------------------------
 @page_and_line_nr = ( page_nr, line_nr ) ->
@@ -271,7 +272,7 @@ echo  =  @echo.bind @
 #-----------------------------------------------------------------------------------------------------------
 @clear_aux = ( handler ) ->
   delete @aux[ name ] for name of @aux
-  handler null, ''
+  handler null
 
 #-----------------------------------------------------------------------------------------------------------
 @show_aux = ( handler ) ->
@@ -279,6 +280,7 @@ echo  =  @echo.bind @
   # @read_aux ( error ) =>
   # return handler error if error?
   handler null, "\\begin{verbatim}\n#{rpr @aux}\n\\end{verbatim}"
+
 
 
 #===========================================================================================================

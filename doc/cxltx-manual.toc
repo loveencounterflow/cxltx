@@ -3,11 +3,13 @@
 \contentsline {subsection}{\numberline {1.1}What is it? And Why?}{3}{subsection.1.1}
 \contentsline {subsection}{\numberline {1.2}TeX and NodeJS}{4}{subsection.1.2}
 \contentsline {subsubsection}{\numberline {1.2.1}Method One: Spawning a {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.7849}\selectfont \ignorespaces node} process}{4}{subsubsection.1.2.1}
-\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.7849}\selectfont \ignorespaces curl}}{4}{subsubsection.1.2.2}
-\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{5}{subsubsection.1.2.3}
-\contentsline {subsection}{\numberline {1.3}Related Work}{6}{subsection.1.3}
-\contentsline {subsection}{\numberline {1.4}Sample Command Lines}{7}{subsection.1.4}
-\contentsline {subsection}{\numberline {1.5}Useful Links}{8}{subsection.1.5}
+\contentsline {paragraph}{The Command Line Remote Command Interface (CL/RCI)}{4}{section*.2}
+\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.7849}\selectfont \ignorespaces curl}}{5}{subsubsection.1.2.2}
+\contentsline {paragraph}{The HTTP Remote Command Interface (H/RCI)}{6}{section*.3}
+\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{6}{subsubsection.1.2.3}
+\contentsline {subsection}{\numberline {1.3}Sample Command Lines}{7}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Useful Links}{7}{subsection.1.4}
+\contentsline {subsection}{\numberline {1.5}Related Work}{7}{subsection.1.5}
 \contentsline {section}{\numberline {2}Examples}{9}{section.2}
 \contentsline {subsection}{\numberline {2.1}Spawning NodeJS}{9}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Evaluating Expressions}{10}{subsection.2.2}

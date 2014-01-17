@@ -28,16 +28,20 @@
 \newlabel{tex-and-nodejs}{{1.2}{4}{TeX and NodeJS}{subsection.1.2}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Method One: Spawning a {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces node} process}{4}{subsubsection.1.2.1}}
 \newlabel{method-one-spawning-a-node-process}{{1.2.1}{4}{Method One: Spawning a \texttt {node} process}{subsubsection.1.2.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces curl}}{4}{subsubsection.1.2.2}}
-\newlabel{method-two-spawning-curl}{{1.2.2}{4}{Method Two: Spawning \texttt {curl}}{subsubsection.1.2.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{5}{subsubsection.1.2.3}}
-\newlabel{security-considerations}{{1.2.3}{5}{Security Considerations}{subsubsection.1.2.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Related Work}{6}{subsection.1.3}}
-\newlabel{related-work}{{1.3}{6}{Related Work}{subsection.1.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Sample Command Lines}{7}{subsection.1.4}}
-\newlabel{sample-command-lines}{{1.4}{7}{Sample Command Lines}{subsection.1.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Useful Links}{8}{subsection.1.5}}
-\newlabel{useful-links}{{1.5}{8}{Useful Links}{subsection.1.5}{}}
+\newlabel{the-command-line-remote-command-interface-clrci}{{1.2.1}{4}{The Command Line Remote Command Interface (CL/RCI)}{section*.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{The Command Line Remote Command Interface (CL/RCI)}{4}{section*.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces curl}}{5}{subsubsection.1.2.2}}
+\newlabel{method-two-spawning-curl}{{1.2.2}{5}{Method Two: Spawning \texttt {curl}}{subsubsection.1.2.2}{}}
+\newlabel{the-http-remote-command-interface-hrci}{{1.2.2}{6}{The HTTP Remote Command Interface (H/RCI)}{section*.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{The HTTP Remote Command Interface (H/RCI)}{6}{section*.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{6}{subsubsection.1.2.3}}
+\newlabel{security-considerations}{{1.2.3}{6}{Security Considerations}{subsubsection.1.2.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Sample Command Lines}{7}{subsection.1.3}}
+\newlabel{sample-command-lines}{{1.3}{7}{Sample Command Lines}{subsection.1.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Useful Links}{7}{subsection.1.4}}
+\newlabel{useful-links}{{1.4}{7}{Useful Links}{subsection.1.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Related Work}{7}{subsection.1.5}}
+\newlabel{related-work}{{1.5}{7}{Related Work}{subsection.1.5}{}}
 % * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "helo" "readers (two)" > "/tmp/CXLTXtempout.tex"
 % * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "helo" "readers (three)" > "/tmp/CXLTXtempout.tex"
 % * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "helo" "readers (four)" > "/tmp/CXLTXtempout.tex"

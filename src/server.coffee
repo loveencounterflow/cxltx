@@ -46,6 +46,9 @@ server_options =
 #   return R
 
 #-----------------------------------------------------------------------------------------------------------
+@request_count = 0
+
+#-----------------------------------------------------------------------------------------------------------
 @decode_unicode = ( text ) ->
   ### The `Buffer ... toString` steps below decode literal UTF-8 in the request ###
   ### TAINT the NodeJS docs say: [the 'binary'] encoding method is deprecated and should be avoided
@@ -55,21 +58,21 @@ server_options =
 #-----------------------------------------------------------------------------------------------------------
 @main = ->
   #---------------------------------------------------------------------------------------------------------
-  process_request = ( request, response, handler ) =>
-    # url             = request[ 'url' ]
-    # url             = ( njs_url.parse url, true )[ 'path' ]
+  process_request = ( request, handler ) =>
+    @request_count += 1
+    RC              = @request_count
     #.......................................................................................................
-    debug '©45f request.params:        ', request.params
+    debug "©45f #{RC} rq.params:  ", request.params
     { texroute
       jobname
       command
       parameters }  = request.params
     #.......................................................................................................
-    debug '©45f url:        ', request[ 'url' ]
-    debug '©45f texroute:   ', texroute
-    debug '©45f jobname:    ', jobname
-    debug '©45f command:    ', command
-    debug '©45f parameters: ', parameters
+    debug "©45f #{RC} url:        ", request[ 'url' ]
+    debug "©45f #{RC} texroute:   ", texroute
+    debug "©45f #{RC} jobname:    ", jobname
+    debug "©45f #{RC} command:    ", command
+    debug "©45f #{RC} parameters: ", parameters
     #.......................................................................................................
     ### TAINT rewrite as middleware ###
     unless texroute? and command? # and parameters?
@@ -91,21 +94,26 @@ server_options =
   #---------------------------------------------------------------------------------------------------------
   return ( request, response ) =>
     #.......................................................................................................
-    process_request request, response, ( error, result ) =>
+    process_request request, ( error, result ) =>
       #.....................................................................................................
       if error?
         error = rpr error unless ( TYPES.type_of error ) is 'text'
-        response.writeHeader 500, 'Content-Type': 'text/plain'
-        warn '©23 error:', error
+        warn "©23 #{@request_count} error:", error
+        status  = 500
+        headers = 'Content-Type': 'text/plain'
+        response.writeHeader status, headers
         response.write error
         return response.end()
       #.....................................................................................................
-      whisper '©23 result:', result
+      whisper "©23 #{@request_count} result:", result
       status  = 200
       headers = 'Content-Type': 'text/plain'
       response.writeHeader status, headers
-      response.write result
-      response.end()
+      response.write result if result?
+      return response.end()
+    #.......................................................................................................
+    return null
+
 
 #-----------------------------------------------------------------------------------------------------------
 # APP

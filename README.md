@@ -68,6 +68,8 @@ that compiles to JS):
     % will insert `[1,4,9]`
     \evalcs{ ( n * n for n in [ 1, 2, 3 ] ) }
 
+#### The Command Line Remote Command Interface (CL/RCI)
+
 Of course, evaluating one-liners will give you only so much power, so why not execute more sizeable
 programs? That's what `\nodeRun` is for:
 
@@ -95,16 +97,21 @@ these can be easily done using `\renewcommand`:
 
 ### Method Two: Spawning `curl`
 
-Spawning a subprocess to 'outsource' a computing task is certainly not the cheapest or fastest way—creating
-and taking down a process is relatively costly. More specifically, spawning `node` is both comparatively
+Spawning a subprocess to 'outsource' a computing task is certainly not the cheapest or fastest way to
+do stuff, as creating and taking down a process is relatively costly.
+
+More specifically, spawning `node` is both comparatively
 expensive (in terms of memory) and slow. Also, the subprocess must run on the same machine as the main
-process, and unless it persisted some data (in a DB or in a file), the subprocess will run in a stateless
-fashion. What's more obvious than to make TeX communicate with a long-running HTTP server?
+process, and unless that subprocess persisted some data (in a DB or in a file), the subprocess will run in a
+stateless fashion.
+
+Then again, since we're using NodeJS anyway: What's more obvious than to make TeX communicate with a
+long-running HTTP server?
 
 Now i've not heard of any way to make TeX issue an HTTP request on its own behalf. But we already know we
 can issue arbitrary command lines, so we certainly can spawn `curl localhost` to communicate with a
-local or remote server. We still have to spawn a subprocess, but maybe `curl` is both lighter and faster
-than `node`? It certainly is.
+server. We still have to spawn a subprocess that way—but maybe `curl` is both lighter and faster
+than `node`!? It certainly is.
 
 Here are some timings i obtained for running our simple echoing example, once spawning `node`, and once
 spawning `curl`. The server is a very simple [Express](http://expressjs.com/) application; except for the
@@ -141,9 +148,16 @@ etc). The difference might matter if you plan to put out a *lot* of external cal
 typical way of getting TeX source code right is running and re-running TeX a lot of times, doing it faster
 may help greatly.
 
+#### The HTTP Remote Command Interface (H/RCI)
+
+    \curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+
+    \curl{helo}{friends}
+
+
 ### Security Considerations
 
-Be aware that executing arbitrary code with a command line like
+Be aware that executing arbitrary code by way of mediation of a command line like
 
     xelatex --enable-write18 --shell-escape somefile.tex
 
@@ -170,7 +184,9 @@ LaTeX document will start with a fair number of `\usepackage{}` statements, and 
 a source that is publicly accessible on the internet and has been so for maybe five or ten or more years.
 Someone might even have managed to place a mildly
 useful package on CTAN, one that has some obfuscated parts designed to take over world leadership on
-Friday, 13th—who knows? **The fact that TeX is a programming language that works by repeatedly re-writing
+Friday, 13th—who knows?
+
+**The fact that TeX is a programming language that works by repeatedly re-writing
 itself does not exactly help in doing static code analysis**; in fact, such code is called
 '[metamorphic code](http://en.wikipedia.org/wiki/Metamorphic_code)' and is a well-known technique employed
 by computer viruses.
@@ -181,45 +197,6 @@ know what you're doing, but be aware that running TeX has always been unsafe any
 
 > *) see e.g. `http://cseweb.ucsd.edu/~hovav/dist/texhack.pdf`
 
-
-
-
-## Related Work
-
-* [**PyTeX**](http://www.pytex.org/) (also dubbed QATeX) is a laudable effort that has, sadly, been stalling for around 11 years as
-  of this writing (January 2014), so it is likely pretty much outdated. PyTeX's approach is apparently the
-  opposite of what we do in CXLTX: they run TeX in daemon mode from Python, where we have NodeJS start a server
-  that listens to our independently running TeX.—Just for giggles, a quote from the above page: "XML is hard work to key by hand.
-  *It lacks the mark-up minimization that SGML has*" (my emphasis). Well, eleven years is a long time.
-
-* [**PythonTeX**](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python
-  together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
-  capabilities (which are ... not really that great) and how to print out integrals using SymPy; sadly, they fail
-  to provide sample code of interest to a wider audience. Their copious 128-page manual only dwells for one and a half page on the topic
-  of 'how do i use this stuff', and that only to show off more SymPy capabilities. None of their sample
-  code *needs* PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
-  process; as such, all their formulas and plots may be produced offline, independently from LaTeX.
-  Given that the installation instructions are too scary and longwinded for my taste, and that PythonTeX is
-  not part of LiveTeX, i've given up on the matter.
-
-(the below taken from http://get-software.net/macros/latex/contrib/pythontex):
-
-* [**SageTeX**](http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex) allows code for the Sage
-  mathematics software to be executed from within a \LaTeX\ document.
-
-* Martin R. Ehmsen's [**`python.sty`**](http://www.ctan.org/pkg/python) provides a very basic method of
-  executing Python code from within a LaTeX document.
-
-* [**SympyTeX**](http://elec.otago.ac.nz/w/index.php/SympyTeX) allows more sophisticated Python execution, and
-  is largely based on a subset of SageTeX.
-
-* [**LuaTeX**](http://www.luatex.org/) extends the pdfTeX engine to provide Lua as an embedded scripting
-  language, and as a result yields tight, low-level Lua integration.
-
-  LuaTeX is one of the most interesting projects in this field as it represents an attempt to provide a
-  close coupling of a real programming language with LaTeX. Unfortunately, that language is Lua, whose designers
-  believe that Unicode strings should be stored as UTF-8 bytes (Go does the same, btw). Equally unfortunately,
-  LuaTeX uses pdfTeX, which can't compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
 
 
 ## Sample Command Lines
@@ -266,6 +243,45 @@ http://ctan.space-pro.be/tex-archive/macros/latex/contrib/perltex/perltex.pdf
 http://www.tug.org/TUGboat/tb28-3/tb90mertz.pdf
 
 https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
+
+
+## Related Work
+
+* [**PyTeX**](http://www.pytex.org/) (also dubbed QATeX) is a laudable effort that has, sadly, been stalling for around 11 years as
+  of this writing (January 2014), so it is likely pretty much outdated. PyTeX's approach is apparently the
+  opposite of what we do in CXLTX: they run TeX in daemon mode from Python, where we have NodeJS start a server
+  that listens to our independently running TeX.—Just for giggles, a quote from the above page: "XML is hard work to key by hand.
+  *It lacks the mark-up minimization that SGML has*" (my emphasis). Well, eleven years is a long time.
+
+* [**PythonTeX**](https://github.com/gpoore/pythontex) is an interesting approach to bringing LaTeX and Python
+  together. Unfortunately, the authors are preconcerned with showing off Pygment's syntax hiliting
+  capabilities (which are ... not really that great) and how to print out integrals using SymPy; sadly, they fail
+  to provide sample code of interest to a wider audience. Their copious 128-page manual only dwells for one and a half page on the topic
+  of 'how do i use this stuff', and that only to show off more SymPy capabilities. None of their sample
+  code *needs* PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
+  process; as such, all their formulas and plots may be produced offline, independently from LaTeX.
+  Given that the installation instructions are too scary and longwinded for my taste, and that PythonTeX is
+  not part of LiveTeX, i've given up on the matter.
+
+(the below taken from http://get-software.net/macros/latex/contrib/pythontex):
+
+* [**SageTeX**](http://www.ctan.org/tex-archive/macros/latex/contrib/sagetex) allows code for the Sage
+  mathematics software to be executed from within a \LaTeX\ document.
+
+* Martin R. Ehmsen's [**`python.sty`**](http://www.ctan.org/pkg/python) provides a very basic method of
+  executing Python code from within a LaTeX document.
+
+* [**SympyTeX**](http://elec.otago.ac.nz/w/index.php/SympyTeX) allows more sophisticated Python execution, and
+  is largely based on a subset of SageTeX.
+
+* [**LuaTeX**](http://www.luatex.org/) extends the pdfTeX engine to provide Lua as an embedded scripting
+  language, and as a result yields tight, low-level Lua integration.
+
+  LuaTeX is one of the most interesting projects in this field as it represents an attempt to provide a
+  close coupling of a real programming language with LaTeX. Unfortunately, that language is Lua, whose designers
+  believe that Unicode strings should be stored as UTF-8 bytes (Go does the same, btw). Equally unfortunately,
+  LuaTeX uses pdfTeX, which can't compare to XeLaTeX when it comes to using custom TTF/OTF fonts.
+
 
 
 

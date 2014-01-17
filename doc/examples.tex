@@ -39,7 +39,7 @@
 \end{verbatim}
 
 (4) Like the previous example, but with standard values assumed as shown above. This is the form that you
-will want to use most of the time:
+will want to use most of the time (if you want to use the CL/RCI at all):
 \begin{verbatim}
 \nodeRun{helo}{readers (four)}
 \end{verbatim}
@@ -62,13 +62,9 @@ will want to use most of the time:
 The commands \verb#\evalcs{}# and \verb#\evaljs{}# allow you to evaluate an arbitrary self-contained
 expression, written either in CoffeeScript or in JavaScript:
 
-{\textbf{Command:}}
-
 \begin{verbatim}
 $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 \end{verbatim}
-
-{\textbf{Output:}}
 
 $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 
@@ -88,13 +84,9 @@ The \CXLTX\ command \verb#show-special-chrs# demonstrates that it is easy to inc
 in the return value. The simple rule is that whenever the output of a command is meant to be understood
 literally, it should be \verb#@escape#d:
 
-{\textbf{Command:}}
-
 \begin{verbatim}
 \nodeRun{show-special-chrs}{}
 \end{verbatim}
-
-{\textbf{Output:}}
 
 \nodeRun{show-special-chrs}{}
 
@@ -241,12 +233,9 @@ Also note we're using a dash instead of an underscore here---in \TeX, underscore
 we conveniently allow dashes to make things easier. The \CXLTX\ command \verb#show-geometry# does
 not take arguments, which is why the second pair of braces has been left empty:
 
-{\textbf{Command:}}
 \begin{verbatim}
 \curl{show-geometry}{}
 \end{verbatim}
-
-{\textbf{Output:}}
 
 \curl{show-geometry}{}
 
@@ -254,13 +243,9 @@ After \verb#show-geometry# has been performed, the \verb#@aux# object has been p
 \verb#aux# file; it then looks like this for the current document:
 
 
-{\textbf{Command:}}
-
 \begin{verbatim}
 \curl{show-aux}{}
 \end{verbatim}
-
-{\textbf{Output:}}
 
 \curl{show-aux}{}
 
@@ -274,14 +259,10 @@ As it stands, \CXLTX\ will try and collect all pertinent data from the \verb#@au
 labels from the \verb#*.aux# file associated with the current job; from
 inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
 
-{\textbf{Command:}}
-
 \begin{verbatim}
 \curl{clear-aux}{}
 \curl{show-aux}{}
 \end{verbatim}
-
-{\textbf{Output:}}
 
 % {\fontsize{3mm}{3mm}\nodeRun{show-aux}{}}
 % \nodeRun{show-aux}{}

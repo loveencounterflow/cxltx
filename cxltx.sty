@@ -15,6 +15,7 @@
 \usepackage{xstring}
 % \usepackage{catchfile}
 \usepackage{actcodes} % for `\MakeOther`
+\usepackage{etoolbox} % for \newtoggle` etc; see http://tex.stackexchange.com/a/5896/28067
 % \input binhex
 % turn a character into its Unicode hexadecimal CID:
 % \newcounter{x}
@@ -87,7 +88,8 @@
 \newcommand{\CXLTXshowOutputAndErrors}{%
   \CXLTXifFileEmpty{\CXLTXtempOutRoute}%
     {}%
-    {\input{\CXLTXtempOutRoute}}
+    % {\input{\CXLTXtempOutRoute}}
+    {\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}
   \CXLTXifFileEmpty{\CXLTXtempErrRoute}%
     {}%
     {{\color{red}Errors have occurred:%
@@ -125,13 +127,33 @@
 
 
 % ==========================================================================================================
+% REMOTE COMMAND OUTPUT WRAPPING
+% ----------------------------------------------------------------------------------------------------------
+\newtoggle{CXLTXwrapOutputToggle}
+\toggletrue{CXLTXwrapOutputToggle}
+% \togglefalse{CXLTXwrapOutputToggle}
+
+\newcommand{\CXLTXwrapOutput}[1]{%
+  \iftoggle{CXLTXwrapOutputToggle}{%
+    \begingroup%
+      \CXLTXprefix%
+        #1
+        \CXLTXsuffix%
+      \endgroup%
+  }{%
+    #1}}
+\def\CXLTXprefix{\color{DarkGreen}}
+\def\CXLTXsuffix{}
+
+% ==========================================================================================================
 % CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
   % \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
   \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute"}%
   \auxc{* CXLTX command: \CXLTXlastCommand}%
-  \immediate\write18{\CXLTXlastCommand}\input{\CXLTXtempOutRoute}}
+  % \immediate\write18{\CXLTXlastCommand}\input{\CXLTXtempOutRoute}}
+  \immediate\write18{\CXLTXlastCommand}\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}
 
 % % ----------------------------------------------------------------------------------------------------------
 % \newcommand{\execdebug}[1]{%
