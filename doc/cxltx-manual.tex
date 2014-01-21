@@ -83,11 +83,11 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
   {\par}
 
 
-\renewcommand{\CXLTXmainRoute}{cxltx/lib/main}
+\renewcommand{\CXLTXcliRoute}{cxltx/lib/cli}
 \renewcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
 \renewcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \renewcommand{\CXLTXhost}{localhost:8910}
-% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXmainRoute}{#1}{#2}}
+% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXcliRoute}{#1}{#2}}
 
 % \makeatletter
 % \def\verbatim{\tiny\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
@@ -101,34 +101,21 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
 
 
 
-\input{intro.tex}
+% \input{intro.tex}
 
-\clearpage
-\begingroup
-\thispagestyle{empty}
-\tableofcontents
-\input{conventions.tex}
-\endgroup
+% \clearpage
+% \begingroup
+% \thispagestyle{empty}
+% \tableofcontents
+% \input{conventions.tex}
+% \endgroup
 
-\clearpage
-\input{README.tex}
+% \clearpage
+% \input{README.tex}
 
 \clearpage
 \input{examples.tex}
 
-\newfontfamily\verbatimfont{Flow DejaVu Sans Mono}{\verbatimfont ▧▨▢□▣◴◵◶◷◐◑◒◓◔◕◎●⍟⌽⊛⊜⊝⊖⊕⊗}
-
-% ▣▨□
-{\verbatimfont
-\begin{tabular}{ | c | c | c | }
-\hline
-& ▨ & \\
-\hline
-& ▨ & \\
-\hline
-& ▨ & \\
-\hline
-\end{tabular}}
 
 
 % \begin{Verbatim}%

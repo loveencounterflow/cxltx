@@ -21,29 +21,21 @@ help                      = TRM.get_logger 'help',      badge
 _echo                     = TRM.echo.bind TRM
 #...........................................................................................................
 express                   = require 'express'
+#...........................................................................................................
 CXLTX                     = require './main'
+MULTIMIX                  = require 'coffeenode-multimix'
+#...........................................................................................................
+sample_provider           = require './sample-provider'
+ids_provider              = require './ids-provider'
+#...........................................................................................................
+provider                  = MULTIMIX.compose sample_provider, ids_provider
+
+
 
 #-----------------------------------------------------------------------------------------------------------
 server_options =
   'host':         '127.0.0.1'
   'port':         8910
-
-#-----------------------------------------------------------------------------------------------------------
-# @decode_url_crumb = ( crumb ) ->
-#   ### The `Buffer ... toString` steps below decode literal UTF-8 in the request ###
-#   ### TAINT the NodeJS docs say: [the 'binary'] encoding method is deprecated and should be avoided
-#     [...] [it] will be removed in future versions of Node ###
-#   try
-#     R = decodeURIComponent crumb
-#   catch error
-#     throw error unless ( message = error[ 'message' ] ) is 'URI malformed'
-#     warn '©43e', ( rpr crumb ), message
-#     R = message
-#   #.........................................................................................................
-#   R = R.replace /\++/g, ' '
-#   R = ( new Buffer R, 'binary' ).toString 'utf-8'
-#   #.........................................................................................................
-#   return R
 
 #-----------------------------------------------------------------------------------------------------------
 @request_count = 0
@@ -76,7 +68,7 @@ server_options =
     # texroute    = @decode_url_crumb texroute
     # command     = @decode_url_crumb command
     #.......................................................................................................
-    CXLTX.dispatch texroute, jobname, splitter, command, parameter, handler
+    CXLTX.dispatch provider, texroute, jobname, splitter, command, parameter, handler
     #.......................................................................................................
     return null
   #---------------------------------------------------------------------------------------------------------

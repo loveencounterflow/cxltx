@@ -11,6 +11,7 @@
 \usepackage{hyperref}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage[abspath]{currfile}
+\usepackage{currfile-abspath}
 \usepackage{xltxtra}
 \usepackage{xstring}
 % \usepackage{catchfile}
@@ -72,11 +73,11 @@
 % from within their respective directories. In the general case, you will have to adjust the path so NodeJS
 % knows where to find the script; use something along the lines of
 %
-%     \renewcommand{\CXLTXmainRoute}{route/to/main}
+%     \renewcommand{\CXLTXcliRoute}{route/to/main}
 %
 % in your `.tex` document to do that.
 %
-\newcommand{\CXLTXmainRoute}{../../lib/main}
+\newcommand{\CXLTXcliRoute}{../../lib/cli}
 \newcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
 \newcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \newcommand{\CXLTXhost}{localhost:8910}
@@ -191,11 +192,11 @@
 % * the name of the method to execute;
 % * a list of comma-separated arguments.
 %
-% The route to the dispatcher will be taken from the `\CXLTXmainRoute` macro.
+% The route to the dispatcher will be taken from the `\CXLTXcliRoute` macro.
 %
-% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXmainRoute}{\currfilepath}{#1}{#2}}
+% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXcliRoute}{\currfilepath}{#1}{#2}}
 \newcommand{\nodeRun}[3][\CXLTXparameterSplitter]{%
-  \exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2" "#3"}}
+  \exec{node "\CXLTXcliRoute" "\currfileabsdir" "\jobname" "#1" "#2" "#3"}}
 
 
 % ==========================================================================================================
@@ -233,7 +234,7 @@
   \urlescapeALPHA{#7}%
   \let\seven=\urlescapecurrent%
   % kludge:
-  \StrSubstitute{\currfileabsdir}{/}{\%2F}[\three]
+  \StrSubstitute{#3}{/}{\%2F}[\three]
   \StrSubstitute{\three}{ }{\%20}[\three]
   \exec{curl --silent --show-error #1 #2/\three/#4/#5/#6/\seven}%
   \endgroup}
@@ -248,8 +249,10 @@
 %
 % \newcommand{\curl}[2]{%
 %   \curlEscape{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
+
+\getpwd % necessary to set \thepwd
 \newcommand{\curl}[3][\CXLTXparameterSplitter]{%
-  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}{#3}}
+  \curlEscapeBETA{\CXLTXhost}{\thepwd\currfileabsdir}{\jobname}{#1}{#2}{#3}}
 
 
 % ----------------------------------------------------------------------------------------------------------

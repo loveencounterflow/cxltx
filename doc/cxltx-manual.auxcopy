@@ -15,49 +15,45 @@
 \global\let\hyper@last\relax 
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand*\HyPL@Entry[1]{}
+% * CXLTX command: node "cxltx/lib/cli" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (two)" > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: node "cxltx/lib/cli" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (three)" > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: node "cxltx/lib/cli" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (four)" > "/tmp/CXLTXtempout.tex"
 \HyPL@Entry{0<</S/D>>}
 \select@language {english}
 \@writefile{toc}{\select@language {english}}
 \@writefile{lof}{\select@language {english}}
 \@writefile{lot}{\select@language {english}}
-\@writefile{toc}{\contentsline {section}{\numberline {1}CoffeeXeLaTeX (CXLTX)}{3}{section.1}}
-\newlabel{coffeexelatex-cxltx}{{1}{3}{CoffeeXeLaTeX (CXLTX)}{section.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}What is it? And Why?}{3}{subsection.1.1}}
-\newlabel{what-is-it-and-why}{{1.1}{3}{What is it? And Why?}{subsection.1.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}TeX and NodeJS}{4}{subsection.1.2}}
-\newlabel{tex-and-nodejs}{{1.2}{4}{TeX and NodeJS}{subsection.1.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Method One: Spawning a {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces node} process}{4}{subsubsection.1.2.1}}
-\newlabel{method-one-spawning-a-node-process}{{1.2.1}{4}{Method One: Spawning a \texttt {node} process}{subsubsection.1.2.1}{}}
-\newlabel{the-command-line-remote-command-interface-clrci}{{1.2.1}{4}{The Command Line Remote Command Interface (CL/RCI)}{section*.2}{}}
-\@writefile{toc}{\contentsline {paragraph}{The Command Line Remote Command Interface (CL/RCI)}{4}{section*.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Method Two: Spawning {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces curl}}{5}{subsubsection.1.2.2}}
-\newlabel{method-two-spawning-curl}{{1.2.2}{5}{Method Two: Spawning \texttt {curl}}{subsubsection.1.2.2}{}}
-\newlabel{the-http-remote-command-interface-hrci}{{1.2.2}{6}{The HTTP Remote Command Interface (H/RCI)}{section*.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{The HTTP Remote Command Interface (H/RCI)}{6}{section*.3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{6}{subsubsection.1.2.3}}
-\newlabel{security-considerations}{{1.2.3}{6}{Security Considerations}{subsubsection.1.2.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Sample Command Lines}{7}{subsection.1.3}}
-\newlabel{sample-command-lines}{{1.3}{7}{Sample Command Lines}{subsection.1.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Useful Links}{7}{subsection.1.4}}
-\newlabel{useful-links}{{1.4}{7}{Useful Links}{subsection.1.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Related Work}{7}{subsection.1.5}}
-\newlabel{related-work}{{1.5}{7}{Related Work}{subsection.1.5}{}}
-% * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (two)" > "/tmp/CXLTXtempout.tex"
-% * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (three)" > "/tmp/CXLTXtempout.tex"
-% * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "," "helo" "readers (four)" > "/tmp/CXLTXtempout.tex"
-\@writefile{toc}{\contentsline {section}{\numberline {2}Examples}{9}{section.2}}
-\newlabel{examples}{{2}{9}{Examples}{section.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Spawning NodeJS}{9}{subsection.2.1}}
-\newlabel{spawningnodejs}{{2.1}{9}{Spawning NodeJS}{subsection.2.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Examples}{1}{section.1}}
+\newlabel{examples}{{1}{1}{Examples}{section.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Spawning NodeJS}{1}{subsection.1.1}}
+\newlabel{spawningnodejs}{{1.1}{1}{Spawning NodeJS}{subsection.1.1}{}}
 % * CXLTX command: coffee -e "console.log 23 + 65 * 123" > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 % * CXLTX command: curl --silent --show-error  127.0.0.1:8910/foobar.tex/cxltx-manual/,/helo/friends > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
-% * CXLTX command: node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" "," "show-special-chrs" "" > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: node "cxltx/lib/cli" "cxltx/doc/" "cxltx-manual" "," "show-special-chrs" "" > "/tmp/CXLTXtempout.tex"
 % * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/helo/äöüÄÖÜß > "/tmp/CXLTXtempout.tex"
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Evaluating Expressions}{10}{subsection.2.2}}
-\newlabel{evalcs}{{2.2}{10}{Evaluating Expressions}{subsection.2.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Spawning cURL}{10}{subsection.2.3}}
-\newlabel{spawningcurl}{{2.3}{10}{Spawning cURL}{subsection.2.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Character Escaping}{10}{subsection.2.4}}
-\newlabel{esc}{{2.4}{10}{Character Escaping}{subsection.2.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Unicode}{10}{subsection.2.5}}
-\newlabel{unicode}{{2.5}{10}{Unicode}{subsection.2.5}{}}
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/helo/黎永強 > "/tmp/CXLTXtempout.tex"
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Evaluating Expressions}{2}{subsection.1.2}}
+\newlabel{evalcs}{{1.2}{2}{Evaluating Expressions}{subsection.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Spawning cURL}{2}{subsection.1.3}}
+\newlabel{spawningcurl}{{1.3}{2}{Spawning cURL}{subsection.1.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Character Escaping}{2}{subsection.1.4}}
+\newlabel{esc}{{1.4}{2}{Character Escaping}{subsection.1.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Unicode}{2}{subsection.1.5}}
+\newlabel{unicode}{{1.5}{2}{Unicode}{subsection.1.5}{}}
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/helo/𠀀𠀐𠀙 > "/tmp/CXLTXtempout.tex"
+% this line goes to the aux file
+% coffee geometry: \protect \char "007B\relax   paperwidth: 39158276, paperheight: 55380990, textwidth: 28902538, textheight: 45938185, headheight: 786432, headsep: 1638400, footskip: 1966080, marginparsep: 655360, marginparwidth: 2293760, voffset: 0, topmargin: -4364099,  \protect \char "007D\relax 
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6}The {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.63228}\selectfont  \ignorespaces aux} Object}{3}{subsection.1.6}}
+\newlabel{aux}{{1.6}{3}{The \texttt {aux} Object}{subsection.1.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.6.1}The {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces \textbackslash {}aux*} Commands}{3}{subsubsection.1.6.1}}
+\newlabel{auxcommands}{{1.6.1}{3}{The \texttt {\textbackslash {}aux*} Commands}{subsubsection.1.6.1}{}}
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/show-geometry/ > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/show-aux/ > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/clear-aux/ > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: curl --silent --show-error  localhost:8910/cxltx\%2Fdoc\%2F/cxltx-manual/,/show-aux/ > "/tmp/CXLTXtempout.tex"
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.6.2}Geometry}{4}{subsubsection.1.6.2}}
+\newlabel{geo}{{1.6.2}{4}{Geometry}{subsubsection.1.6.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.6.3}Labels}{4}{subsubsection.1.6.3}}
+\newlabel{labels}{{1.6.3}{4}{Labels}{subsubsection.1.6.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7}Implementing and Calling Functions}{4}{subsection.1.7}}
+\newlabel{functions}{{1.7}{4}{Implementing and Calling Functions}{subsection.1.7}{}}
