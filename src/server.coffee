@@ -49,30 +49,25 @@ server_options =
 @request_count = 0
 
 #-----------------------------------------------------------------------------------------------------------
-@decode_unicode = ( text ) ->
-  ### The `Buffer ... toString` steps below decode literal UTF-8 in the request ###
-  ### TAINT the NodeJS docs say: [the 'binary'] encoding method is deprecated and should be avoided
-    [...] [it] will be removed in future versions of Node ###
-  return ( new Buffer text, 'binary' ).toString 'utf-8'
-
-#-----------------------------------------------------------------------------------------------------------
 @main = ->
   #---------------------------------------------------------------------------------------------------------
   process_request = ( request, handler ) =>
     @request_count += 1
     RC              = @request_count
     #.......................................................................................................
-    debug "©45f #{RC} rq.params:  ", request.params
+    # debug "©45f #{RC} rq.params:  ", request.params
     { texroute
       jobname
+      splitter
       command
-      parameters }  = request.params
+      parameter } = request.params
     #.......................................................................................................
     debug "©45f #{RC} url:        ", request[ 'url' ]
     debug "©45f #{RC} texroute:   ", texroute
     debug "©45f #{RC} jobname:    ", jobname
+    debug "©45f #{RC} splitter:   ", splitter
     debug "©45f #{RC} command:    ", command
-    debug "©45f #{RC} parameters: ", parameters
+    debug "©45f #{RC} parameter:  ", parameter
     #.......................................................................................................
     ### TAINT rewrite as middleware ###
     unless texroute? and command? # and parameters?
@@ -80,15 +75,8 @@ server_options =
     #.......................................................................................................
     # texroute    = @decode_url_crumb texroute
     # command     = @decode_url_crumb command
-    method_name = command.replace /-/g, '_'
     #.......................................................................................................
-    ### TAINT code duplication ###
-    ### This should perhaps be done with slashes as well ###
-    # P = if parameters? and parameters.length > 0 then ( @decode_url_crumb parameters ).split ',' else []
-    P = if parameters? and parameters.length > 0 then ( @decode_unicode parameters ).split ',' else []
-    debug '©45f P:          ', P
-    #.......................................................................................................
-    CXLTX.dispatch texroute, jobname, method_name, P..., handler
+    CXLTX.dispatch texroute, jobname, splitter, command, parameter, handler
     #.......................................................................................................
     return null
   #---------------------------------------------------------------------------------------------------------
@@ -102,7 +90,7 @@ server_options =
         status  = 500
         headers = 'Content-Type': 'text/plain'
         response.writeHeader status, headers
-        response.write error
+        response.write CXLTX.escape_error error
         return response.end()
       #.....................................................................................................
       whisper "©23 #{@request_count} result:", result
@@ -131,8 +119,8 @@ app.use express.logger 'format': 'dev'
 # ENDPOINTS
 #-----------------------------------------------------------------------------------------------------------
 main = @main()
-app.get '/:texroute/:jobname/:command/:parameters',  main
-app.get '/:texroute/:jobname/:command',              main
+app.get '/:texroute/:jobname/:splitter/:command/:parameter',  main
+app.get '/:texroute/:jobname/:splitter/:command',              main
 # app.use view 'not_found'
 
 

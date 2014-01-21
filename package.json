@@ -15,7 +15,8 @@
     "line-by-line": "~0.1.1",
     "express": "~3.4.7",
     "coffeenode-types": "~0.1.0",
-    "coffeenode-trm": "~0.1.13"
+    "coffeenode-trm": "~0.1.13",
+    "coffeenode-monitor": "0.0.2"
   },
   "keywords": [
     "tex",

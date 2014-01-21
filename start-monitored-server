@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# this is necessary to update root user on the whereabouts of global node modules:
+export NODE_PATH=~/npm/lib/node_modules
+node --harmony node_modules/coffeenode-monitor/lib/main.js "./lib/server.js"
+
+
+

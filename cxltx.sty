@@ -38,6 +38,7 @@
 
 % fix the annoyingly narrow limit to largest allowed font size:
 \renewcommand\RSlargest{9999pt}%
+\renewcommand\RSsmallest{1pt}%
 
 % works with LaTeX standard font (CM):
 \DeclareRobustCommand{\CXLTXstandard}{%
@@ -79,6 +80,7 @@
 \newcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
 \newcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \newcommand{\CXLTXhost}{localhost:8910}
+\newcommand{\CXLTXparameterSplitter}{,}
 
 % \catcode27=11
 % ==========================================================================================================
@@ -140,7 +142,7 @@
         #1
         \CXLTXsuffix%
       \endgroup%
-  }{%
+  }{% else
     #1}}
 \def\CXLTXprefix{\color{DarkGreen}}
 \def\CXLTXsuffix{}
@@ -181,7 +183,7 @@
 % The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
 % LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
 %
-\newcommand{\nodeRunScript}[5]{\exec{node "#1" "#2" "#3" "#4" "#5"}}
+\newcommand{\nodeRunScript}[6]{\exec{node "#1" "#2" "#3" "#4" "#5" "#6"}}
 
 % ----------------------------------------------------------------------------------------------------------
 % A simplified CXLTX invocation with `\nodeRun` takes two parameters:
@@ -192,7 +194,8 @@
 % The route to the dispatcher will be taken from the `\CXLTXmainRoute` macro.
 %
 % \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXmainRoute}{\currfilepath}{#1}{#2}}
-\newcommand{\nodeRun}[2]{\exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2"}}
+\newcommand{\nodeRun}[3][\CXLTXparameterSplitter]{%
+  \exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2" "#3"}}
 
 
 % ==========================================================================================================
@@ -215,35 +218,38 @@
 %   #1: cURL options (optional)
 %   #2: host with port (e.g. `127.0.0.1:8910`)
 %   #3: route to `tex` file (used to retrieve `aux` file)
-%   #4: command
-%   #5: arguments
+%   #4: jobname
+%   #5: parameter splitter
+%   #6: command
+%   #7: parameter
 %
-\newcommand{\curlEscape}[6][]{%
-  \urlescapeALPHA{#6}%
-  \exec{curl --silent --show-error #1 #2/#3/#4/#5/\urlescapecurrent}}
+\newcommand{\curlEscape}[7][]{%
+  \urlescapeALPHA{#7}%
+  \exec{curl --silent --show-error #1 #2/#3/#4/#5/#6/\urlescapecurrent}}
 
 
-\newcommand{\curlEscapeBETA}[6][]{%
+\newcommand{\curlEscapeBETA}[7][]{%
   \begingroup%
-  \urlescapeALPHA{#6}%
-  \let\six=\urlescapecurrent%
+  \urlescapeALPHA{#7}%
+  \let\seven=\urlescapecurrent%
   % kludge:
   \StrSubstitute{\currfileabsdir}{/}{\%2F}[\three]
   \StrSubstitute{\three}{ }{\%20}[\three]
-  \exec{curl --silent --show-error #1 #2/\three/\jobname/#5/\six}%
+  \exec{curl --silent --show-error #1 #2/\three/#4/#5/#6/\seven}%
   \endgroup}
 
 
 % ----------------------------------------------------------------------------------------------------------
 %
 % Arguments:
-%   #1: command
-%   #2: arguments
+%   #1: parameter splitter (optional)
+%   #2: command
+%   #3: parameter
 %
 % \newcommand{\curl}[2]{%
 %   \curlEscape{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
-\newcommand{\curl}[2]{%
-  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
+\newcommand{\curl}[3][\CXLTXparameterSplitter]{%
+  \curlEscapeBETA{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}{#3}}
 
 
 % ----------------------------------------------------------------------------------------------------------

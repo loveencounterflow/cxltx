@@ -1,0 +1,8 @@
+
+
+{
+	"on-change":	"coffee -c -o ./lib ./src",
+	"start": "./lib/server.js",
+	"watch-routes": [
+		"src" ]
+}
