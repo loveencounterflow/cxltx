@@ -1,6 +1,8 @@
 % \linenumbers
 
 
+
+
 \section{Examples}\label{examples}
 % \lipsum[1]
 
@@ -12,6 +14,7 @@
   "\CXLTXmainRoute"
   "\currfileabsdir"
   "\jobname"
+  ","
   "helo"
   "readers (one)"
   > /tmp/temp.dat}\input{/tmp/temp.dat}
@@ -23,6 +26,7 @@
   "\CXLTXmainRoute"
   "\currfileabsdir"
   "\jobname"
+  ","
   "helo"
   "readers (two)"}
 \end{verbatim}
@@ -34,6 +38,7 @@
   {\CXLTXmainRoute}
   {\currfileabsdir}
   {\jobname}
+  {,}
   {helo}
   {readers (three)}
 \end{verbatim}
@@ -47,11 +52,12 @@ will want to use most of the time (if you want to use the CL/RCI at all):
 
 {\textbf{Outputs:}}
 
-\immediate\write18{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
+\immediate\write18{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "," "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
 
-\exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "helo" "readers (two)"}
+\exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "," "helo" "readers (two)"}
 
-\nodeRunScript{\CXLTXmainRoute}{\currfileabsdir}{\jobname}{helo}{readers (three)}
+\nodeRunScript{\CXLTXmainRoute}{\currfileabsdir}{\jobname}{,}{helo}{readers (three)}
+
 
 \nodeRun{helo}{readers (four)}
 
@@ -72,9 +78,10 @@ $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 % ==========================================================================================================
 \subsection{Spawning cURL}\label{spawningcurl}
 \begin{verbatim}
-\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/,/helo/friends}
 \end{verbatim}
-\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/,/helo/friends}
+
 
 
 % ==========================================================================================================
@@ -103,6 +110,7 @@ without losses or Mojibake / squiggles:
 \end{verbatim}
 
 \curl{helo}{äöüÄÖÜß}
+% \clearpage\typeout{STOPPED}\QUIT
 
 Chinese characters from the Unicode BMP (`16 bit'):
 
@@ -181,7 +189,7 @@ to read and write data from and to the \verb#aux# file assoated with the current
 \end{itemize}
 
 % ----------------------------------------------------------------------------------------------------------
-\subsubsection{The \texttt{\textbackslash{}aux*} Commands}\label{aux}
+\subsubsection{The \texttt{\textbackslash{}aux*} Commands}\label{auxcommands}
 
 Because they're quite straightforward, let's have a look at the actual definitions of the
 \verb#aux*# commands:
@@ -268,3 +276,9 @@ inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 
 % \nodeRun{show-aux}{}
 \curl{clear-aux}{}
 \curl{show-aux}{}
+
+% ----------------------------------------------------------------------------------------------------------
+\subsection{Implementing and Calling Functions}\label{functions}
+
+\renewcommand{\CXLTXparameterSplitter}{!}
+% \clearpage\typeout{STOPPED}\QUIT
