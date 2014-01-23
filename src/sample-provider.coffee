@@ -15,6 +15,7 @@ log                       = TRM.get_logger 'plain',     badge
 info                      = TRM.get_logger 'info',      badge
 whisper                   = TRM.get_logger 'whisper',   badge
 alert                     = TRM.get_logger 'alert',     badge
+debug                     = TRM.get_logger 'debug',     badge
 warn                      = TRM.get_logger 'warn',      badge
 help                      = TRM.get_logger 'help',      badge
 echo                      = TRM.echo.bind TRM
@@ -39,9 +40,9 @@ CXLTX                     = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @show_geometry = ( handler ) ->
-  CXLTX.read_aux ( error ) =>
+  CXLTX.read_aux ( error, aux ) =>
     return handler error if error?
-    unless ( g = CXLTX.aux[ 'geometry' ] )?
+    unless ( g = aux[ 'geometry' ] )?
       # debug message
         # you may want to consider using `\\auxgeo` in your TeX source."""
       return handler "unable to retrieve geometry info from #{CXLTX.aux[ 'auxroute' ]};"
@@ -86,7 +87,33 @@ CXLTX                     = require './main'
 
 #-----------------------------------------------------------------------------------------------------------
 @show_aux = ( handler ) ->
-  #.........................................................................................................
-  # CXLTX.read_aux ( error ) =>
-  # return handler error if error?
-  handler null, "\\begin{verbatim}\n#{rpr CXLTX.aux}\n\\end{verbatim}"
+  handler null, "\\begin{verbatim}\\CXLTXwrapOutput{\n#{rpr CXLTX.aux}}\n\\end{verbatim}"
+
+#-----------------------------------------------------------------------------------------------------------
+@show_labels = ( handler ) ->
+  CXLTX.read_aux ( error, aux ) =>
+    return handler error if error?
+    R       = []
+    #.......................................................................................................
+    labels  = ( label for ignore, label of aux[ 'labels' ] ).sort ( a, b ) ->
+      ### TAINT what with roman numbers? ###
+      pageref_a = parseInt a[ 'pageref' ], 10
+      pageref_b = parseInt b[ 'pageref' ], 10
+      return -1 if pageref_a < pageref_b
+      return +1 if pageref_a > pageref_b
+      return  0
+    debug labels
+    #.......................................................................................................
+    R.push "\\begin{tabular}{ | l | l | l | l | }"
+    R.push "\\hline"
+    R.push "name & pageref & ref & title\\\\"
+    R.push "\\hline"
+    for label in labels
+      R.push "#{label[ 'name' ]} & #{label[ 'pageref' ]} & #{label[ 'ref' ]} & #{label[ 'title' ]}\\\\"
+    R.push "\\hline"
+    R.push "\\end{tabular}"
+    #.......................................................................................................
+    handler null, R.join '\n'
+
+
+

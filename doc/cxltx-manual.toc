@@ -19,5 +19,5 @@
 \contentsline {subsection}{\numberline {2.6}The {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.63228}\selectfont \ignorespaces aux} Object}{11}{subsection.2.6}
 \contentsline {subsubsection}{\numberline {2.6.1}The {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.7849}\selectfont \ignorespaces \textbackslash {}aux*} Commands}{11}{subsubsection.2.6.1}
 \contentsline {subsubsection}{\numberline {2.6.2}Geometry}{12}{subsubsection.2.6.2}
-\contentsline {subsubsection}{\numberline {2.6.3}Labels}{13}{subsubsection.2.6.3}
-\contentsline {subsection}{\numberline {2.7}Implementing and Calling Functions}{13}{subsection.2.7}
+\contentsline {subsubsection}{\numberline {2.6.3}Labels}{14}{subsubsection.2.6.3}
+\contentsline {subsection}{\numberline {2.7}Implementing and Calling Functions}{16}{subsection.2.7}

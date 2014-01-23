@@ -273,10 +273,24 @@ After \verb#show-geometry# has been performed, the \verb#CXLTX.aux# object has b
 \subsubsection{Labels}\label{labels}
 
 As it stands, \CXLTX\ will try and collect all pertinent data from the \verb#CXLTX.aux# file when
-\verb#@read_aux# is called; this currently includes
+\verb#@read_aux# is called; this currently includes the namew of the labels, their `pageref` and `ref`
+attributes as well (thanks to the \href{http://ftp.gwdg.de/pub/ctan/macros/latex/contrib/hyperref/doc/manual.pdf}{{\texttt hyperref} package})
+the respective associated titles.
 
-labels from the \verb#*.aux# file associated with the current job; from
-inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
+Remember that you will have to re-run \XeLaTeX\ whenever there have been
+changes to your labels as \CXLTX\ can only read from the (copy of the) \verb#aux# file of the previous
+\XeLaTeX\ invocation, and \LaTeX\ itself needs more than one pass in many cases, too. You can easily
+have \CXLTX\ print you out a table with an overview of the currently defined labels:
+
+\begin{verbatim}
+\begin{landscape}
+\node{show-labels}{}
+\end{landscape}
+\end{verbatim}
+
+\begin{landscape}
+\node{show-labels}{}
+\end{landscape}
 
 \begin{verbatim}
 \nodeCurl{clear-aux}{}

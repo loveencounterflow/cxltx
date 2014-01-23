@@ -68,7 +68,7 @@ Line_by_line              = require 'line-by-line'
 
 #-----------------------------------------------------------------------------------------------------------
 @read_aux = ( handler ) ->
-  return null if @aux[ 'is-complete' ]
+  return handler null, @aux if @aux[ 'is-complete' ]
   #.........................................................................................................
   texroute  = @aux[ 'texroute' ]
   jobname   = @aux[ 'jobname' ]
@@ -87,7 +87,7 @@ Line_by_line              = require 'line-by-line'
     if line is null
       postprocess()
       @aux[ 'is-complete' ] = yes
-      return handler null
+      return handler null, @aux
     #.......................................................................................................
     ### De-escaping characters: ###
     line = line.replace @read_aux.protectchar_matcher, ( $0, $1 ) =>
@@ -117,8 +117,8 @@ Line_by_line              = require 'line-by-line'
       [ ignore, label, ref, pageref, title, unknown, unknown, ] = match
       labels[ label ] =
         name:           label
-        ref:            parseInt ref,     10
-        pageref:        parseInt pageref, 10
+        ref:            ref
+        pageref:        pageref
         title:          title
       return null
 
@@ -163,7 +163,7 @@ Line_by_line              = require 'line-by-line'
 @read_aux.newlabel_matcher = ///
   ^ \\newlabel \{ ( [^{}]+ ) \}
   \{
-    \{ ( [0-9]* ) \}
+    \{ ( [0-9.]* ) \}
     \{ ( [0-9]* ) \}
     (?:
       \{ ( [^{}]* ) \}
