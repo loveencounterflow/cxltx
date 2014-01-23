@@ -77,13 +77,17 @@
 %
 % in your `.tex` document to do that.
 %
+\getpwd % necessary to set `currfile`'s `\thepwd`
 \newcommand{\CXLTXcliRoute}{../../lib/cli}
 \newcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
 \newcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 \newcommand{\CXLTXhost}{localhost:8910}
 \newcommand{\CXLTXparameterSplitter}{,}
+\edef\CXLTXtexRoute{\currfileabsdir\jobname}
 
-% \catcode27=11
+
+
+
 % ==========================================================================================================
 % HELPERS
 % ----------------------------------------------------------------------------------------------------------
@@ -117,16 +121,6 @@
     \fi
     \closein\@inputcheck
 }
-% \makeatother
-% test for empty arguments:
-% \newcommand{\testempty}[2][]{%
-% \if\relax\detokenize{#2}\relax%
-%      no optional argument given%
-%    \else%
-%      optional argument was: #2%
-%    \fi%
-% }
-
 
 
 % ==========================================================================================================
@@ -149,7 +143,7 @@
 \def\CXLTXsuffix{}
 
 % ==========================================================================================================
-% CORE COMMANDS (NODE COMMAND LINE (NCL) MODEL)
+% CORE COMMANDS (CL/RCI)
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\exec}[1]{%
   % \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
@@ -157,10 +151,6 @@
   \auxc{* CXLTX command: \CXLTXlastCommand}%
   % \immediate\write18{\CXLTXlastCommand}\input{\CXLTXtempOutRoute}}
   \immediate\write18{\CXLTXlastCommand}\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}
-
-% % ----------------------------------------------------------------------------------------------------------
-% \newcommand{\execdebug}[1]{%
-%   \immediate\write18{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}\CXLTXshowOutputAndErrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\execdebug}[1]{%
@@ -173,20 +163,6 @@
 \newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
 
 % ----------------------------------------------------------------------------------------------------------
-% A full CXLTX invocation with `\nodeRunScript` takes five parameters:
-%
-% * the route to the dispatcher script;
-% * the route to the current TeX script, relative to the CWD, as produced by `currfile/currfilepath`;
-% * the current `\jobname`;
-% * the name of the method to execute;
-% * a list of comma-separated arguments.
-%
-% The reason we defer argument parsing to the dispatcher script (when it conceivably could be done with
-% LaTeX) is simply that this kind of dataprocessing is infinitely easier to do in JavaScript.
-%
-\newcommand{\nodeRunScript}[6]{\exec{node "#1" "#2" "#3" "#4" "#5" "#6"}}
-
-% ----------------------------------------------------------------------------------------------------------
 % A simplified CXLTX invocation with `\nodeRun` takes two parameters:
 %
 % * the name of the method to execute;
@@ -194,67 +170,55 @@
 %
 % The route to the dispatcher will be taken from the `\CXLTXcliRoute` macro.
 %
-% \newcommand{\nodeRun}[2]{\nodeRunScript{\CXLTXcliRoute}{\currfilepath}{#1}{#2}}
 \newcommand{\nodeRun}[3][\CXLTXparameterSplitter]{%
-  \exec{node "\CXLTXcliRoute" "\currfileabsdir" "\jobname" "#1" "#2" "#3"}}
+  \exec{node "\CXLTXcliRoute" "\currfileabsdir" "#1" "#2" "#3"}}
 
 
 % ==========================================================================================================
-% CORE COMMANDS (HTTP MODEL)
+% CORE COMMANDS (H/RCI)
 % ----------------------------------------------------------------------------------------------------------
-% `curlRaw` takes up to two arguments: the first optional one specifies options to cURL; the second,
-% mandatory one should be a URL to retrieve. The command uses `exec` to run
-% `curl --silent --show-error #1 #2`; the implicit options facilitate error handling.
-%
-% Arguments:
-%   #1: cURL options (optional)
-%   #2: full HTTP route of request; the `http://` part may be omitted
-%
-\newcommand{\curlRaw}[2][]{%
-  \execdebug{curl --silent --show-error #1 #2}}
-
-% ----------------------------------------------------------------------------------------------------------
-%
-% Arguments:
-%   #1: cURL options (optional)
-%   #2: host with port (e.g. `127.0.0.1:8910`)
-%   #3: route to `tex` file (used to retrieve `aux` file)
-%   #4: jobname
-%   #5: parameter splitter
-%   #6: command
-%   #7: parameter
-%
-\newcommand{\curlEscape}[7][]{%
-  \urlescapeALPHA{#7}%
-  \exec{curl --silent --show-error #1 #2/#3/#4/#5/#6/\urlescapecurrent}}
-
-
-\newcommand{\curlEscapeBETA}[7][]{%
-  \begingroup%
-  \urlescapeALPHA{#7}%
-  \let\seven=\urlescapecurrent%
-  % kludge:
-  \StrSubstitute{#3}{/}{\%2F}[\three]
-  \StrSubstitute{\three}{ }{\%20}[\three]
-  \exec{curl --silent --show-error #1 #2/\three/#4/#5/#6/\seven}%
-  \endgroup}
-
-
-% ----------------------------------------------------------------------------------------------------------
+% This is a sad code duplication of `\CXLTX@urlescape`; i've tried every conceivable trick i knew but
+% couldn't find a way to make it work short of the one below. The reader is invited to improve on this
+% unsatisfactory solution.
 %
 % Arguments:
 %   #1: parameter splitter (optional)
 %   #2: command
 %   #3: parameter
 %
-% \newcommand{\curl}[2]{%
-%   \curlEscape{\CXLTXhost}{\currfileabspath}{\jobname}{#1}{#2}}
+\newcommand{\nodeCurl}[3][\CXLTXparameterSplitter]{%
+  \begingroup%
+  \CXLTX@urlescape{#3}%
+  \let\three=\urlescapecurrent%
+  \StrSubstitute{\CXLTXtexRoute}{\%}{\%25}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{/}{\%2F}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{\&}{\%26}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{ }{\%20}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{\$}{\%24}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{+}{\%2b}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{,}{\%2c}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{:}{\%3a}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{;}{\%3b}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{?}{\%3f}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{@}{\%40}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{"}{\%22}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{<}{\%3c}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{>}{\%3e}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{\#}{\%23}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{\{}{\%7b}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{\}}{\%7d}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{|}{\%7c}[\CXLTX@texRouteEscaped]%
+  \StrSubstitute{\CXLTX@texRouteEscaped}{'}{\%27}[\CXLTX@texRouteEscaped]%
+  \exec{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}
+  % \auxc{\CXLTX@texRouteEscaped}
+  \endgroup}
 
-\getpwd % necessary to set \thepwd
-\newcommand{\curl}[3][\CXLTXparameterSplitter]{%
-  \curlEscapeBETA{\CXLTXhost}{\thepwd\currfileabsdir}{\jobname}{#1}{#2}{#3}}
+% ----------------------------------------------------------------------------------------------------------
+\newcommand{\node}{\nodeCurl}
 
 
+% ==========================================================================================================
+% URL ENVIRONMENT
 % ----------------------------------------------------------------------------------------------------------
 % To make writing out URLs in TeX a bit easier, we define the `\begin{URL} ... \end{URL}` environment:
 % To avoid a name clash with the `hyperref` package, we use `URL` instead of `url`.
@@ -375,34 +339,34 @@
 %
 % thx to http://tex.stackexchange.com/a/153217/28067 for this beautiful solution
 % % \makeatletter
-% \newcommand{\@urlescapestep}[2]{%
+% \newcommand{\@CXLTX@urlescapestep}[2]{%
 %   \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
 %   }
 % \newcommand{\urlescape}[1]{{%
 %   \noexpandarg % suppress expansions made by xstring
 %   \StrSubstitute{#1}{\%}{\%25}[\x]% first step
-%   \@urlescapestep{/}{\%2F}%
-%   \@urlescapestep{\&}{\%26}%
-%   \@urlescapestep{ }{\%20}%
-%   \@urlescapestep{\$}{\%24}%
-%   \@urlescapestep{+}{\%2b}%
-%   \@urlescapestep{,}{\%2c}%
-%   \@urlescapestep{:}{\%3a}%
-%   \@urlescapestep{;}{\%3b}%
-%   \@urlescapestep{?}{\%3f}%
-%   \@urlescapestep{@}{\%40}%
-%   \@urlescapestep{"}{\%22}%
-%   \@urlescapestep{<}{\%3c}%
-%   \@urlescapestep{>}{\%3e}%
-%   \@urlescapestep{\#}{\%23}%
-%   \@urlescapestep{\{}{\%7b}%
-%   \@urlescapestep{\}}{\%7d}%
-%   \@urlescapestep{|}{\%7c}%
-%   \@urlescapestep{\^}{\%5e}%
-%   \@urlescapestep{\~}{\%7e}%
-%   \@urlescapestep{[}{\%5b}%
-%   \@urlescapestep{]}{\%5d}%
-%   \@urlescapestep{\`}{\%60}%
+%   \@CXLTX@urlescapestep{/}{\%2F}%
+%   \@CXLTX@urlescapestep{\&}{\%26}%
+%   \@CXLTX@urlescapestep{ }{\%20}%
+%   \@CXLTX@urlescapestep{\$}{\%24}%
+%   \@CXLTX@urlescapestep{+}{\%2b}%
+%   \@CXLTX@urlescapestep{,}{\%2c}%
+%   \@CXLTX@urlescapestep{:}{\%3a}%
+%   \@CXLTX@urlescapestep{;}{\%3b}%
+%   \@CXLTX@urlescapestep{?}{\%3f}%
+%   \@CXLTX@urlescapestep{@}{\%40}%
+%   \@CXLTX@urlescapestep{"}{\%22}%
+%   \@CXLTX@urlescapestep{<}{\%3c}%
+%   \@CXLTX@urlescapestep{>}{\%3e}%
+%   \@CXLTX@urlescapestep{\#}{\%23}%
+%   \@CXLTX@urlescapestep{\{}{\%7b}%
+%   \@CXLTX@urlescapestep{\}}{\%7d}%
+%   \@CXLTX@urlescapestep{|}{\%7c}%
+%   \@CXLTX@urlescapestep{\^}{\%5e}%
+%   \@CXLTX@urlescapestep{\~}{\%7e}%
+%   \@CXLTX@urlescapestep{[}{\%5b}%
+%   \@CXLTX@urlescapestep{]}{\%5d}%
+%   \@CXLTX@urlescapestep{\`}{\%60}%
 %   \x}}
 % % \makeatother
 % ..........................................................................................................
@@ -411,41 +375,42 @@
 %
 % In the following group endlines do not produce spaces
 % and `%' becomes a printable character
-\newcommand{\urlescapestep}[2]{%
+\newcommand{\CXLTX@urlescapestep}[2]{%
   \expandafter\StrSubstitute\expandafter{\x}{#1}{#2}[\x]%
   }
 \begingroup
 \endlinechar=-1
 \catcode`\%=12
 \MakeOther\`
-\gdef\urlescapeALPHA#1{{
+\gdef\CXLTX@urlescape#1{{
   \noexpandarg
   \StrSubstitute{#1}{%}{%25}[\x]
-  \urlescapestep{/}{%2F}
-  \urlescapestep{\&}{%26}
-  \urlescapestep{ }{%20}
-  \urlescapestep{\$}{%24}
-  \urlescapestep{+}{%2b}
-  \urlescapestep{,}{%2c}
-  \urlescapestep{:}{%3a}
-  \urlescapestep{;}{%3b}
-  \urlescapestep{?}{%3f}
-  \urlescapestep{@}{%40}
-  \urlescapestep{"}{%22}
-  \urlescapestep{<}{%3c}
-  \urlescapestep{>}{%3e}
-  \urlescapestep{\#}{%23}
-  \urlescapestep{\{}{%7b}
-  \urlescapestep{\}}{%7d}
-  \urlescapestep{|}{%7c}
-  \urlescapestep{\^}{%5e}
-  \urlescapestep{\~}{%7e}
-  \urlescapestep{[}{%5b}
-  \urlescapestep{]}{%5d}
-  \urlescapestep{`}{%60}
-  \urlescapestep{'}{%27}
+  \CXLTX@urlescapestep{/}{%2F}
+  \CXLTX@urlescapestep{\&}{%26}
+  \CXLTX@urlescapestep{ }{%20}
+  \CXLTX@urlescapestep{\$}{%24}
+  \CXLTX@urlescapestep{+}{%2b}
+  \CXLTX@urlescapestep{,}{%2c}
+  \CXLTX@urlescapestep{:}{%3a}
+  \CXLTX@urlescapestep{;}{%3b}
+  \CXLTX@urlescapestep{?}{%3f}
+  \CXLTX@urlescapestep{@}{%40}
+  \CXLTX@urlescapestep{"}{%22}
+  \CXLTX@urlescapestep{<}{%3c}
+  \CXLTX@urlescapestep{>}{%3e}
+  \CXLTX@urlescapestep{\#}{%23}
+  \CXLTX@urlescapestep{\{}{%7b}
+  \CXLTX@urlescapestep{\}}{%7d}
+  \CXLTX@urlescapestep{|}{%7c}
+  \CXLTX@urlescapestep{\^}{%5e}
+  \CXLTX@urlescapestep{\~}{%7e}
+  \CXLTX@urlescapestep{[}{%5b}
+  \CXLTX@urlescapestep{]}{%5d}
+  \CXLTX@urlescapestep{`}{%60}
+  \CXLTX@urlescapestep{'}{%27}
   \global\let\urlescapecurrent=\x}}
 \endgroup
+
 
 % ##########################################################################################################
 \makeatother

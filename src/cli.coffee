@@ -12,13 +12,14 @@ provider                  = MULTIMIX.compose sample_provider, ids_provider
 #-----------------------------------------------------------------------------------------------------------
 @main = ->
   # info "©45 argv: #{rpr process.argv}"
-  texroute    = process.argv[ 2 ]
-  jobname     = process.argv[ 3 ]
-  splitter    = process.argv[ 4 ]
-  command     = process.argv[ 5 ]
-  parameter   = process.argv[ 6 ]
+  [ ignored
+    ignored
+    texroute
+    splitter
+    command
+    parameter ] = process.argv
   #.........................................................................................................
-  CXLTX.dispatch provider, texroute, jobname, splitter, command, parameter, ( error, result ) =>
+  CXLTX.dispatch provider, texroute, splitter, command, parameter, ( error, result ) =>
     #.......................................................................................................
     CXLTX.echo CXLTX.debug error if error?
     CXLTX.echo result if result?

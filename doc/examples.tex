@@ -12,8 +12,7 @@
 \begin{verbatim}
 \immediate\write18{node
   "\CXLTXcliRoute"
-  "\currfileabsdir"
-  "\jobname"
+  "\CXLTXtexRoute"
   ","
   "helo"
   "readers (one)"
@@ -24,42 +23,28 @@
 \begin{verbatim}
 \exec{node
   "\CXLTXcliRoute"
-  "\currfileabsdir"
-  "\jobname"
+  "\CXLTXtexRoute"
   ","
   "helo"
   "readers (two)"}
 \end{verbatim}
 
-(3) \verb#\nodeRunScript{}# will execute NodeJS code that adheres to the call convention established by
-\CXLTX:
-\begin{verbatim}
-\nodeRunScript
-  {\CXLTXcliRoute}
-  {\currfileabsdir}
-  {\jobname}
-  {,}
-  {helo}
-  {readers (three)}
-\end{verbatim}
-
-(4) Like the previous example, but with standard values assumed as shown above. This is the form that you
+(3) Like the previous example, but with standard values assumed as shown above. This is the form that you
 will want to use most of the time (if you want to use the CL/RCI at all):
 \begin{verbatim}
-\nodeRun{helo}{readers (four)}
+\nodeRun{helo}{readers (three)}
 \end{verbatim}
 
 
 {\textbf{Outputs:}}
 
-\immediate\write18{node "\CXLTXcliRoute" "\currfileabsdir" "\jobname" "," "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
+\immediate\write18{node "\CXLTXcliRoute" "\CXLTXtexRoute" "," "helo" "readers (one)" > /tmp/temp.dat}\input{/tmp/temp.dat}
 
-\exec{node "\CXLTXcliRoute" "\currfileabsdir" "\jobname" "," "helo" "readers (two)"}
+\exec{node "\CXLTXcliRoute" "\CXLTXtexRoute" "," "helo" "readers (two)"}
 
-\nodeRunScript{\CXLTXcliRoute}{\currfileabsdir}{\jobname}{,}{helo}{readers (three)}
+\nodeRun{helo}{readers (three)}
 
-
-\nodeRun{helo}{readers (four)}
+% \clearpage\typeout{STOPPED}\QUIT
 
 
 % ----------------------------------------------------------------------------------------------------------
@@ -77,10 +62,36 @@ $23 + 65 * 123 = \evalcs{23 + 65 * 123}$
 
 % ==========================================================================================================
 \subsection{Spawning cURL}\label{spawningcurl}
+
+Using the \verb#\exec# command, we can spawn cURL to do a remote procedure call against our NodeJS HTTP
+server:
+
 \begin{verbatim}
-\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/,/helo/friends}
+\StrSubstitute{\CXLTXtexRoute}{/}{\%2F}[\texRoute]
+\exec{curl --silent --show-error 127.0.0.1:8910/\texRoute/,/helo/friends}
 \end{verbatim}
-\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/,/helo/friends}
+\StrSubstitute{\CXLTXtexRoute}{/}{\%2F}[\texRoute]
+\exec{curl --silent --show-error 127.0.0.1:8910/\texRoute/,/helo/friends}
+
+Since this method is much faster and more versatile than using \verb#\nodeRun#, the \verb#\node# command
+is per default set to execute \verb#\nodeCurl#; you may change that by using one of the following lines:
+
+\begin{verbatim}
+\renewcommand{\node}{\nodeRun}
+% or (the default):
+\renewcommand{\node}{\nodeCurl}
+\end{verbatim}
+\renewcommand{\node}{\nodeCurl}
+
+The \verb#\nodeCurl# command (and, by extension, \verb#\node# in its default incarnation)
+simplifies the above by hiding the ugly details; most of the time, you'll get
+away with two obligatory arguments, namely the command name and the command parameters:
+
+\begin{verbatim}
+\node{helo}{friends}
+\end{verbatim}
+\node{helo}{friends}
+
 
 % \clearpage\typeout{STOPPED}\QUIT
 
@@ -108,27 +119,27 @@ Multilingual plain, which frequently cause difficulties---can be transported to 
 without losses or Mojibake / squiggles:
 
 \begin{verbatim}
-\curl{helo}{äöüÄÖÜß}
+\nodeCurl{helo}{äöüÄÖÜß}
 \end{verbatim}
 
-\curl{helo}{äöüÄÖÜß}
+\nodeCurl{helo}{äöüÄÖÜß}
 
 Chinese characters from the Unicode BMP (`16 bit'):
 
 \begin{verbatim}
-\curl{helo}{黎永強}
+\nodeCurl{helo}{黎永強}
 \end{verbatim}
 
-\curl{helo}{黎永強}
+\nodeCurl{helo}{黎永強}
 
 Chinese characters from the Unicode SIP (`32 bit'---these needed a little trick to make \XeLaTeX\ choose
 the right font; see \verb#coffeexelatex.sty#):
 
 \begin{verbatim}
-\curl{helo}{𠀀𠀐𠀙}
+\nodeCurl{helo}{𠀀𠀐𠀙}
 \end{verbatim}
 
-\curl{helo}{𠀀𠀐𠀙}
+\nodeCurl{helo}{𠀀𠀐𠀙}
 
 % % ----------------------------------------------------------------------------------------------------------
 % \subsection{The URL environment}\label{urlenv}
@@ -141,11 +152,11 @@ the right font; see \verb#coffeexelatex.sty#):
 % `URL`, that somewhat simplifies writing (parts of) URLs:
 % \begin{verbatim}
 % \begin{URL}
-% \curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+% \nodeCurl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
 % \end{URL}
 % \end{verbatim}
 % \begin{URL}
-% \curl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
+% \nodeCurl{helo}{`\{ [ $ ~ % \# ^ | \} ] '?}
 % \end{URL}
 
 
@@ -163,11 +174,11 @@ the right font; see \verb#coffeexelatex.sty#):
 
 % % \begin{verbatim}
 % % \begin{URL}
-% % \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% % \nodeCurl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
 % % \end{URL}
 % % \end{verbatim}
 % % \begin{URL}
-% % \curl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
+% % \nodeCurl{helo}{B \& C % Dollar: $ hash: \# caret: ^ wave:~ backtick: \` }
 % % \end{URL}
 
 % % \usepackage{textcomp} \textquotesingle \textasciigrave
@@ -221,7 +232,7 @@ will write a single line to the \verb#aux# file.
   to the \verb#aux# file; to the server, this will become available as \verb#CXLTX.aux[ name ]#;
 \end{itemize}
 
-The \verb#\auxgeo# / \verb#@\curl{show-geometry}{}# command pair is a good example how to use \verb#\auxpod#.
+The \verb#\auxgeo# / \verb#@\nodeCurl{show-geometry}{}# command pair is a good example how to use \verb#\auxpod#.
 
 
 % ----------------------------------------------------------------------------------------------------------
@@ -242,20 +253,20 @@ we conveniently allow dashes to make things easier. The \CXLTX\ command \verb#sh
 not take arguments, which is why the second pair of braces has been left empty:
 
 \begin{verbatim}
-\curl{show-geometry}{}
+\nodeCurl{show-geometry}{}
 \end{verbatim}
 
-\curl{show-geometry}{}
+\nodeCurl{show-geometry}{}
 
 After \verb#show-geometry# has been performed, the \verb#CXLTX.aux# object has been populated with data from the
 \verb#aux# file; it then looks like this for the current document:
 
 
 \begin{verbatim}
-\curl{show-aux}{}
+\nodeCurl{show-aux}{}
 \end{verbatim}
 
-\curl{show-aux}{}
+\nodeCurl{show-aux}{}
 
 
 % ----------------------------------------------------------------------------------------------------------
@@ -268,20 +279,19 @@ labels from the \verb#*.aux# file associated with the current job; from
 inside your scripts 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓 〓
 
 \begin{verbatim}
-\curl{clear-aux}{}
-\curl{show-aux}{}
+\nodeCurl{clear-aux}{}
+\nodeCurl{show-aux}{}
 \end{verbatim}
 
 % {\fontsize{3mm}{3mm}\nodeRun{show-aux}{}}
 % \nodeRun{show-aux}{}
-\curl{clear-aux}{}
-\curl{show-aux}{}
+\nodeCurl{clear-aux}{}
+\nodeCurl{show-aux}{}
 
 % ----------------------------------------------------------------------------------------------------------
 \subsection{Implementing and Calling Functions}\label{functions}
 
 \renewcommand{\CXLTXparameterSplitter}{!}
-% \clearpage\typeout{STOPPED}\QUIT
 
 
 % \currfileabsdir

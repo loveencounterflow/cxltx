@@ -1,5 +1,7 @@
 
 
+[Click here to read the full documentation](https://github.com/loveencounterflow/cxltx/raw/master/cxltx-manual.pdf)
+
 
 # CoffeeXeLaTeX (CXLTX)
 
@@ -150,9 +152,10 @@ may help greatly.
 
 #### The HTTP Remote Command Interface (H/RCI)
 
-    \curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+    % This is the default setting for calling the CXLTX RCI:
+    \renewcommand{\node}{\nodeCurl}
 
-    \curl{helo}{friends}
+    \node{helo}{friends}
 
 
 ### Security Considerations

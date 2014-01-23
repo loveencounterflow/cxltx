@@ -49,14 +49,12 @@ server_options =
     #.......................................................................................................
     # debug "©45f #{RC} rq.params:  ", request.params
     { texroute
-      jobname
       splitter
       command
       parameter } = request.params
     #.......................................................................................................
     debug "©45f #{RC} url:        ", request[ 'url' ]
     debug "©45f #{RC} texroute:   ", texroute
-    debug "©45f #{RC} jobname:    ", jobname
     debug "©45f #{RC} splitter:   ", splitter
     debug "©45f #{RC} command:    ", command
     debug "©45f #{RC} parameter:  ", parameter
@@ -68,7 +66,7 @@ server_options =
     # texroute    = @decode_url_crumb texroute
     # command     = @decode_url_crumb command
     #.......................................................................................................
-    CXLTX.dispatch provider, texroute, jobname, splitter, command, parameter, handler
+    CXLTX.dispatch provider, texroute, splitter, command, parameter, handler
     #.......................................................................................................
     return null
   #---------------------------------------------------------------------------------------------------------
@@ -111,8 +109,8 @@ app.use express.logger 'format': 'dev'
 # ENDPOINTS
 #-----------------------------------------------------------------------------------------------------------
 main = @main()
-app.get '/:texroute/:jobname/:splitter/:command/:parameter',  main
-app.get '/:texroute/:jobname/:splitter/:command',              main
+app.get '/:texroute/:splitter/:command/:parameter',  main
+app.get '/:texroute/:splitter/:command',              main
 # app.use view 'not_found'
 
 

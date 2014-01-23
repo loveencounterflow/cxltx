@@ -1,3 +1,6 @@
+\href{https://github.com/loveencounterflow/cxltx/raw/master/cxltx-manual.pdf}{Click
+here to read the full documentation}
+
 \section{CoffeeXeLaTeX (CXLTX)}\label{coffeexelatex-cxltx}
 
 \subsection{What is it? And Why?}\label{what-is-it-and-why}
@@ -196,9 +199,10 @@ faster may help greatly.
 (H/RCI)}\label{the-http-remote-command-interface-hrci}
 
 \begin{verbatim}
-\curlRaw{127.0.0.1:8910/foobar.tex/\jobname/helo/friends}
+% This is the default setting for calling the CXLTX RCI:
+\renewcommand{\node}{\nodeCurl}
 
-\curl{helo}{friends}
+\node{helo}{friends}
 \end{verbatim}
 
 \subsubsection{Security Considerations}\label{security-considerations}

@@ -27,8 +27,10 @@ Line_by_line              = require 'line-by-line'
 
 
 #-----------------------------------------------------------------------------------------------------------
-@dispatch = ( provider, texroute, jobname, splitter, command, parameter, handler ) ->
-  warn '@32x', jobname, splitter, command, parameter
+@dispatch = ( provider, texroute, splitter, command, parameter, handler ) ->
+  jobname     = njs_path.basename texroute
+  texroute    = njs_path.dirname  texroute
+  warn '@32x', texroute, jobname, splitter, command, parameter
   method_name = command.replace /-/g, '_'
   method      = provider[ method_name ]
   arity       = method.length
