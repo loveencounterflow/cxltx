@@ -12,7 +12,7 @@ top=15mm]{geometry}
 \usepackage{leading}
 \usepackage{parskip}
 \usepackage{xeCJK}
-\usepackage{lscape}
+\usepackage{lscape} % needed for show-labels
 % ..........................................................................................................
 % a trick from http://tex.stackexchange.com/questions/16084/high-and-low-cjk-codepoints-in-a-single-xelatex-document
 % to automatically select font based on glyph codepoint; note that in order for `zhspacing` to load at all,
@@ -93,7 +93,13 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
 % \def\verbatim{\tiny\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
 % \makeatother
 
-
+\makeatletter
+\renewcommand{\paragraph}{%
+  \@startsection{paragraph}{4}%
+  {\z@}{1ex \@plus 1ex \@minus .2ex}{-1em}%
+  {\normalfont\normalsize\bfseries}%
+}
+\makeatother
 
 % ##########################################################################################################
 \begin{document}

@@ -279,8 +279,32 @@ the respective associated titles.
 
 Remember that you will have to re-run \XeLaTeX\ whenever there have been
 changes to your labels as \CXLTX\ can only read from the (copy of the) \verb#aux# file of the previous
-\XeLaTeX\ invocation, and \LaTeX\ itself needs more than one pass in many cases, too. You can easily
-have \CXLTX\ print you out a table with an overview of the currently defined labels:
+\XeLaTeX\ invocation, and \LaTeX\ itself needs more than one pass in many cases, too.
+
+You can easily have \CXLTX\ print you out a table with an overview of the currently defined labels, but observe
+that \verb#show-labels# is currently implemented in a very simple-minded fashion, meaning that it will make
+no adjustments to paper size or breaking the table across several pages. You may want to have a look at
+the source of \href{https://github.com/loveencounterflow/cxltx/blob/master/src/sample-provider.coffee#L93}{\texttt{sample-provider.coffee}}
+to get an idea of how to use the data provided for your own purposes.
+
+\verb#\paragraph{Duplicate Labels (1)}\label{error-detection-works}#
+\paragraph{Duplicate Labels (1)}\label{error-detection-works}
+
+One immediate benefit you can generate with \CXLTX\ is to make it hunt for duplicate lables. \TeX\ source
+is not expecially convenient to write and macros can be hard to get right, so it's sort of a survival
+strategy to do a lot of copy-and-pasting---which may inadvertently lead to duplicate labels.
+
+\verb#\paragraph{Duplicate Labels (2)}\label{error-detection-works}#
+\paragraph{Duplicate Labels (2)}\label{error-detection-works}
+
+Now \LaTeX\ is nice enough to warn you {\em that} duplicate labels have occurred, but not bold enough
+to tell you {\em which} labels were affected---all you get is a cursory \texttt{LaTeX Warning: There were
+multiply-defined labels}. It could do that as the data is plain to see in the \verb#aux#
+file, but it doesn't do that for you.
+
+Here is an overview of the labels in the current document; you'll immediately notice those duplicate labels
+since they are always put at the very top of the table, so no matter how wide or long the table gets, you'll get to
+see them right away in the output:
 
 \begin{verbatim}
 \begin{landscape}

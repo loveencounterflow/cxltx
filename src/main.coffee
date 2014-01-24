@@ -79,8 +79,9 @@ Line_by_line              = require 'line-by-line'
     eventually => handler null
     return null
   #.........................................................................................................
-  @aux[ 'auxroute'  ] = auxroute
-  @aux[ 'labels'    ] = labels = {}
+  @aux[ 'auxroute'          ] = auxroute
+  @aux[ 'labels'            ] = labels            = {}
+  @aux[ 'duplicate-labels'  ] = duplicate_labels  = {}
   #.........................................................................................................
   @_lines_of auxroute, ( error, line, line_nr ) =>
     return handler error if error?
@@ -114,12 +115,25 @@ Line_by_line              = require 'line-by-line'
     #.......................................................................................................
     ### Parsing labels and references: ###
     if ( match = line.match @read_aux.newlabel_matcher )?
-      [ ignore, label, ref, pageref, title, unknown, unknown, ] = match
-      labels[ label ] =
-        name:           label
-        ref:            ref
-        pageref:        pageref
-        title:          title
+      [ ignore, name, ref, pageref, title, unknown, unknown, ] = match
+      is_duplicate = no
+      #.....................................................................................................
+      if ( duplicate = labels[ name ] )?
+        is_duplicate                = yes
+        duplicate[ 'is-duplicate' ] = yes
+        unless duplicate_labels[ name ]?
+          duplicate_labels[ name ] = [ duplicate, ]
+      #.....................................................................................................
+      label =
+        'name':             name
+        'ref':              ref
+        'pageref':          pageref
+        'title':            title
+        'is-duplicate':     is_duplicate
+      #.....................................................................................................
+      labels[ name ] = label
+      duplicate_labels[ name ].push label if is_duplicate
+      #.....................................................................................................
       return null
 
   #---------------------------------------------------------------------------------------------------------

@@ -95,21 +95,39 @@ CXLTX                     = require './main'
     return handler error if error?
     R       = []
     #.......................................................................................................
-    labels  = ( label for ignore, label of aux[ 'labels' ] ).sort ( a, b ) ->
+    labels = []
+    for name, label of aux[ 'labels' ]
+      if label[ 'is-duplicate' ]
+        for duplicate_label in aux[ 'duplicate-labels' ][ name ]
+          labels.push duplicate_label
+        continue
+      labels.push label
+    #.......................................................................................................
+    labels.sort ( a, b ) ->
       ### TAINT what with roman numbers? ###
       pageref_a = parseInt a[ 'pageref' ], 10
       pageref_b = parseInt b[ 'pageref' ], 10
+      ref_a     = a[ 'ref' ]
+      ref_b     = b[ 'ref' ]
+      a_is_dup  = a[ 'is-duplicate' ]
+      b_is_dup  = b[ 'is-duplicate' ]
+      return -1 if a_is_dup and not b_is_dup
+      return +1 if b_is_dup and not a_is_dup
       return -1 if pageref_a < pageref_b
       return +1 if pageref_a > pageref_b
+      return -1 if ref_a < ref_b
+      return +1 if ref_a > ref_b
       return  0
     debug labels
     #.......................................................................................................
-    R.push "\\begin{tabular}{ | l | l | l | l | }"
+    # R.push "\\def\\mystrut{\\vrule height 2mmpt depth 1mm width 1pt} "
+    R.push "\\begin{tabular}{ | r | l | l | l | l | }"
     R.push "\\hline"
-    R.push "name & pageref & ref & title\\\\"
+    R.push "& name & pageref & ref & title\\\\"
     R.push "\\hline"
     for label in labels
-      R.push "#{label[ 'name' ]} & #{label[ 'pageref' ]} & #{label[ 'ref' ]} & #{label[ 'title' ]}\\\\"
+      dupmark = if label[ 'is-duplicate' ] then '!' else ''
+      R.push "#{dupmark} & #{label[ 'name' ]} & #{label[ 'pageref' ]} & #{label[ 'ref' ]} & #{label[ 'title' ]}\\\\"
     R.push "\\hline"
     R.push "\\end{tabular}"
     #.......................................................................................................
