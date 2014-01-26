@@ -24,14 +24,13 @@ top=15mm]{geometry}
 \usepackage{zhspacing}
 \zhspacing
 \newfontfamily\zhfont{Sun-ExtA}
-\newfontfamily\verbatimfont[Scale=0.8]{Flow DejaVu Sans Mono}
+\newfontfamily\verbatimfont[Scale=0.75]{Flow DejaVu Sans Mono}
 \newfontfamily\zhcjkextbfont{sunflower-u-cjk-xb}
 % \setCJKmainfont{Sun-ExtA}
 % \newCJKfontfamily\cjkxbIdeographFont[Scale=1.05,AutoFakeBold=1]{sunflower-u-cjk-xb}
 % ..........................................................................................................
 
 \usepackage{fancyhdr}
-% \usepackage{verbatim}
 % \usepackage{fancyvrb}
 % \renewcommand{\FancyVerbFormatLine}[1]{%
 %   % \makebox[0cm][l]{$\Rightarrow$}#1%
@@ -46,6 +45,7 @@ top=15mm]{geometry}
 % necessary to capture Pandoc's LaTeX output which uses `\texttt` insted of `\verb`:
 \renewcommand{\texttt}[1]{{\color{DarkRed}\verbatimfont\leading{4mm}#1}}
 
+\usepackage{rotating} % provides `\begin{sidewaystable}`
 \usepackage{etoolbox}
 \patchcmd{\quote}{\rightmargin}{\leftmargin 1em\rightmargin}{}{}
 \usepackage{enumitem}
@@ -59,10 +59,18 @@ ItalicFont={EB Garamond 12 Italic},
 % Ligatures={Historic,Rare,TeX},
 Ligatures={TeX},
 % Style={Swash,Historic},
-CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from small caps `i`
+% CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from small caps `i`
+CharacterVariant={11},% 11: make medieval digit `1` look different from small caps `i`
 ]{EB Garamond 12 Regular}
 
+% \usepackage{ulem} % provides `\dotuline`
 
+\let\CXLTXquote=\quote
+\renewenvironment{quote}{%
+  \begin{CXLTXquote}
+  \em
+}{%
+  \end{CXLTXquote}}
 
 \newenvironment{jzrplain}{%
 % ..........................................................................................................
@@ -78,6 +86,9 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
   % \makeatletter
   % \preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
   % \makeatother
+  \frenchspacing
+  \widowpenalty=10000
+  \clubpenalty=10000
   }%
 % end
   {\par}
@@ -121,6 +132,9 @@ CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from smal
 
 \clearpage
 \input{examples.tex}
+
+\clearpage
+\input{epilogue.tex}
 
 
 

@@ -306,15 +306,29 @@ Here is an overview of the labels in the current document; you'll immediately no
 since they are always put at the very top of the table, so no matter how wide or long the table gets, you'll get to
 see them right away in the output:
 
-\begin{verbatim}
-\begin{landscape}
-\node{show-labels}{}
-\end{landscape}
-\end{verbatim}
+% \begin{verbatim}
+% \begin{landscape}
+% \node{show-labels}{}
+% \end{landscape}
+% \end{verbatim}
 
-\begin{landscape}
+% \begin{landscape}
+% \node{show-labels}{}
+% \end{landscape}
+
+\begin{sidewaystable}
+\centering
+\caption{Output of \texttt{show-labels}}
 \node{show-labels}{}
-\end{landscape}
+\end{sidewaystable}
+
+% \rotatebox{90}{
+%     \begin{tabular}{ll}
+%     First First & First Second\\
+%     Second First & Second Second
+%     \end{tabular}
+% }
+
 
 \begin{verbatim}
 \nodeCurl{clear-aux}{}
@@ -323,22 +337,51 @@ see them right away in the output:
 
 % {\fontsize{3mm}{3mm}\nodeRun{show-aux}{}}
 % \nodeRun{show-aux}{}
-\nodeCurl{clear-aux}{}
-\nodeCurl{show-aux}{}
+\nodeCurl{clear-aux}{}\nodeCurl{show-aux}{}
 
 % ----------------------------------------------------------------------------------------------------------
 \subsection{Implementing and Calling Functions}\label{functions}
 
-\renewcommand{\CXLTXparameterSplitter}{!}
+It is simple to define own functions for \CXLTX; let's have a look on a particularly easy one:
+
+\begin{verbatim}
+% in sample-provider.coffee:
+
+@add = ( P..., handler ) ->
+  P[ idx ] = parseFloat p, 10 for p, idx in P
+  R   = 0
+  R  += p for p in P
+  return handler new Error "unable to sum up #{rpr P}" unless isFinite R
+  handler null, R
+
+% in examples.tex:
+
+\node{add}{2,3,5,7}
+\end{verbatim}
+
+When we run this code, we get back \node{add}{2,3,5,7}, as expected. The three dots in the function
+signature, \verb#P...#, are a signal that the function expects any number of arguments; the last parameter,
+\verb#handler#, is the callback function that each \CXLTX\ provider method must call upon error or
+completion.
+
+When we run this code, we get back \evalcs{2+3+5+7}, as expected. The three dots in the function
+signature, \verb#P...#, are a signal that the function expects any number of arguments; the last parameter,
+\verb#handler#, is the callback function that each \CXLTX\ provider method must call upon error or
+completion.
+
+\begin{verbatim}
+{\renewcommand{\CXLTXparameterSplitter}{!}
+\node{add}{2!3!5!7}}
+\end{verbatim}
+
+{\renewcommand{\CXLTXparameterSplitter}{!}
+\node{add}{2!3!5!7}}
 
 
-% \currfileabsdir
 
-% \currfileabspath
 
-% \getpwd
 
-% \thepwd\currfileabsdir
+
 
 
 

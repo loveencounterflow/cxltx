@@ -83,7 +83,8 @@ server_options =
         response.write CXLTX.escape_error error
         return response.end()
       #.....................................................................................................
-      whisper "©23 #{@request_count} result:", result
+      result  = rpr result unless TYPES.isa_text result
+      whisper "©23 #{@request_count} result:", rpr result
       status  = 200
       headers = 'Content-Type': 'text/plain'
       response.writeHeader status, headers

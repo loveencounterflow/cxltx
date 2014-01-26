@@ -1,0 +1,282 @@
+
+% ----------------------------------------------------------------------------------------------------------
+\section{Epilogue}\label{epilogue}
+
+\begingroup
+\catcode`∆\active
+\def∆{[\ldots]}
+% \dotuline{dotty}
+\em
+
+We all know that {\em all's well that ends well}, but the astute reader will have noticed that through the lines
+of this manual there is a certain amount of despair shining through.
+
+There is a somehwat icky metaphor popular among \TeX nicians which compares the inner workings of \TeX\ to
+the digestive work done by the mouth and the bowels, a metaphor that never fails to leave me both
+unimpressed and uninformed. Kind souls answering the question of neophytes and noobies often draw on this
+picture to explicate why some \verb#\foo{\bar}# invocation miserably flopped where the seemingly equally
+innocuous \verb#\foo{\baz}# succeeded, causing \TeX\ to spit out unhelpfully obfuscated lines, often
+ones spewn with @-signs, all decorated with a mysterious-slash-nonsensical error message and a line number
+that quite frequently does {\em not} refer to the file currently being processed, before offering the user the
+choice to either give up or else give up.\footnote{Reminds one of the now-classic Last Words Dialog featured in early versions of Microsoft Word (which in essence
+said `Something went bad' and offered the choice to either `ignore', `retry' or `abort', none of which
+buttons did react to mouse clicking).} As if that wasn't bad enough, those kind people that hang out
+on discussion websites will likely start talking about how \TeX\ chews, digests, ruminates, and, well,
+sometimes regurgitates its inputs when you go and ask them for help.
+
+\TeX's behavior must be classified as singularly unhelpful and
+irritating; you might want to say that \TeX\ cannot be successfully run without the Internet, for everything
+save the shortest and most boring documents will, with a chance of near-certainty, have
+{\em some} part---maybe something like a \verb#\usepackage{x}# statement that was inadvertently placed {\em
+before} another, superficially unrelated \verb#\usepackage{y}# instead of {\em after} it---that makes \TeX\
+screw up.
+
+Well-meaning fellow \TeX-users will tell you to read {\em The \TeX\ Book}, but in case you can count you will
+quickly see that---despite its purported reputation of being a fine manual---it actually is more a challenge to
+read than anything else, and i'm specifically referring here to the fact that it has, on the roughly 300
+pages of the main part, no less than 284 exercises (of which only 71 are `plain' exercises; 91 are labelled
+`dangerous` and 122 `ddangerous'). To be fair, answers are given. Alas, when you peruse {\em Appendix I:
+Index}, it'll make you think when you realize that there plainly is no keyword of interest with less than, say,
+three or four, often six or ten page numbers next to it, meaning that to look up anything at all
+you'll always have to sort of embark on a small grand tour. Add to that the author's penchant for a witty style
+that often gets lost in obscure details\footnote{there are almost 30 pages dedicated to `Dirty Tricks';
+that chapter is guarded with an eleven-fold `Danger!'-sign.} before getting off at a tangent and you'll more often than not rather inquire
+about a problem in the Net right away rather than consult {\em The Book}.
+
+Maybe the best thing that can be said about \TeX\ is that `it is good at typesetting', which, ultimately, is
+of course why so many people are ready to put up with all that \TeX\ is not so good at. Which is a lot, to
+say the least. Like, adding numbers. Or, doing string processing. Or, doing the fundamental things that
+distinguish a markup language from a programming language: naming, looping, branching, function building,
+and sensible data types (minimalists will claim much less is needed for Turing-completeness, but practioners
+know that with much fewer tools, doing things will become an inordinately arduous task).\footnote{It can at
+times be bwildering to see people `doing it the hard way' when easier ways are readily available, and
+why?---`just because they can'. While mental training is certainly a laudable way to spend time, i cannot
+help but feeling that \TeX\ has a way to waste mine, for the precise reason that for all the effort i put
+into mastering it i get back so little in terms of re-usable knowledge. In a similar way, many in the field
+of CS are ready to jump from `it's Turing-complete' to `you can and should use it to write programs with'.
+Hell, even CSS$+$HTML and certain card games may be considered Turing-complete (see
+http://beza1e1.tuxen.de/articles/accidentally\_turing\_complete.html, http://boingboing.net/2012/09/12/magic-the-gathering.html).}
+
+When i say functions, i mean functions, that is,
+
+\begin{quote}
+optionally named bundles of functionality which accept
+certain classes of inputs (as arguments) and yield outputs (as return values) with or without having
+so-called `side effects'.\footnote{see https://en.wikipedia.org/wiki/Side\_effect\_(computer\_science);
+essentially: ``a function is said to have a side effect if ∆ it also modifies some state or has an
+observable interaction with ∆ the outside world. For example, a function might ∆ modify one of its
+arguments, raise an exception, write data to a display or file ∆.'' In practical computing, side effects are
+important because we want to `do something' (change state) and `produce something' (namely output).}
+\end{quote}
+
+Noticeably absent from this definition is the ability to do the one thing when called in one environment,
+and the other when called from within another environment---which is what too many \TeX\ macros actually do.
+In a Real programming language, you do not want a function \verb#f = ( x ) -> ...# to return 42 when called
+as \verb#5 / ( f 3 )# but 71 when called as \verb#( f 3 ) / 5# just because \verb#f# happened to have
+been situated once in the divisor and once in the dividend position of an expression; that would be more
+than weird. There sure {\em may} be cases where such a behavior makes sense, but those are few and far
+between.\footnote{One exception to the rule is the output of many command line tools that will use colors
+when writing to the monitor, but omit colors when writing to a file, as most viewers will fail to render
+colors and instead display unsightly control codes.} In particular, given the  knowledge that \verb#f 3#
+returns some number, you do not want that same call \verb#f 3# to blow up the VM with an error message
+when used in the context of, say, a multiplication instead of a division.\footnote{except when an overflow
+occurs}
+
+\TeX\ macros frequently do exactly that, and while \LaTeX\ sure is a feat of a great thinker and many
+ingenious and diligent minds have struggled to come up with useful packages to make typesetting with \TeX\
+easier, presumably few have succeeded in providing `real' functions in the sense outlined above; in my
+experience, there's always a good chance that a given command will break whenever used outside of the select
+environments it has been tested in / was intended for.
+
+As a case in point, consider the monospaced words appearing in some of the section
+titles of the document you're now reading, like `\thinspace{\em The \texttt{aux} Object}'. In most cases where the
+monospaced font appears, the \verb!\verb#foo#! command has been used (in fact, the last instance of monospaced
+text appears as \verb°\verb!\verb#foo#!° in the source; now you know what style {\em The \TeX\ Book} is written
+in). But \verb!\verb#x#! happens to break when used in the argument to a \verb#\subsection{}#
+command:
+
+\begin{verbatim}
+\subsection{The \verb#aux# Object}
+\end{verbatim}
+
+The above just leads to tears:
+
+\begin{verbatim}
+Illegal parameter number in definition of \GetTitleStringResult.
+\end{verbatim}
+
+Incidentally, you can't use \verb#\verb# in a \verb#\footnote{}#, either, but this time you get
+a completely unrelated and equally opaque message:
+
+\begin{verbatim}
+You can't use `macro parameter character #' in horizontal mode.
+\end{verbatim}
+
+I have no idea why there are quotes in this phrase, but maybe we've hit upon something here: Both messages
+share the word `parameter', and indeed, \verb°#° is \TeX's way to mark parameters.\footnote{in its own
+in-imitable ways: \texttt{\#1} refers to the first argument to a macro, but \texttt{\#\#1} must be used
+inside another macro that is nested inside that first macro to refer back to the same argument. In case
+you should care: you'd use \texttt{\#\#\#\#1} to refer to the same argument if you were to try
+and define a macro nested inside a nested macro, {\em not} \texttt{\#\#\#1}.}
+
+OK great, not sure why that snazzy \verb°#° works in a plain paragraph but not in arguments to (some? all?)
+commands, but, hey, we sure can use another character in its place---after all, \verb§\verb#x#§ can be
+rewritten as \verb§\verb&x&§ or \verb§\verbXxX§ (or with any other hedge character, so we can always find
+one that does not interfere with the text meant to be displayed), so, sure enough!, we can drop that
+problematic \verb°#° and swap it for something else, can we?
+
+\begin{verbatim}
+\footnote{The \verb+aux+ Object}
+\end{verbatim}
+
+Nope. Gets you this:
+
+\begin{verbatim}
+Missing } inserted.
+\end{verbatim}
+
+Ah well. Let's try that with \verb#\subsection# then:
+
+\begin{verbatim}
+\subsection{The \verb+aux+ Object}
+\end{verbatim}
+
+Nope. Gets you this:
+
+\begin{verbatim}
+LaTeX Error: \verb illegal in command argument.
+\end{verbatim}
+
+I tried this with several hedge characters but to no avail. Needless to say the kind people that hang out on
+websites dedicated to solving problems with \TeX\ do provide solutions. Also needless to say that the
+respective solutions suggested for \verb#\footnote# and \verb#\subsection# that i saw are rather orthogonal
+to each other---apparently, the observed breakages are due to different aspects of the underlying code that
+define \verb#\footnote# and \verb#\subsection#.
+
+Let's face it, programming is hard. Programming gets even harder when you have to work against the grain
+with every step you take. Programming in \TeX\ is especially hard because of the insanely high degree of
+complectedness\thinspace\footnote{Watch Rich Hickey on http://www.infoq.com/presentations/Simple-Made-Easy}
+the language features. What you do to manage the considerable overhead that comes with a system of this
+complexity is using so-called `design patterns', that is, bluntly, `coping strategies for programmers',
+and, even more bluntly, `cop{\em y}ing strategies'.
+
+Programming \TeX, it would seem, is
+really only manageable (to a degree) by doing {\em nothing but} applying design patterns, precisely because
+the language is only marginally more ergonomic than, say, INTERCAL.\footnote{see
+https://en.wikipedia.org/wiki/INTERCAL\_programming\_language}
+
+In fact, it has been said that design patterns---while certainly being
+helpful in that they show people how to tackle classes of problems---are really `anti-patterns': signs that
+a given language is poorly suited for a given way of doing things.
+
+Art Atwood puts it this way:
+
+\begin{quote}
+If you find yourself frequently writing a bunch of boilerplate design pattern code to deal with
+a ``recurring design problem'', that's not good engineering-- it's a sign that your language is fundamentally
+broken. ∆ [design patterns] turn the programmer into a fancy macro processor.\footnote{see
+http://www.codinghorror.com/blog/2007/07/rethinking-design-patterns.html}
+\end{quote}
+
+One comment i read stated that its writer could only come to grips with \TeX\ by way of `uttering
+incantations' (i.e. copying black-box solutions found on the Internet and keeping fingers crossed they'll
+just work); in other words, people are---by the very design of the environment they're put into---encouraged
+to resort to that malicious, bad habit that is Cargo Cult Programming (which
+in this world must be having more adherents than its close cousin, Object Oriented Programming).
+
+Donald Knuth, famous inventor of \TeX, writes, on page 400 in the aforementioned chapter `Dirty Tricks',
+that ``[i]t would be possible to write an entire book about \TeX\ ouput routines''; this is probably more
+than a mild understatement in the face of comments like these:\footnote{recommended reading:
+http://tex.stackexchange.com/a/8736/28067; this answer contains links to a four-part article series in the
+magazine {\em TUGboat} which may or may not substantiate the implicit claim made here (that some parts of
+\TeX are  too hard even for the most dedicated).}
+
+\begin{verbatim}
+% We empty any left over kludge insert box here; this is a temporary fix.
+% It should perhaps be applied to one page of cleared floats, but
+% who cares?  The whole of this stuff needs completely redoing for
+% many such reasons.
+\end{verbatim}
+
+which anyone with a \LaTeX installation can read on their own machine by opening \verb#ltoutput.dtx# in
+their text editor. These words (alongside with other delicious commentaries left by members of the \LaTeX\
+dev team) are both testament to the inner complexity of \TeX\ and the limited capabilities of us frail
+humans, beings who can only juggle with so many balls and hold on to only so many loose ends at any given time.
+
+
+
+Let us pinpoint a few observations on what makes \TeX\ so hard.
+
+XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX
+
+no namespacing
+
+catcodes (active characters would have sufficed)
+
+macro expansion,
+\verb#\expandafter#, \verb#\noexpand#
+
+dependency of outcome / success of macros on environment they are called from
+
+no simple formulation of looping and branching
+
+% 26215 occurrences of `\if.*` constructs = 245881 bytes / characters
+% 1800 occurrences of single `\if` vs. 24415 occurrences of compound `\if.+` commands
+% 5815 different `\if.*` commands
+
+% \if@after
+% \if@aftercode
+% \if@afterindent
+% \if@afternarr
+% \if@aftersctnhead
+% \if@aiaa@handcarry
+% \if@aiaa@submit
+% \if@allcaps
+% \if@allincludes
+% \if@AllowHfloat
+% \if@allowindent
+% \if@AllowSubFigure
+% \if@altsecnumformat
+% \if@alwaysbarcodes
+% \if@ams
+% \if@anim@@autopause
+% \if@anim@@autoresume
+% \if@anim@@dvipdfmx
+% \if@anim@@dvips
+% \if@anim@@loop
+% \if@anim@autopause
+% \if@anim@autoresume
+% \if@anim@chfps
+% \if@anim@controls
+% \if@anim@draft
+% \if@anim@grxloaded
+% \if@anim@loop
+% \if@anim@meas
+% \ifMTOOLS
+% \ifMTr@triangle
+% \ifmu@H
+% \ifmulticitation
+% \ifmulticols
+% \ifmultiline@
+% \ifmultipleTBLheads
+% \ifmultivolume
+% \ifmultmore
+% \ifmy@frame
+% \ifmynotesinglepar
+% \ifmynoteson
+% \ifmynotestwocol
+% \ifmytemp
+% \ifmytest
+% \ifzero
+% \ifZeroExist
+% \ifzeropt
+% \ifzhfont@fakebold
+% \ifzhs@isvalidchar
+% \ifzhs@notactivehanzi
+% \ifZREF@found
+% \ifZREF@pa@list
+% \ifzref@titleref@expand
+
+
+
+\endgroup

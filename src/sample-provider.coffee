@@ -83,11 +83,11 @@ CXLTX                     = require './main'
 #-----------------------------------------------------------------------------------------------------------
 @clear_aux = ( handler ) ->
   delete CXLTX.aux[ name ] for name of CXLTX.aux
-  handler null
+  handler null, ''
 
 #-----------------------------------------------------------------------------------------------------------
 @show_aux = ( handler ) ->
-  handler null, "\\begin{verbatim}\\CXLTXwrapOutput{\n#{rpr CXLTX.aux}}\n\\end{verbatim}"
+  handler null, "\\begin{verbatim}\n#{rpr CXLTX.aux}\n\\end{verbatim}"
 
 #-----------------------------------------------------------------------------------------------------------
 @show_labels = ( handler ) ->
@@ -132,6 +132,15 @@ CXLTX                     = require './main'
     R.push "\\end{tabular}"
     #.......................................................................................................
     handler null, R.join '\n'
+
+#-----------------------------------------------------------------------------------------------------------
+@add = ( P..., handler ) ->
+  P[ idx ] = parseFloat p, 10 for p, idx in P
+  debug P
+  R   = 0
+  R  += p for p in P
+  return handler new Error "unable to sum up #{rpr P}" unless isFinite R
+  handler null, R
 
 
 

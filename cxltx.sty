@@ -13,6 +13,7 @@
 \usepackage[abspath]{currfile}
 \usepackage{currfile-abspath}
 \usepackage{xltxtra}
+\usepackage{verbatim}
 \usepackage{xstring}
 % \usepackage{catchfile}
 \usepackage{actcodes} % for `\MakeOther`
@@ -96,7 +97,8 @@
   \CXLTXifFileEmpty{\CXLTXtempOutRoute}%
     {}%
     % {\input{\CXLTXtempOutRoute}}
-    {\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}
+    {%\auxc{\input{\CXLTXtempOutRoute}}%
+    \CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}%
   \CXLTXifFileEmpty{\CXLTXtempErrRoute}%
     {}%
     {{\color{red}Errors have occurred:%
@@ -156,7 +158,9 @@
 \newcommand{\execdebug}[1]{%
   \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
   \auxc{* CXLTX command: \CXLTXlastCommand}%
-  \immediate\write18{\CXLTXlastCommand}\CXLTXshowOutputAndErrors}
+  \immediate\write18{\CXLTXlastCommand}%
+  % \auxc{* CXLTX result: \verbatiminput{\CXLTXtempOutRoute}}%
+  \CXLTXshowOutputAndErrors}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
@@ -209,7 +213,7 @@
   \StrSubstitute{\CXLTX@texRouteEscaped}{\}}{\%7d}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{|}{\%7c}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{'}{\%27}[\CXLTX@texRouteEscaped]%
-  \exec{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}
+  \execdebug{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}
   % \auxc{\CXLTX@texRouteEscaped}
   \endgroup}
 
@@ -229,6 +233,7 @@
   \MakeOther\~
   \MakeOther\&
   \MakeOther\#
+  % \catcode`\_=12 % ???
   \catcode`\%=12
   \catcode`\$=12
   \catcode`\^=12

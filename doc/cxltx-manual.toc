@@ -9,17 +9,18 @@
 \contentsline {subsubsection}{\numberline {1.2.3}Security Considerations}{6}{subsubsection.1.2.3}
 \contentsline {subsection}{\numberline {1.3}Sample Command Lines}{7}{subsection.1.3}
 \contentsline {subsection}{\numberline {1.4}Useful Links}{7}{subsection.1.4}
-\contentsline {subsection}{\numberline {1.5}Related Work}{8}{subsection.1.5}
+\contentsline {subsection}{\numberline {1.5}Related Work}{7}{subsection.1.5}
 \contentsline {section}{\numberline {2}Examples}{9}{section.2}
 \contentsline {subsection}{\numberline {2.1}Spawning NodeJS}{9}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Evaluating Expressions}{9}{subsection.2.2}
 \contentsline {subsection}{\numberline {2.3}Spawning cURL}{10}{subsection.2.3}
 \contentsline {subsection}{\numberline {2.4}Character Escaping}{10}{subsection.2.4}
-\contentsline {subsection}{\numberline {2.5}Unicode}{10}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.5}Unicode}{11}{subsection.2.5}
 \contentsline {subsection}{\numberline {2.6}The {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.63228}\selectfont \ignorespaces aux} Object}{11}{subsection.2.6}
 \contentsline {subsubsection}{\numberline {2.6.1}The {\color {DarkRed}\verbatimfont \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread {0.7849}\selectfont \ignorespaces \textbackslash {}aux*} Commands}{11}{subsubsection.2.6.1}
 \contentsline {subsubsection}{\numberline {2.6.2}Geometry}{12}{subsubsection.2.6.2}
 \contentsline {subsubsection}{\numberline {2.6.3}Labels}{15}{subsubsection.2.6.3}
 \contentsline {paragraph}{Duplicate Labels (1)}{15}{section*.4}
-\contentsline {paragraph}{Duplicate Labels (2)}{15}{section*.5}
-\contentsline {subsection}{\numberline {2.7}Implementing and Calling Functions}{18}{subsection.2.7}
+\contentsline {paragraph}{Duplicate Labels (2)}{16}{section*.5}
+\contentsline {subsection}{\numberline {2.7}Implementing and Calling Functions}{16}{subsection.2.7}
+\contentsline {section}{\numberline {3}Epilogue}{18}{section.3}
