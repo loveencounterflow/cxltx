@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: cxltx-manual.aux
+The style file: alpha.bst
+Database file #1: cxltx-manual.bib
+You've used 2 entries,
+            2543 wiz_defined-function locations,
+            571 strings with 4649 characters,
+and the built_in function-call counts, 812 in all, are:
+= -- 81
+> -- 16
+< -- 4
++ -- 5
+- -- 4
+* -- 48
+:= -- 126
+add.period$ -- 8
+call.type$ -- 2
+change.case$ -- 9
+chr.to.int$ -- 2
+cite$ -- 2
+duplicate$ -- 45
+empty$ -- 71
+format.name$ -- 8
+if$ -- 177
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 3
+newline$ -- 14
+num.names$ -- 6
+pop$ -- 15
+preamble$ -- 1
+purify$ -- 12
+quote$ -- 0
+skip$ -- 33
+stack$ -- 0
+substring$ -- 47
+swap$ -- 13
+text.length$ -- 4
+text.prefix$ -- 2
+top$ -- 0
+type$ -- 12
+warning$ -- 0
+while$ -- 7
+width$ -- 3
+write$ -- 31

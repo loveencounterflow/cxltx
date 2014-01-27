@@ -356,26 +356,22 @@ It is simple to define own functions for \CXLTX; let's have a look on a particul
 
 % in examples.tex:
 
-\node{add}{2,3,5,7}
+\node{add}{2,3,5,8}
 \end{verbatim}
 
-When we run this code, we get back \node{add}{2,3,5,7}, as expected. The three dots in the function
-signature, \verb#P...#, are a signal that the function expects any number of arguments; the last parameter,
-\verb#handler#, is the callback function that each \CXLTX\ provider method must call upon error or
-completion.
 
-When we run this code, we get back \evalcs{2+3+5+7}, as expected. The three dots in the function
+When we run this code, we get back \node{add}{2,3,5,8}, as expected. The three dots in the function
 signature, \verb#P...#, are a signal that the function expects any number of arguments; the last parameter,
 \verb#handler#, is the callback function that each \CXLTX\ provider method must call upon error or
 completion.
 
 \begin{verbatim}
 {\renewcommand{\CXLTXparameterSplitter}{!}
-\node{add}{2!3!5!7}}
+\node{add}{2!3!5!8}}
 \end{verbatim}
 
 {\renewcommand{\CXLTXparameterSplitter}{!}
-\node{add}{2!3!5!7}}
+\node{add}{2!3!5!8}}
 
 
 

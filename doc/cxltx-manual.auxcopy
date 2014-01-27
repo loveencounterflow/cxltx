@@ -81,13 +81,21 @@
 % * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/,/show-labels/ > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 % * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/,/clear-aux/ > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 % * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/,/show-aux/ > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
-% * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/,/add/2%2c3%2c5%2c7 > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
-% * CXLTX command: coffee -e "console.log 2+3+5+7" > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
-% * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/!/add/2!3!5!7 > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+% * CXLTX command: node "cxltx/lib/cli" "cxltx/doc/" "," "add" "2,3,5,8" > "/tmp/CXLTXtempout.tex"
+% * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/,/add/2%2c3%2c5%2c8 > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+% * CXLTX command: coffee -e "console.log 2+3+5+8" > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 \@writefile{toc}{\contentsline {paragraph}{Duplicate Labels (2)}{16}{section*.5}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.7}Implementing and Calling Functions}{16}{subsection.2.7}}
 \newlabel{functions}{{2.7}{16}{Implementing and Calling Functions}{subsection.2.7}{}}
 \newlabel{RF1}{17}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Output of {\color  {DarkRed}\verbatimfont  \begingroup \@tempdima =14.5pt\relax \@tempdimb =4mm\relax \setlength  \@tempdimc {1pt*\ratio {\@tempdimb }{\@tempdima }}\global \@tempdimc =\@tempdimc \endgroup \linespread  {0.7849}\selectfont  \ignorespaces show-labels}}}{17}{table.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Epilogue}{18}{section.3}}
-\newlabel{epilogue}{{3}{18}{Epilogue}{section.3}{}}
+% * CXLTX command: curl --silent --show-error localhost:8910/\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules\%2Fcxltx\%2Fdoc\%2Fcxltx-manual/!/add/2!3!5!8 > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+\citation{midxflp}
+\citation{thebook}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Epilogue}{19}{section.3}}
+\newlabel{epilogue}{{3}{19}{Epilogue}{section.3}{}}
+% * CXLTX command: node -p "'x'" > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+\bibdata{cxltx-manual}
+\bibcite{thebook}{Knu90}
+\bibcite{midxflp}{Knu99}
+\bibstyle{alpha}

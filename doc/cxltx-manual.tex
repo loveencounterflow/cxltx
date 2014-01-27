@@ -58,6 +58,7 @@ BoldFeatures={Scale=0.8},
 ItalicFont={EB Garamond 12 Italic},
 % Ligatures={Historic,Rare,TeX},
 Ligatures={TeX},
+Numbers={Uppercase},
 % Style={Swash,Historic},
 % CharacterVariant={11,5:0},% 11: make medieval digit `1` look different from small caps `i`
 CharacterVariant={11},% 11: make medieval digit `1` look different from small caps `i`
@@ -67,10 +68,40 @@ CharacterVariant={11},% 11: make medieval digit `1` look different from small ca
 
 \let\CXLTXquote=\quote
 \renewenvironment{quote}{%
+  \begingroup
   \begin{CXLTXquote}
   \em
 }{%
-  \end{CXLTXquote}}
+  \end{CXLTXquote}%
+  \endgroup%
+}
+\newenvironment{motto}{\list{}{%
+  \begingroup%
+  \em%
+  \leftmargin=16em%
+  \rightmargin=0.0mm}%
+  \item[]%
+}{%
+  \endlist%
+  \endgroup%
+}
+\renewenvironment{quote}{\list{}{%
+  \begingroup%
+  \em%
+  \leftmargin=3em%
+  \rightmargin=3em}%
+  \item[]%
+}{%
+  \endlist%
+  \endgroup%
+}
+
+% \usepackage[hang,flushmargin]{footmisc}
+% \usepackage[hang,marginal]{footmisc}
+\usepackage[marginal]{footmisc}%
+\setlength{\footnotemargin}{-2ex}%
+% \renewcommand{\footnotelayout}{\Large}%
+\renewcommand{\thefootnote}{\larger[1]\arabic{footnote}}%
 
 \newenvironment{jzrplain}{%
 % ..........................................................................................................
@@ -111,6 +142,24 @@ CharacterVariant={11},% 11: make medieval digit `1` look different from small ca
   {\normalfont\normalsize\bfseries}%
 }
 \makeatother
+
+% ==========================================================================================================
+% QUOTES AND QUOTATIONS
+% ..........................................................................................................
+% szs: \szs{sozusagen}
+% \newcommand{\szs}[1]{‚#1‘}
+% \newcommand{\szs}[1]{‹#1›} % 'französisch', 'Rowohlt'; evt extra weißraum lassen!
+\newcommand{\szs}[1]{›#1‹} % 'deutsch'
+
+% wrt: \wrt{wörtlich}
+% \newcommand{\wrt}[1]{‚‚#1‘‘}
+% \newcommand{\wrt}[1]{„#1“}
+% \newcommand{\wrt}[1]{«#1»} % 'französisch', 'Rowohlt'; evt extra weißraum lassen!
+\newcommand{\wrt}[1]{»#1«} % 'deutsch'
+
+% ttl: \ttl{titel}
+\newcommand{\ttl}[1]{\textit{#1}}
+% \usepackage{bibgerm} % as per http://www.mrunix.de/forums/showthread.php?t=60922
 
 % ##########################################################################################################
 \begin{document}

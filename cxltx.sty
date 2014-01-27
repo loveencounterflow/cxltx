@@ -92,17 +92,19 @@
 % ==========================================================================================================
 % HELPERS
 % ----------------------------------------------------------------------------------------------------------
-% Prints out errors
+% Prints out errors.
+% Notice you'll get into difficulties should stdout or stderr contain ANSI color codes; that'd remain to be
+% fixed.
 \newcommand{\CXLTXshowOutputAndErrors}{%
   \CXLTXifFileEmpty{\CXLTXtempOutRoute}%
     {}%
     % {\input{\CXLTXtempOutRoute}}
     {%\auxc{\input{\CXLTXtempOutRoute}}%
-    \CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}%
+    \CXLTXwrapOutput{\input{\CXLTXtempOutRoute}\unskip}}%
   \CXLTXifFileEmpty{\CXLTXtempErrRoute}%
     {}%
-    {{\color{red}Errors have occurred:%
-      \verbatiminput{\CXLTXtempErrRoute}}}}
+    {{\color{red}Errors have occurred: %
+      \verbatiminput{\CXLTXtempErrRoute}\unskip}}}
 
 % ----------------------------------------------------------------------------------------------------------
 % Check whether file is empty; thx to https://groups.google.com/forum/#!topic/comp.text.tex/bzsDBa4_Ooc
@@ -136,7 +138,7 @@
   \iftoggle{CXLTXwrapOutputToggle}{%
     \begingroup%
       \CXLTXprefix%
-        #1
+        #1%
         \CXLTXsuffix%
       \endgroup%
   }{% else
@@ -152,7 +154,7 @@
   \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute"}%
   \auxc{* CXLTX command: \CXLTXlastCommand}%
   % \immediate\write18{\CXLTXlastCommand}\input{\CXLTXtempOutRoute}}
-  \immediate\write18{\CXLTXlastCommand}\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}}}
+  \immediate\write18{\CXLTXlastCommand}\CXLTXwrapOutput{\input{\CXLTXtempOutRoute}\unskip}}
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\execdebug}[1]{%
@@ -213,7 +215,7 @@
   \StrSubstitute{\CXLTX@texRouteEscaped}{\}}{\%7d}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{|}{\%7c}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{'}{\%27}[\CXLTX@texRouteEscaped]%
-  \execdebug{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}
+  \execdebug{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}%
   % \auxc{\CXLTX@texRouteEscaped}
   \endgroup}
 

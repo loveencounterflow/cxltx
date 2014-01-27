@@ -8,6 +8,13 @@
 % \dotuline{dotty}
 \em
 
+% \begin{quote}\TeX\ was designed for typesetting, not for programming; so it is at best ``weird'' when considered as
+% a programming language.\footnote{\cite{midxflp}, p235}\end{quote}
+
+\begin{motto}\TeX\ was designed for typesetting, not for programming; so it is at best ``weird'' when considered as
+a programming language.\footnote{\cite{midxflp}, p235}\end{motto}
+
+
 We all know that {\em all's well that ends well}, but the astute reader will have noticed that through the lines
 of this manual there is a certain amount of despair shining through.
 
@@ -18,9 +25,9 @@ picture to explicate why some \verb#\foo{\bar}# invocation miserably flopped whe
 innocuous \verb#\foo{\baz}# succeeded, causing \TeX\ to spit out unhelpfully obfuscated lines, often
 ones spewn with @-signs, all decorated with a mysterious-slash-nonsensical error message and a line number
 that quite frequently does {\em not} refer to the file currently being processed, before offering the user the
-choice to either give up or else give up.\footnote{Reminds one of the now-classic Last Words Dialog featured in early versions of Microsoft Word (which in essence
+choice to either give up or else give up.\footnote{reminds one of the now-classic Last Words Dialog featured in early versions of Microsoft Word (which in essence
 said `Something went bad' and offered the choice to either `ignore', `retry' or `abort', none of which
-buttons did react to mouse clicking).} As if that wasn't bad enough, those kind people that hang out
+buttons did react to mouse clicking)} As if that wasn't bad enough, those kind people that hang out
 on discussion websites will likely start talking about how \TeX\ chews, digests, ruminates, and, well,
 sometimes regurgitates its inputs when you go and ask them for help.
 
@@ -31,21 +38,22 @@ save the shortest and most boring documents will, with a chance of near-certaint
 before} another, superficially unrelated \verb#\usepackage{y}# instead of {\em after} it---that makes \TeX\
 screw up.
 
-Well-meaning fellow \TeX-users will tell you to read {\em The \TeX\ Book}, but in case you can count you will
-quickly see that---despite its purported reputation of being a fine manual---it actually is more a challenge to
-read than anything else, and i'm specifically referring here to the fact that it has, on the roughly 300
-pages of the main part, no less than 284 exercises (of which only 71 are `plain' exercises; 91 are labelled
-`dangerous` and 122 `ddangerous'). To be fair, answers are given. Alas, when you peruse {\em Appendix I:
-Index}, it'll make you think when you realize that there plainly is no keyword of interest with less than, say,
-three or four, often six or ten page numbers next to it, meaning that to look up anything at all
-you'll always have to sort of embark on a small grand tour. Add to that the author's penchant for a witty style
-that often gets lost in obscure details\footnote{there are almost 30 pages dedicated to `Dirty Tricks';
-that chapter is guarded with an eleven-fold `Danger!'-sign.} before getting off at a tangent and you'll more often than not rather inquire
-about a problem in the Net right away rather than consult {\em The Book}.
+Well-meaning fellow \TeX-users will tell you to read {\em The \TeX\ Book},\footnote{see \cite{thebook}} but
+in case you can count you will quickly see that---despite its purported reputation of being a fine
+manual---it actually is more a challenge to read than anything else, and i'm specifically referring here to the fact
+that it has, on the roughly 300 pages of the main part, no less than 284 exercises (of which only 71 are
+`plain' exercises; 91 are labelled `dangerous` and 122 `ddangerous'). To be fair, answers are given. Alas,
+when you peruse {\em Appendix I: Index}, it'll make you think when you realize that there plainly is no
+keyword of interest with less than, say, three or four, often six or ten page numbers next to it, meaning
+that to look up anything at all you'll always have to sort of embark on a small grand tour. Add to that the
+author's penchant for a witty style that often gets lost in obscure details\footnote{there are almost 30
+pages dedicated to `Dirty Tricks'; that chapter is guarded with an eleven-fold `Danger!'-sign} before
+getting off at a tangent and you'll more often than not rather inquire about a problem on the Net right away
+rather than consult {\em The Book}.
 
 Maybe the best thing that can be said about \TeX\ is that `it is good at typesetting', which, ultimately, is
 of course why so many people are ready to put up with all that \TeX\ is not so good at. Which is a lot, to
-say the least. Like, adding numbers. Or, doing string processing. Or, doing the fundamental things that
+say the least. Like, adding numbers. Or, doing string processing. Or, doing any one of the fundamental things that
 distinguish a markup language from a programming language: naming, looping, branching, function building,
 and sensible data types (minimalists will claim much less is needed for Turing-completeness, but practioners
 know that with much fewer tools, doing things will become an inordinately arduous task).\footnote{It can at
@@ -55,7 +63,11 @@ help but feeling that \TeX\ has a way to waste mine, for the precise reason that
 into mastering it i get back so little in terms of re-usable knowledge. In a similar way, many in the field
 of CS are ready to jump from `it's Turing-complete' to `you can and should use it to write programs with'.
 Hell, even CSS$+$HTML and certain card games may be considered Turing-complete (see
-http://beza1e1.tuxen.de/articles/accidentally\_turing\_complete.html, http://boingboing.net/2012/09/12/magic-the-gathering.html).}
+http://beza1e1.tuxen.de/articles/accidentally\_turing\_complete.html,
+http://boingboing.net/2012/09/12/magic-the-gathering.html). For a short summary of my view on the topic, see
+http://programmers.stackexchange.com/a/223933/114502 (i received downvotes because i deliberately mistook
+the `minimal' in the OP's question as implying `for practical purposes'. Formally, my answer is, therefore,
+wrong.)}
 
 When i say functions, i mean functions, that is,
 
@@ -171,12 +183,10 @@ a given language is poorly suited for a given way of doing things.
 
 Art Atwood puts it this way:
 
-\begin{quote}
-If you find yourself frequently writing a bunch of boilerplate design pattern code to deal with
+\begin{quote}If you find yourself frequently writing a bunch of boilerplate design pattern code to deal with
 a ``recurring design problem'', that's not good engineering-- it's a sign that your language is fundamentally
 broken. ∆ [design patterns] turn the programmer into a fancy macro processor.\footnote{see
-http://www.codinghorror.com/blog/2007/07/rethinking-design-patterns.html}
-\end{quote}
+http://www.codinghorror.com/blog/2007/07/rethinking-design-patterns.html}\end{quote}
 
 One comment i read stated that its writer could only come to grips with \TeX\ by way of `uttering
 incantations' (i.e. copying black-box solutions found on the Internet and keeping fingers crossed they'll
@@ -189,7 +199,7 @@ that ``[i]t would be possible to write an entire book about \TeX\ ouput routines
 than a mild understatement in the face of comments like these:\footnote{recommended reading:
 http://tex.stackexchange.com/a/8736/28067; this answer contains links to a four-part article series in the
 magazine {\em TUGboat} which may or may not substantiate the implicit claim made here (that some parts of
-\TeX are  too hard even for the most dedicated).}
+\TeX\ are  too hard even for the most dedicated).}
 
 \begin{verbatim}
 % We empty any left over kludge insert box here; this is a temporary fix.
@@ -219,6 +229,21 @@ macro expansion,
 dependency of outcome / success of macros on environment they are called from
 
 no simple formulation of looping and branching
+
+% \newtoggle{CXLTXwrapOutputToggle}
+% \toggletrue{CXLTXwrapOutputToggle}
+% % \togglefalse{CXLTXwrapOutputToggle}
+
+% \newcommand{\CXLTXwrapOutput}[1]{%
+%   \iftoggle{CXLTXwrapOutputToggle}{%
+%     \begingroup%
+%       \CXLTXprefix%
+%         #1%
+%         \CXLTXsuffix%
+%       \endgroup%
+%   }{% else
+%     #1}}
+
 
 % 26215 occurrences of `\if.*` constructs = 245881 bytes / characters
 % 1800 occurrences of single `\if` vs. 24415 occurrences of compound `\if.+` commands
@@ -279,4 +304,43 @@ no simple formulation of looping and branching
 
 
 
+
 \endgroup
+
+
+
+% XXX
+% Nobody06~\cite{Nobody06}\\
+% AbedonHymanThomas2003~\cite{AbedonHymanThomas2003}\\
+% Abedon1994~\cite{Abedon1994}\\
+% website:fermentas-lambda~\cite{website:fermentas-lambda}\\
+% blackholes~\cite{blackholes}\\
+% midxflp~\cite{midxflp}\\
+% thebook~\cite{thebook}\\
+
+
+
+
+% x\evalcs{1 + 1}x\node{add}{1,1}x%
+
+
+% \togglefalse{CXLTXwrapOutputToggle}
+xxxxxxx\\
+xxx\evaljs{'x'}xxx\\
+% xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}xxx\\
+xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}\unskip xxx\\
+xxxx xxx
+
+% \immediate\write18{"echo 'c'" > "/tmp/out.txt"}\input{/tmp/out.txt}%
+% \immediate\write18{coffee -e "process.stdout.write 'c'" > "/tmp/out.txt"}\input{/tmp/out.txt}%
+% \immediate\write18{coffee -e "console.log 1 + 1" > "/tmp/out.txt"}\input{/tmp/out.txt}%
+
+\bibliography{cxltx-manual}{}
+\bibliographystyle{alpha}
+% \bibliographystyle{authordate1}
+% \bibliographystyle{gerapali} % problematic
+% \bibliographystyle{abstract}
+% \bibliographystyle{amsalpha}
+
+
+

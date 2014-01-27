@@ -1,0 +1,15 @@
+\begin{thebibliography}{Knu99}
+
+\bibitem[Knu90]{thebook}
+Donald~E. Knuth.
+\newblock {\em The \TeX book}, volume~A of {\em Computers \& Typesetting}.
+\newblock Addison--Wesley, Reading, MA, 1990.
+\newblock 10th printing.
+
+\bibitem[Knu99]{midxflp}
+Donald~E. Knuth.
+\newblock Mini-indexes for literate programming.
+\newblock In {\em Digital Typography}, pages 225--245. CSLI Publications,
+  Stanford, 1999.
+
+\end{thebibliography}
