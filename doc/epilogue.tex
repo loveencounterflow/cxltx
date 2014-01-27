@@ -219,6 +219,16 @@ Let us pinpoint a few observations on what makes \TeX\ so hard.
 
 XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX
 
+horrible error messages that drown in a sea of largely inconsequential informative output and
+occasional warnings:
+
+\begin{verbatim}
+! Missing control sequence inserted.
+<inserted text>
+                inaccessible
+l.70 wrong.)}
+\end{verbatim}
+
 no namespacing
 
 catcodes (active characters would have sufficed)
@@ -228,7 +238,16 @@ macro expansion,
 
 dependency of outcome / success of macros on environment they are called from
 
+some characters such as \verb#_# (underscore) make only ever sense in math mode---so why does \TeX\ complain when used
+{\em outside} of math mode? There's even a specific catcode assigned to the underscore, i.e. one out of
+16 catcodes is specifically there to identify the role of the underscore in math mode (which makes subscripts).
+Wouldn't a more general solution have been more beneficial here? Active characters, anyone?
+
 no simple formulation of looping and branching
+
+unobvious procedures; e.g. googling for "latex references with section number toc" gives me:
+
+% \quote{For standard classes (article, book, report), adding \usepackage[nottoc,numbib]{tocbibind} to your document preamble should work.}
 
 % \newtoggle{CXLTXwrapOutputToggle}
 % \toggletrue{CXLTXwrapOutputToggle}
@@ -325,22 +344,19 @@ no simple formulation of looping and branching
 
 
 % \togglefalse{CXLTXwrapOutputToggle}
-xxxxxxx\\
-xxx\evaljs{'x'}xxx\\
-% xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}xxx\\
-xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}\unskip xxx\\
-xxxx xxx
+% xxxxxxx\\
+% xxx\evaljs{'x'}xxx\\
+% % xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}xxx\\
+% xxx\immediate\write18{node -p "'x'" > /tmp/out}\input{/tmp/out}\unskip xxx\\
+% xxxx xxx
 
 % \immediate\write18{"echo 'c'" > "/tmp/out.txt"}\input{/tmp/out.txt}%
 % \immediate\write18{coffee -e "process.stdout.write 'c'" > "/tmp/out.txt"}\input{/tmp/out.txt}%
 % \immediate\write18{coffee -e "console.log 1 + 1" > "/tmp/out.txt"}\input{/tmp/out.txt}%
 
-\bibliography{cxltx-manual}{}
-\bibliographystyle{alpha}
-% \bibliographystyle{authordate1}
-% \bibliographystyle{gerapali} % problematic
-% \bibliographystyle{abstract}
-% \bibliographystyle{amsalpha}
+
+
+
 
 
 

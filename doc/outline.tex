@@ -1,0 +1,43 @@
+
+
+\section{Project Implementation Outline}\label{outline}
+\begingroup
+\smaller[1.5]
+% \leading{30mm} % no effect...
+\renewcommand*\DTstyle{\verbatimfont\textcolor{DarkRed}}
+\renewcommand*\DTstylecomment{\commentfont\color{black}}
+\dirtree{%
+.1 cxltx/\DTcomment{application folder}.
+.2 cxltx.sty\DTcomment{\LaTeX\ module to enable \CXLTX}.
+.2 src/\DTcomment{\CXLTX\ CoffeeScript sources}.
+.3 cli.coffee\DTcomment{provides command line RPC interface}.
+.3 main.coffee\DTcomment{\CXLTX\ backend; mainly an RPC dispatcher}.
+.3 sample-provider.coffee\DTcomment{sample functionalities for \CXLTX\ RPC}.
+.3 ids-provider.coffee\DTcomment{dto.}.
+.3 server.coffee\DTcomment{provides HTTP RPC interface}.
+.2 cxltx-manual.pdf\DTcomment{this manual}.
+.2 doc/\DTcomment{source for this manual}.
+.3 cxltx-manual.tex\DTcomment{documentation master file}.
+.3 README.tex\DTcomment{\TeX ified version of \texttt{README.md}; input to manual}.
+.3 intro.tex\DTcomment{input to manual}.
+.3 conventions.tex\DTcomment{dto.}.
+.3 examples.tex\DTcomment{dto.}.
+.3 epilogue.tex\DTcomment{dto.}.
+.3 outline.tex\DTcomment{dto.}.
+.3 cxltx-manual.auxcopy\DTcomment{auxiliary file produced by \CXLTX}.
+.3 cxltx-manual.aux\DTcomment{temporary \TeX-file}.
+.3 cxltx-manual.toc\DTcomment{dto.}.
+.3 cxltx-manual.bbl\DTcomment{dto.}.
+.3 cxltx-manual.bib\DTcomment{dto.}.
+.3 cxltx-manual.blg\DTcomment{dto.}.
+.3 cxltx-manual.fls\DTcomment{dto.}.
+.3 cxltx-manual.log\DTcomment{dto.}.
+.3 cxltx-manual.out\DTcomment{dto.}.
+.2 lib/\DTcomment{contents of \texttt{src} transpiled to JavaScript}.
+.2 node\_modules/\DTcomment{JS libraries}.
+.2 monitor-options.json\DTcomment{configuration of server monitor; enables restart on source change}.
+.2 package.json\DTcomment{Common JS / npm package configuration}.
+.2 README.md\DTcomment{source of section 1 of the present manual}.
+.2 start-monitored-server\DTcomment{Bash script to start \CXLTX\ HTTP RPC server}.
+}
+\endgroup
