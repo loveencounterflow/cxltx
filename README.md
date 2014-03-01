@@ -62,7 +62,7 @@ and print out the result; the `\evaljs` command has been defined to do just that
     % will insert `16 * 3 = 48` in TeX math mode (triggered by `$`):
     $ 16 * 3 = \evaljs{16 * 3} $
 
-This technique is easily adapted to work with [CoffeeScript]{http://coffeescript.org} (or any other language
+This technique is easily adapted to work with [CoffeeScript](http://coffeescript.org) (or any other language
 that compiles to JS):
 
     \newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}

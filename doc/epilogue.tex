@@ -57,7 +57,7 @@ say the least. Like, adding numbers. Or, doing string processing. Or, doing any 
 distinguish a markup language from a programming language: naming, looping, branching, function building,
 and sensible data types (minimalists will claim much less is needed for Turing-completeness, but practioners
 know that with much fewer tools, doing things will become an inordinately arduous task).\footnote{It can at
-times be bwildering to see people `doing it the hard way' when easier ways are readily available, and
+times be bewildering to see people `doing it the hard way' when easier ways are readily available, and
 why?---`just because they can'. While mental training is certainly a laudable way to spend time, i cannot
 help but feeling that \TeX\ has a way to waste mine, for the precise reason that for all the effort i put
 into mastering it i get back so little in terms of re-usable knowledge. In a similar way, many in the field
@@ -167,7 +167,7 @@ define \verb#\footnote# and \verb#\subsection#.
 
 Let's face it, programming is hard. Programming gets even harder when you have to work against the grain
 with every step you take. Programming in \TeX\ is especially hard because of the insanely high degree of
-complectedness\thinspace\footnote{Watch Rich Hickey on http://www.infoq.com/presentations/Simple-Made-Easy}
+complectedness\thinspace\footnote{watch Rich Hickey on http://www.infoq.com/presentations/Simple-Made-Easy}
 the language features. What you do to manage the considerable overhead that comes with a system of this
 complexity is using so-called `design patterns', that is, bluntly, `coping strategies for programmers',
 and, even more bluntly, `cop{\em y}ing strategies'.
@@ -245,9 +245,20 @@ Wouldn't a more general solution have been more beneficial here? Active characte
 
 no simple formulation of looping and branching
 
-unobvious procedures; e.g. googling for "latex references with section number toc" gives me:
+unobvious procedures; e.g. googling for {\em latex references with section number toc} gives me:
 
-% \quote{For standard classes (article, book, report), adding \usepackage[nottoc,numbib]{tocbibind} to your document preamble should work.}
+% \begin{verbatim}
+% \end{verbatim}
+
+\begin{quote}
+For standard classes (article, book, report), adding\\
+\verb#\usepackage[nottoc,numbib]{tocbibind}#\\
+to your document preamble should work.
+\end{quote}
+
+What kind of language is this where mumbling `nottoc numbib tocbibind' makes the title of the References
+section magically appear with a section number and in the table of contents? How is that better than, say,
+`hax pax max deus adimax'\thinspace? If it wasn't for the Internet, where would i learn this stuff? on Hogwart High?
 
 % \newtoggle{CXLTXwrapOutputToggle}
 % \toggletrue{CXLTXwrapOutputToggle}
