@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+
+pandoc -o cxltx/doc/README.tex cxltx/README.md && \
+  cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy && \
+  xelatex --output-directory cxltx/doc --halt-on-error --enable-write18 --recorder cxltx/doc/cxltx-manual.tex && \
+  mv cxltx/doc/cxltx-manual.pdf cxltx/
+

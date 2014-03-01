@@ -29,14 +29,12 @@ everything with registers that are sometimes given symbolic names; it also enume
 operations, and reserves #18 for writing to the command line and executing stuff). This is how the `\exec`
 command is (in essence) defined in `coffeexelatex.sty`:
 
-````latex
-\newcommand{\CXLTXtempOutRoute}{/tmp/coffeexelatex.tex}
+    \newcommand{\CXLTXtempOutRoute}{/tmp/coffeexelatex.tex}
 
-\newcommand{\exec}[1]{%
-  \immediate\write18{#1 > \CXLTXtempOutRoute}
-  \input{\CXLTXtempOutRoute}
-  }
-````
+    \newcommand{\exec}[1]{%
+      \immediate\write18{#1 > \CXLTXtempOutRoute}
+      \input{\CXLTXtempOutRoute}
+      }
 
 With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
 provided by TeXLive 2013 does not allow that. The temporary file does have an advantage:
@@ -59,37 +57,31 @@ The command given to `\exec` could be anything; for our purposes, we will concen
 [NodeJS](http://nodejs.org) programs. The simplest thing is to have NodeJS evaluate a JavaScript expression
 and print out the result; the `\evaljs` command has been defined to do just that:
 
-````latex
-\newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
+    \newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
 
-% will insert `16 * 3 = 48` in TeX math mode (triggered by `$`):
-$ 16 * 3 = \evaljs{16 * 3} $
-````
+    % will insert `16 * 3 = 48` in TeX math mode (triggered by `$`):
+    $ 16 * 3 = \evaljs{16 * 3} $
 
 This technique is easily adapted to work with [CoffeeScript](http://coffeescript.org) (or any other language
 that compiles to JS):
 
-````latex
-\newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
+    \newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
 
-% will insert `[1,4,9]`
-\evalcs{ ( n * n for n in [ 1, 2, 3 ] ) }
-````
+    % will insert `[1,4,9]`
+    \evalcs{ ( n * n for n in [ 1, 2, 3 ] ) }
 
 #### The Command Line Remote Command Interface (CL/RCI)
 
 Of course, evaluating one-liners will give you only so much power, so why not execute more sizeable
 programs? That's what `\nodeRun` is for:
 
-````latex
-\usepackage[abspath]{currfile}
-\newcommand{\CXLTXmainRoute}{../../lib/main}
-\newcommand{\nodeRun}[2]{
-  \exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2"}}
+    \usepackage[abspath]{currfile}
+    \newcommand{\CXLTXmainRoute}{../../lib/main}
+    \newcommand{\nodeRun}[2]{
+      \exec{node "\CXLTXmainRoute" "\currfileabsdir" "\jobname" "#1" "#2"}}
 
-% will insert `Hello, world!`
-\nodeRun{helo}{world}
-````
+    % will insert `Hello, world!`
+    \nodeRun{helo}{world}
 
 `\NodeRun` will run NodeJS with the following arguments:
 **(1)** the route to our custom-made executable;
@@ -101,11 +93,9 @@ programs? That's what `\nodeRun` is for:
 Observe that you may want to define your own routes in case the default values do not match your needs;
 these can be easily done using `\renewcommand`:
 
-````latex
-\renewcommand{\CXLTXmainRoute}{../../lib/main}
-\renewcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
-\renewcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
-````
+    \renewcommand{\CXLTXmainRoute}{../../lib/main}
+    \renewcommand{\CXLTXtempOutRoute}{/tmp/CXLTXtempout.tex}
+    \renewcommand{\CXLTXtempErrRoute}{/tmp/CXLTXtemperr.tex}
 
 ### Method Two: Spawning `curl`
 
@@ -129,23 +119,21 @@ Here are some timings i obtained for running our simple echoing example, once sp
 spawning `curl`. The server is a very simple [Express](http://expressjs.com/) application; except for the
 command line argument and HTTP parameter handling, the same code is ultimately executed:
 
-````bash
-time node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" \
-  "helo" "friends" \
-  > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+    time node "cxltx/lib/main" "cxltx/doc/" "cxltx-manual" \
+      "helo" "friends" \
+      > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 
-real  0m0.140s
-real  0m0.082s
-real  0m0.083s
+    real  0m0.140s
+    real  0m0.082s
+    real  0m0.083s
 
-time curl --silent --show-error \
-  127.0.0.1:8910/foobar.tex/cxltx-manual/helo/friends \
-  > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
+    time curl --silent --show-error \
+      127.0.0.1:8910/foobar.tex/cxltx-manual/helo/friends \
+      > "/tmp/CXLTXtempout.tex" 2> "/tmp/CXLTXtemperr.tex"
 
-real  0m0.010s
-real  0m0.011s
-real  0m0.010s
-````
+    real  0m0.010s
+    real  0m0.011s
+    real  0m0.010s
 
 In so far these rather naïve benchmarks can be trusted, they would indicate that fetching the same
 insignificant amount of data via `curl` from a local server is around ten times as performant as doing the
@@ -164,21 +152,17 @@ may help greatly.
 
 #### The HTTP Remote Command Interface (H/RCI)
 
-````latex
-% This is the default setting for calling the CXLTX RCI:
-\renewcommand{\node}{\nodeCurl}
+    % This is the default setting for calling the CXLTX RCI:
+    \renewcommand{\node}{\nodeCurl}
 
-\node{helo}{friends}
-````
+    \node{helo}{friends}
 
 
 ### Security Considerations
 
 Be aware that executing arbitrary code by way of mediation of a command line like
 
-````bash
-xelatex --enable-write18 --shell-escape somefile.tex
-````
+    xelatex --enable-write18 --shell-escape somefile.tex
 
 is inherently unsafe: a TeX file downloaded from somewhere could erase your disk, access your email, or
 install a program on your computer. This is what the `--enable-write18` switch is for: it is by default fully
@@ -223,44 +207,34 @@ know what you're doing, but be aware that running TeX has always been unsafe any
 To make it easier for TeX to resolve `\usepackage{cxltx}`, put a symlink to your CXLTX directory into
 a directory that is on LaTeX's search path. On OSX with LiveTeX, that can be achieved by doing
 
-````bash
-cd ~/Library/texmf/tex/latex
-ln -s route/to/cxltx cxltx
-````
+    cd ~/Library/texmf/tex/latex
+    ln -s route/to/cxltx cxltx
 
 Here is what i do to build `cxltx/cxltx-manual.pdf`:
 
 **(1)** use [Pandoc](http://http://johnmacfarlane.net/pandoc) to convert `README.md` to `README.tex`:
 
-````bash
-pandoc -o cxltx/doc/README.tex cxltx/README.md
-````
+    pandoc -o cxltx/doc/README.tex cxltx/README.md
 
 **(2)** copy the `aux` file from the previous TeX compilation step to preserve its data for CXLTX to see:
 
-````bash
-cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
-````
+    cp cxltx/doc/cxltx-manual.aux cxltx/doc/cxltx-manual.auxcopy
 
 **(3)** compile `cxltx-manual.tex` to `cxltx-manual.pdf`
   (`--enable-write18`: allows to access external programs form within TeX;
   `--halt-on-error`: is a convenience so i don't have to type `x` on each TeX error;
   `--recorder`: needed by the `currfile` package to get absolute routes):
 
-````bash
-xelatex \
-  --output-directory cxltx/doc \
-  --halt-on-error \
-  --enable-write18 \
-  --recorder \
-  cxltx/doc/cxltx-manual.tex
-````
+    xelatex \
+      --output-directory cxltx/doc \
+      --halt-on-error \
+      --enable-write18 \
+      --recorder \
+      cxltx/doc/cxltx-manual.tex
 
 **(4)** move the pdf file to its target location:
 
-````bash
-mv cxltx/doc/cxltx-manual.pdf cxltx
-````
+    mv cxltx/doc/cxltx-manual.pdf cxltx
 
 
 ## Useful Links
