@@ -29,12 +29,14 @@ everything with registers that are sometimes given symbolic names; it also enume
 operations, and reserves #18 for writing to the command line and executing stuff). This is how the `\exec`
 command is (in essence) defined in `coffeexelatex.sty`:
 
-    \newcommand{\CXLTXtempOutRoute}{/tmp/coffeexelatex.tex}
+````latex
+\newcommand{\CXLTXtempOutRoute}{/tmp/coffeexelatex.tex}
 
-    \newcommand{\exec}[1]{%
-      \immediate\write18{#1 > \CXLTXtempOutRoute}
-      \input{\CXLTXtempOutRoute}
-      }
+\newcommand{\exec}[1]{%
+  \immediate\write18{#1 > \CXLTXtempOutRoute}
+  \input{\CXLTXtempOutRoute}
+  }
+````
 
 With some TeXs, its possible to avoid the temporary file by using `\@@input|"dir"`, but XeTeX as
 provided by TeXLive 2013 does not allow that. The temporary file does have an advantage:
