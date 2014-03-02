@@ -194,14 +194,6 @@ itself does not exactly help in doing static code analysis**; in fact, such code
 '[metamorphic code](http://en.wikipedia.org/wiki/Metamorphic_code)' and is a well-known technique employed
 by computer viruses.
 
-Tu further stress the importance of metamorphic coding principles, let's consider the assessment of
-metamorphic algorithms in the context of seriously commercial and other applications as made deceptively
-clear in a recently published paper:
-
-<!-- ![metamorphic code](https://raw.github.com/loveencounterflow/cxltx/master/art/Screen Shot 2014-03-02 at 15.21.20.png "metamorphic code") -->
-![metamorphic code](cxltx/art/Screen Shot 2014-03-02 at 15.21.20.png "metamorphic code")
-From Zhang, Jing-Chun & al, *TIC: A methodology for the construction of E-Commerce*; ©2013 IEEE
-
 I do not write this section of the present README to scare you away, just to inform whoever is concerned
 of a little known fact of life. The gist of this is: don't have `--enable-write18` turned on except you
 know what you're doing, but be aware that running TeX has always been unsafe anyway.
