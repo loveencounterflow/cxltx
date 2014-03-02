@@ -198,7 +198,8 @@ Tu further stress the importance of metamorphic coding principles, let's conside
 metamorphic algorithms in the context of seriously commercial and other applications as made deceptively
 clear in a recently published paper:
 
-![metamorphic code](https://raw.github.com/loveencounterflow/cxltx/master/art/Screen Shot 2014-03-02 at 15.21.20.png "metamorphic code")
+<!-- ![metamorphic code](https://raw.github.com/loveencounterflow/cxltx/master/art/Screen Shot 2014-03-02 at 15.21.20.png "metamorphic code") -->
+![metamorphic code](cxltx/art/Screen Shot 2014-03-02 at 15.21.20.png "metamorphic code")
 From Zhang, Jing-Chun & al, *TIC: A methodology for the construction of E-Commerce*; ©2013 IEEE
 
 I do not write this section of the present README to scare you away, just to inform whoever is concerned
