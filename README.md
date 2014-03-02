@@ -205,7 +205,7 @@ know what you're doing, but be aware that running TeX has always been unsafe any
 ## Sample Command Lines
 
 To make it easier for TeX to resolve `\usepackage{cxltx}`, put a symlink to your CXLTX directory into
-a directory that is on LaTeX's search path. On OSX with LiveTeX, that can be achieved by doing
+a directory that is on LaTeX's search path. On OSX with TeX Live, that can be achieved by doing
 
     cd ~/Library/texmf/tex/latex
     ln -s route/to/cxltx cxltx
@@ -264,7 +264,7 @@ https://www.tug.org/TUGboat/tb25-2/tb81pakin.pdf
   code *needs* PythonTeX anyway, since none of it demonstrates how to interact with the document typesetting
   process; as such, all their formulas and plots may be produced offline, independently from LaTeX.
   Given that the installation instructions are too scary and longwinded for my taste, and that PythonTeX is
-  not part of LiveTeX, i've given up on the matter.
+  not part of TeX Live, i've given up on the matter.
 
 (the below taken from http://get-software.net/macros/latex/contrib/pythontex):
 
