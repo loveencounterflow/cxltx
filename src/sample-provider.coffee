@@ -143,4 +143,54 @@ CXLTX                     = require './main'
   handler null, R
 
 
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
+@gimme_five = ( n, handler ) ->
+  handler null, "#{n}"
+
+#-----------------------------------------------------------------------------------------------------------
+@f = ( label, fontsize_pt_txt, y_sp_txt, handler ) ->
+  ### TAINT paperheight must come from LaTeX document ###
+  paperheight_mm      = 98 # mm
+  margin_top_mm       = 14 # mm
+  lineheight_mm       = 4.6667 # mm
+  #.........................................................................................................
+  sp_from_pt          = 65536
+  pt_from_mm          = 2.845274
+  sp_from_mm          = sp_from_pt * pt_from_mm
+  #.........................................................................................................
+  fontsize_pt         = parseFloat fontsize_pt_txt, 10
+  y_sp                = parseFloat        y_sp_txt, 10
+  #.........................................................................................................
+  fontsize_mm         = fontsize_pt / pt_from_mm
+  y_mm                = paperheight_mm - y_sp / sp_from_mm
+  # debug '©TNm2U', [fontsize_pt, y_sp, y_mm, paperheight_mm, sp_from_mm]
+  grid_row            = ( y_mm - margin_top_mm ) / lineheight_mm
+  grid_row_2          = ( Math.floor grid_row           * 100 + 0.5 ) / 100
+  nearest_grid_row    =   Math.floor grid_row_2               + 0.5
+  delta_grid_row_2    = nearest_grid_row - grid_row_2
+  raise_by_mm         = -delta_grid_row_2 * lineheight_mm
+  raise_relatively    = raise_by_mm / fontsize_mm
+  #.........................................................................................................
+  fontsize_mm_txt     = fontsize_mm.toFixed 2
+  y_mm_txt            =        y_mm.toFixed 2
+  raise_by_mm_txt     = raise_by_mm.toFixed 2
+  #.........................................................................................................
+  # debug '©rtXri', grid_row_2 * lineheight_mm
+  # debug '©rtXri', nearest_grid_row * lineheight_mm
+  info "label #{label} y:                       #{y_mm_txt}mm"
+  info "label #{label} fontsize:                #{fontsize_mm_txt}mm"
+  info "label #{label} lineheight:              #{lineheight_mm}mm"
+  info "label #{label} paperheight:             #{paperheight_mm}mm"
+  info "label #{label} margin top:              #{margin_top_mm}mm"
+  info "label #{label} grid row:                #{grid_row}"
+  info "label #{label} grid row rounded:        #{grid_row_2}"
+  info "label #{label} nearest grid row:        #{nearest_grid_row}"
+  info "label #{label} delta grid row rounded:  #{delta_grid_row_2}"
+  info "label #{label} raise by:                #{raise_by_mm_txt}mm"
+  # handler null, y_mm_txt
+  # handler null, "#{grid_row_2} #{raise_by_mm_txt}"
+  handler null, "#{raise_relatively}"
+
 

@@ -5,6 +5,42 @@
 
 # CoffeeXeLaTeX (CXLTX)
 
+<!--
+
+We should really be doing 'restricted `write18`' to minimize risks. Unfortunately, turning off the
+`- -enable-write18` switch on the XeLaTeX command line also turns on some additional kind os escaping; in
+the logs, i get
+
+```
+GET /\%2FVolumes\%2FStorage\%2Fcnd\%2Fnode_modules ...
+```
+
+instead of the expected
+
+```
+GET /%2FVolumes%2FStorage%2Fcnd%2Fnode_modules ...
+```
+
+Since escaping is really difficult in TeX, i postpone this endeavour to a later point and continue to
+use non-restricted `write18`.
+
+```bash
+kpsewhere texmf.cnf
+```
+
+```
+/usr/local/texlive/2013/texmf-dist/web2c/texmf.cnf
+```
+
+shell_escape_commands = bibtex,bibtex8,kpsewhich,makeindex,mpost,repstopdf,
+
+```
+/usr/local/texlive/2013/texmf.cnf
+```
+
+
+-->
+
 ## What is it? And Why?
 
 Everyone who has worked with LaTeX knows how hard it can often be to get seemingly simple things done in
@@ -209,6 +245,14 @@ a directory that is on LaTeX's search path. On OSX with TeX Live, that can be ac
 
     cd ~/Library/texmf/tex/latex
     ln -s route/to/cxltx cxltx
+
+In a [more general fashion](http://tex.stackexchange.com/a/1138/28067), you may want to
+
+    kpsewhich -var-value=TEXMFHOME
+
+then take that route (e.g. `/Users/$USER/Library/texmf`) and append `/tex/latex` (which gets you
+`/Users/$USER/Library/texmf/tex/latex`) to obtain a suitable location. It may be necessary to first create
+that location using `mkdir -p ~/texmf/tex/latex`. Confusing it certainly is.
 
 Here is what i do to build `cxltx/cxltx-manual.pdf`:
 

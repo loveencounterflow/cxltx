@@ -30,7 +30,7 @@ Line_by_line              = require 'line-by-line'
 @dispatch = ( provider, texroute, splitter, command, parameter, handler ) ->
   jobname     = njs_path.basename texroute
   texroute    = njs_path.dirname  texroute
-  warn '@32x', texroute, jobname, splitter, command, parameter
+  # warn '@32x', texroute, jobname, splitter, command, parameter
   method_name = command.replace /-/g, '_'
   method      = provider[ method_name ]
   arity       = method.length
@@ -54,7 +54,7 @@ Line_by_line              = require 'line-by-line'
   @aux[ 'splitter'      ] = splitter
   @aux[ 'method-name'   ] = method_name
   @aux[ 'parameters'    ] = parameters
-  info '©56t', @aux
+  # info '©56t', @aux
   method.call provider, parameters..., handler
   #.........................................................................................................
   return null
@@ -73,6 +73,7 @@ Line_by_line              = require 'line-by-line'
   texroute  = @aux[ 'texroute' ]
   jobname   = @aux[ 'jobname' ]
   auxroute  = @aux[ 'auxroute' ]
+  debug '©fdZOh', @aux
   #.........................................................................................................
   unless njs_fs.existsSync auxroute
     warn "unable to locate #{auxroute}; ignoring"

@@ -53,11 +53,11 @@ server_options =
       command
       parameter } = request.params
     #.......................................................................................................
-    debug "©45f #{RC} url:        ", request[ 'url' ]
-    debug "©45f #{RC} texroute:   ", texroute
-    debug "©45f #{RC} splitter:   ", splitter
-    debug "©45f #{RC} command:    ", command
-    debug "©45f #{RC} parameter:  ", parameter
+    # debug "©45f #{RC} url:        ", request[ 'url' ]
+    # debug "©45f #{RC} texroute:   ", texroute
+    # debug "©45f #{RC} splitter:   ", splitter
+    # debug "©45f #{RC} command:    ", command
+    # debug "©45f #{RC} parameter:  ", parameter
     #.......................................................................................................
     ### TAINT rewrite as middleware ###
     unless texroute? and command? # and parameters?

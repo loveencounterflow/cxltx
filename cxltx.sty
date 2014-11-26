@@ -18,6 +18,7 @@
 % \usepackage{catchfile}
 \usepackage{actcodes} % for `\MakeOther`
 \usepackage{etoolbox} % for \newtoggle` etc; see http://tex.stackexchange.com/a/5896/28067
+\usepackage{catchfile}
 % \input binhex
 % turn a character into its Unicode hexadecimal CID:
 % \newcounter{x}
@@ -165,6 +166,22 @@
   \CXLTXshowOutputAndErrors}
 
 % ----------------------------------------------------------------------------------------------------------
+\newcommand{\execCatch}[1]{%
+  \def\CXLTXlastCommand{#1 > "\CXLTXtempOutRoute" 2> "\CXLTXtempErrRoute"}%
+  \auxc{* CXLTX command: \CXLTXlastCommand}%
+  \immediate\write18{\CXLTXlastCommand}%
+  % \CatchFileDef{\cxltxR}{/tmp/CXLTXtempout.tex}{}% !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  % \auxc{* CXLTX result: \verbatiminput{\CXLTXtempOutRoute}}%
+  % \CXLTXshowOutputAndErrors
+  }
+
+% ----------------------------------------------------------------------------------------------------------
+% \def\cxltxRead{\CatchFileEdef{\cxltxR}{/tmp/CXLTXtempout.tex}{}}
+% thx to Joseph Wright @ http://tex.stackexchange.com/a/214123/28067 for suggesting `\@@input`.
+\newcommand{\cxltxR}{\@@input /tmp/CXLTXtempout}
+
+
+% ----------------------------------------------------------------------------------------------------------
 \newcommand{\evaljs}[1]{\execdebug{node -p "#1"}}
 \newcommand{\evalcs}[1]{\execdebug{coffee -e "console.log #1"}}
 
@@ -215,9 +232,13 @@
   \StrSubstitute{\CXLTX@texRouteEscaped}{\}}{\%7d}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{|}{\%7c}[\CXLTX@texRouteEscaped]%
   \StrSubstitute{\CXLTX@texRouteEscaped}{'}{\%27}[\CXLTX@texRouteEscaped]%
-  \execdebug{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}%
+  \execCatch{curl --silent --show-error \CXLTXhost /\CXLTX@texRouteEscaped/#1/#2/\three}%
   % \auxc{\CXLTX@texRouteEscaped}
-  \endgroup}
+  \endgroup%
+  % \cxltxRead%
+  % \cxltxR%
+  % \@@input /tmp/CXLTXtempout%
+  }
 
 % ----------------------------------------------------------------------------------------------------------
 \newcommand{\node}{\nodeCurl}
